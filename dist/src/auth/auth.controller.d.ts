@@ -48,11 +48,11 @@ export declare class AuthController {
     }>;
     getProfile(req: any): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        email: string;
+        role: string;
     }>;
     logout(req: any): Promise<{
         message: string;
@@ -86,8 +86,8 @@ export declare class AuthController {
         valid: boolean;
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
             role: string;
         };
         message?: undefined;

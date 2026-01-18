@@ -6,63 +6,53 @@ export declare class LeadsService {
         source?: string;
         status?: string;
     }): Promise<({
-        cluster: {
-            id: string;
-            name: string;
-        } | null;
         asset: {
             id: string;
             name: string;
             location: string;
-        } | null;
+        };
+        cluster: {
+            id: string;
+            name: string;
+        };
         creator: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
-        } | null;
+        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     })[]>;
     findById(id: string): Promise<{
-        cluster: {
-            id: string;
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            activeAssets: number;
-            code: string;
-            teamLead: string;
-            location: string;
-            totalCommission: number;
-        } | null;
         asset: {
+            leadCommission: number;
+            closerCommission: number;
             id: string;
-            name: string;
+            companyId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            type: string;
-            address: string | null;
-            status: string;
-            location: string;
+            name: string;
             referenceCode: string;
+            type: string;
             projectStatus: string;
-            companyId: string;
+            location: string;
+            address: string | null;
             landSize: string | null;
             builtSize: string | null;
             constructionStart: Date | null;
@@ -95,33 +85,43 @@ export declare class LeadsService {
             offPlanSecurity: string | null;
             exitLiquidity: string;
             managementMode: string;
-            leadCommission: number;
-            closerCommission: number;
             featured: boolean;
             totalAnnualReturn: number | null;
-        } | null;
+        };
+        cluster: {
+            totalCommission: number;
+            id: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            location: string;
+            code: string;
+            teamLead: string;
+            activeAssets: number;
+        };
         creator: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
-        } | null;
+        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     }>;
     create(data: {
         name: string;
@@ -134,53 +134,53 @@ export declare class LeadsService {
         createdBy?: string;
     }): Promise<{
         creator: {
+            name: string;
             email: string;
-            name: string | null;
-        } | null;
+        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     }>;
     update(id: string, data: any): Promise<{
-        cluster: {
-            id: string;
-            name: string;
-        } | null;
         asset: {
             id: string;
             name: string;
-        } | null;
+        };
+        cluster: {
+            id: string;
+            name: string;
+        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     }>;
     assignLeads(data: {
         leadIds: string[];
@@ -202,69 +202,59 @@ export declare class LeadsService {
         asset: {
             name: string;
             location: string;
-        } | null;
+        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     })[]>;
     convertLead(leadId: string, transactionData: any): Promise<{
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     }>;
     bulkImportLeads(leads: any[]): Promise<import(".prisma/client").Prisma.BatchPayload>;
     getLeadHistory(leadId: string): Promise<{
-        cluster: {
-            id: string;
-            name: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            activeAssets: number;
-            code: string;
-            teamLead: string;
-            location: string;
-            totalCommission: number;
-        } | null;
         asset: {
+            leadCommission: number;
+            closerCommission: number;
             id: string;
-            name: string;
+            companyId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            type: string;
-            address: string | null;
-            status: string;
-            location: string;
+            name: string;
             referenceCode: string;
+            type: string;
             projectStatus: string;
-            companyId: string;
+            location: string;
+            address: string | null;
             landSize: string | null;
             builtSize: string | null;
             constructionStart: Date | null;
@@ -297,32 +287,42 @@ export declare class LeadsService {
             offPlanSecurity: string | null;
             exitLiquidity: string;
             managementMode: string;
-            leadCommission: number;
-            closerCommission: number;
             featured: boolean;
             totalAnnualReturn: number | null;
-        } | null;
+        };
+        cluster: {
+            totalCommission: number;
+            id: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            location: string;
+            code: string;
+            teamLead: string;
+            activeAssets: number;
+        };
         creator: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
-        } | null;
+        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     }>;
 }

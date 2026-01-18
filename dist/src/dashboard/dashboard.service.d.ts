@@ -14,65 +14,65 @@ export declare class DashboardService {
             name: string;
         };
         buyer: {
-            name: string | null;
+            name: string;
         };
         leadAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
-        }) | null;
+        };
     } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        totalCommission: number;
-        companyId: string;
+        amount: number;
         leadCommission: number;
         closerCommission: number | null;
-        installmentPlanId: string | null;
-        amount: number;
-        paymentType: string;
+        totalCommission: number;
         earnedLeadCommission: number | null;
         earnedCloserCommission: number | null;
         earnedTotalCommission: number | null;
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
-        commissionPaymentStatus: string;
-        date: Date;
+        id: string;
         assetId: string;
         buyerId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
+        commissionPaymentStatus: string;
+        status: string;
+        date: Date;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
 }

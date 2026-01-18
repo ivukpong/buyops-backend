@@ -3,26 +3,28 @@ export declare class CompaniesService {
     private prisma;
     constructor(prisma: PrismaService);
     findAll(): Promise<({
-        assets: {
-            id: string;
-            name: string;
-            status: string;
-        }[];
         _count: {
             transactions: number;
             assets: number;
         };
+        assets: {
+            id: string;
+            status: string;
+            name: string;
+        }[];
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         type: string;
+        address: string | null;
+        email: string;
+        phone: string;
+        activeAssets: number;
         registrationNumber: string | null;
         contactPerson: string;
-        address: string | null;
         agreementStartDate: Date;
         agreementExpiryDate: Date;
         commissionRate: number;
@@ -31,39 +33,39 @@ export declare class CompaniesService {
         accountName: string | null;
         bankName: string | null;
         accountNumber: string | null;
-        status: string;
-        activeAssets: number;
         totalTransactions: number;
     })[]>;
     findById(id: string): Promise<{
+        _count: {
+            transactions: number;
+            assets: number;
+        };
         transactions: {
+            amount: number;
             id: string;
             status: string;
-            amount: number;
             date: Date;
         }[];
         assets: {
             id: string;
+            status: string;
             name: string;
             type: string;
-            status: string;
             finalPrice: number;
         }[];
-        _count: {
-            transactions: number;
-            assets: number;
-        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         type: string;
+        address: string | null;
+        email: string;
+        phone: string;
+        activeAssets: number;
         registrationNumber: string | null;
         contactPerson: string;
-        address: string | null;
         agreementStartDate: Date;
         agreementExpiryDate: Date;
         commissionRate: number;
@@ -72,8 +74,6 @@ export declare class CompaniesService {
         accountName: string | null;
         bankName: string | null;
         accountNumber: string | null;
-        status: string;
-        activeAssets: number;
         totalTransactions: number;
     }>;
     create(data: any): Promise<{
@@ -83,15 +83,17 @@ export declare class CompaniesService {
         };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         type: string;
+        address: string | null;
+        email: string;
+        phone: string;
+        activeAssets: number;
         registrationNumber: string | null;
         contactPerson: string;
-        address: string | null;
         agreementStartDate: Date;
         agreementExpiryDate: Date;
         commissionRate: number;
@@ -100,8 +102,6 @@ export declare class CompaniesService {
         accountName: string | null;
         bankName: string | null;
         accountNumber: string | null;
-        status: string;
-        activeAssets: number;
         totalTransactions: number;
     }>;
     update(id: string, data: any): Promise<{
@@ -111,15 +111,17 @@ export declare class CompaniesService {
         };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         type: string;
+        address: string | null;
+        email: string;
+        phone: string;
+        activeAssets: number;
         registrationNumber: string | null;
         contactPerson: string;
-        address: string | null;
         agreementStartDate: Date;
         agreementExpiryDate: Date;
         commissionRate: number;
@@ -128,21 +130,21 @@ export declare class CompaniesService {
         accountName: string | null;
         bankName: string | null;
         accountNumber: string | null;
-        status: string;
-        activeAssets: number;
         totalTransactions: number;
     }>;
     delete(id: string): Promise<{
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         type: string;
+        address: string | null;
+        email: string;
+        phone: string;
+        activeAssets: number;
         registrationNumber: string | null;
         contactPerson: string;
-        address: string | null;
         agreementStartDate: Date;
         agreementExpiryDate: Date;
         commissionRate: number;
@@ -151,21 +153,21 @@ export declare class CompaniesService {
         accountName: string | null;
         bankName: string | null;
         accountNumber: string | null;
-        status: string;
-        activeAssets: number;
         totalTransactions: number;
     }>;
     updateStats(companyId: string): Promise<{
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
         type: string;
+        address: string | null;
+        email: string;
+        phone: string;
+        activeAssets: number;
         registrationNumber: string | null;
         contactPerson: string;
-        address: string | null;
         agreementStartDate: Date;
         agreementExpiryDate: Date;
         commissionRate: number;
@@ -174,8 +176,6 @@ export declare class CompaniesService {
         accountName: string | null;
         bankName: string | null;
         accountNumber: string | null;
-        status: string;
-        activeAssets: number;
         totalTransactions: number;
     }>;
 }

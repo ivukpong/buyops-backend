@@ -6,27 +6,27 @@ export declare class InvestmentsService {
         amount: number;
         note?: string;
     }): Promise<{
+        amount: number;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        amount: number;
         note: string | null;
     }>;
     findByUser(userId: string): Promise<{
+        amount: number;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        amount: number;
         note: string | null;
     }[]>;
     findAll(): Promise<{
+        amount: number;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        amount: number;
         note: string | null;
     }[]>;
 }

@@ -7,27 +7,27 @@ export declare class InvestmentsController {
     private svc;
     constructor(svc: InvestmentsService);
     create(req: any, body: CreateInvestmentDto): Promise<{
+        amount: number;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        amount: number;
         note: string | null;
     }>;
     myInvestments(req: any): Promise<{
+        amount: number;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        amount: number;
         note: string | null;
     }[]>;
     all(): Promise<{
+        amount: number;
         id: string;
         createdAt: Date;
         updatedAt: Date;
         userId: string;
-        amount: number;
         note: string | null;
     }[]>;
 }

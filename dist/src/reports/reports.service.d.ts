@@ -45,17 +45,17 @@ export declare class ReportsService {
             email: string;
             cluster: string;
             closedDeals: number;
-            revenue: number;
-            totalCommission: number;
-            leadCommission: number;
-            closerCommission: number;
+            revenue: any;
+            totalCommission: any;
+            leadCommission: any;
+            closerCommission: any;
             conversionRate: string;
             avgDealSize: number;
         }[];
         summary: {
             totalAgents: number;
-            totalRevenue: number;
-            totalCommission: number;
+            totalRevenue: any;
+            totalCommission: any;
             avgConversionRate: string;
         };
     }>;

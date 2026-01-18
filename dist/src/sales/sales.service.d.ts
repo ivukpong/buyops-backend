@@ -17,11 +17,11 @@ export declare class SalesService {
     }>;
     findByUser(userId: string): Promise<({
         product: {
+            description: string | null;
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
-            description: string | null;
+            name: string;
             price: number | null;
         };
     } & {
@@ -36,15 +36,15 @@ export declare class SalesService {
     findAll(): Promise<({
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         product: {
+            description: string | null;
             id: string;
-            name: string;
             createdAt: Date;
             updatedAt: Date;
-            description: string | null;
+            name: string;
             price: number | null;
         };
     } & {

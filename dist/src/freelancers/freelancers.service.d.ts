@@ -5,24 +5,24 @@ export declare class FreelancersService {
     findAll(): Promise<({
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -30,32 +30,32 @@ export declare class FreelancersService {
     findById(id: string): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
+            totalCommission: number;
             id: string;
-            name: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            activeAssets: number;
+            name: string;
+            location: string;
             code: string;
             teamLead: string;
-            location: string;
-            totalCommission: number;
+            activeAssets: number;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -72,24 +72,24 @@ export declare class FreelancersService {
     }): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -97,39 +97,39 @@ export declare class FreelancersService {
     update(id: string, data: any): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
     }>;
     delete(id: string): Promise<{
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -144,24 +144,24 @@ export declare class FreelancersService {
     getFreelancersByRegistrar(registrarId: string): Promise<({
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -169,32 +169,32 @@ export declare class FreelancersService {
     updateFreelancerStats(freelancerId: string): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
+            totalCommission: number;
             id: string;
-            name: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            activeAssets: number;
+            name: string;
+            location: string;
             code: string;
             teamLead: string;
-            location: string;
-            totalCommission: number;
+            activeAssets: number;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;

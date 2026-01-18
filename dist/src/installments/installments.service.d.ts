@@ -5,10 +5,6 @@ export declare class InstallmentsService {
     findAll(filters?: {
         status?: string;
     }): Promise<({
-        company: {
-            id: string;
-            name: string;
-        };
         asset: {
             id: string;
             name: string;
@@ -17,48 +13,52 @@ export declare class InstallmentsService {
         leadAgent: {
             user: {
                 id: string;
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
                 id: string;
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
-        }) | null;
-        installments: {
+        };
+        company: {
             id: string;
+            name: string;
+        };
+        installments: {
+            amount: number;
+            id: string;
+            installmentPlanId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            installmentPlanId: string;
-            amount: number;
             paidAmount: number;
             dueDate: Date;
             paidDate: Date | null;
@@ -66,16 +66,17 @@ export declare class InstallmentsService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        companyId: string;
         assetId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        companyId: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         buyerName: string;
         buyerEmail: string;
         buyerPhone: string;
+        transactionId: string | null;
         totalAmount: number;
         downPayment: number;
         remainingBalance: number;
@@ -86,20 +87,20 @@ export declare class InstallmentsService {
         frequency: string;
         startDate: Date;
         nextDueDate: Date | null;
-        transactionId: string | null;
     })[]>;
     create(dto: any): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        companyId: string;
         assetId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        companyId: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         buyerName: string;
         buyerEmail: string;
         buyerPhone: string;
+        transactionId: string | null;
         totalAmount: number;
         downPayment: number;
         remainingBalance: number;
@@ -110,21 +111,22 @@ export declare class InstallmentsService {
         frequency: string;
         startDate: Date;
         nextDueDate: Date | null;
-        transactionId: string | null;
     }>;
     findById(id: string): Promise<{
         asset: {
+            leadCommission: number;
+            closerCommission: number;
             id: string;
-            name: string;
+            companyId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            type: string;
-            address: string | null;
-            status: string;
-            location: string;
+            name: string;
             referenceCode: string;
+            type: string;
             projectStatus: string;
-            companyId: string;
+            location: string;
+            address: string | null;
             landSize: string | null;
             builtSize: string | null;
             constructionStart: Date | null;
@@ -157,54 +159,52 @@ export declare class InstallmentsService {
             offPlanSecurity: string | null;
             exitLiquidity: string;
             managementMode: string;
-            leadCommission: number;
-            closerCommission: number;
             featured: boolean;
             totalAnnualReturn: number | null;
         };
         leadAgent: {
             user: {
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
-        }) | null;
+        };
         installments: {
+            amount: number;
             id: string;
+            installmentPlanId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            installmentPlanId: string;
-            amount: number;
             paidAmount: number;
             dueDate: Date;
             paidDate: Date | null;
@@ -212,16 +212,17 @@ export declare class InstallmentsService {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        companyId: string;
         assetId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        companyId: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         buyerName: string;
         buyerEmail: string;
         buyerPhone: string;
+        transactionId: string | null;
         totalAmount: number;
         downPayment: number;
         remainingBalance: number;
@@ -232,15 +233,14 @@ export declare class InstallmentsService {
         frequency: string;
         startDate: Date;
         nextDueDate: Date | null;
-        transactionId: string | null;
     }>;
     getInstallmentSchedule(planId: string): Promise<{
+        amount: number;
         id: string;
+        installmentPlanId: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        installmentPlanId: string;
-        amount: number;
         paidAmount: number;
         dueDate: Date;
         paidDate: Date | null;
@@ -250,12 +250,12 @@ export declare class InstallmentsService {
         amount: number;
         paymentMethod: string;
     }): Promise<{
+        amount: number;
         id: string;
+        installmentPlanId: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        installmentPlanId: string;
-        amount: number;
         paidAmount: number;
         dueDate: Date;
         paidDate: Date | null;

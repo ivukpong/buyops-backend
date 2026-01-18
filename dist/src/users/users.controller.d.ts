@@ -20,214 +20,214 @@ export declare class UsersController {
     constructor(usersService: UsersService);
     findAll(role?: string, status?: string, search?: string): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        email: string;
+        role: string;
         agentProfile: {
+            totalCommission: number;
             id: string;
             status: string;
-            totalCommission: number;
+            activeDeals: number;
+            closedDeals: number;
             cluster: {
                 id: string;
                 name: string;
             };
-            activeDeals: number;
-            closedDeals: number;
-        } | null;
+        };
         freelancerProfile: {
+            totalCommission: number;
             id: string;
             status: string;
-            totalCommission: number;
+            activeDeals: number;
+            closedDeals: number;
             cluster: {
                 id: string;
                 name: string;
             };
-            activeDeals: number;
-            closedDeals: number;
-        } | null;
+        };
     }[]>;
     findOne(id: string, req: any): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
         createdAt: Date;
         updatedAt: Date;
-        agentProfile: ({
-            cluster: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: string;
-                activeAssets: number;
-                code: string;
-                teamLead: string;
-                location: string;
-                totalCommission: number;
-            };
-            leadsAsLead: ({
-                asset: {
-                    name: string;
-                };
-            } & {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: string;
-                totalCommission: number;
-                companyId: string;
-                leadCommission: number;
-                closerCommission: number | null;
-                installmentPlanId: string | null;
-                amount: number;
-                paymentType: string;
-                earnedLeadCommission: number | null;
-                earnedCloserCommission: number | null;
-                earnedTotalCommission: number | null;
-                pendingLeadCommission: number | null;
-                pendingCloserCommission: number | null;
-                pendingTotalCommission: number | null;
-                commissionPaymentStatus: string;
-                date: Date;
-                assetId: string;
-                buyerId: string;
-                leadAgentId: string;
-                closerAgentId: string | null;
-            })[];
-            leadsAsCloser: ({
-                asset: {
-                    name: string;
-                };
-            } & {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: string;
-                totalCommission: number;
-                companyId: string;
-                leadCommission: number;
-                closerCommission: number | null;
-                installmentPlanId: string | null;
-                amount: number;
-                paymentType: string;
-                earnedLeadCommission: number | null;
-                earnedCloserCommission: number | null;
-                earnedTotalCommission: number | null;
-                pendingLeadCommission: number | null;
-                pendingCloserCommission: number | null;
-                pendingTotalCommission: number | null;
-                commissionPaymentStatus: string;
-                date: Date;
-                assetId: string;
-                buyerId: string;
-                leadAgentId: string;
-                closerAgentId: string | null;
-            })[];
-        } & {
-            id: string;
-            role: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            totalCommission: number;
-            activeDeals: number;
-            closedDeals: number;
-            performance: number;
-            userId: string;
-            clusterId: string;
-        }) | null;
-        freelancerProfile: ({
-            cluster: {
-                id: string;
-                name: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: string;
-                activeAssets: number;
-                code: string;
-                teamLead: string;
-                location: string;
-                totalCommission: number;
-            };
-        } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            totalCommission: number;
-            activeDeals: number;
-            closedDeals: number;
-            performance: number;
-            userId: string;
-            clusterId: string;
-            registeredBy: string;
-            registrarName: string;
-            registrarType: string;
-        }) | null;
-        leadsCreated: {
-            id: string;
-            email: string;
-            name: string;
-            phone: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            assetId: string | null;
-            assetInterest: string;
-            budget: number;
-            source: string;
-            leadSource: string;
-            assignedTo: string | null;
-            dateReceived: Date;
-            createdBy: string | null;
-            assignedCluster: string | null;
-        }[];
+        name: string;
         transactions: ({
             asset: {
                 name: string;
             };
         } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            totalCommission: number;
-            companyId: string;
+            amount: number;
             leadCommission: number;
             closerCommission: number | null;
-            installmentPlanId: string | null;
-            amount: number;
-            paymentType: string;
+            totalCommission: number;
             earnedLeadCommission: number | null;
             earnedCloserCommission: number | null;
             earnedTotalCommission: number | null;
             pendingLeadCommission: number | null;
             pendingCloserCommission: number | null;
             pendingTotalCommission: number | null;
-            commissionPaymentStatus: string;
-            date: Date;
+            id: string;
             assetId: string;
             buyerId: string;
             leadAgentId: string;
             closerAgentId: string | null;
+            installmentPlanId: string | null;
+            companyId: string;
+            paymentType: string;
+            commissionPaymentStatus: string;
+            status: string;
+            date: Date;
+            createdAt: Date;
+            updatedAt: Date;
         })[];
+        email: string;
+        role: string;
+        agentProfile: {
+            cluster: {
+                totalCommission: number;
+                id: string;
+                status: string;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                location: string;
+                code: string;
+                teamLead: string;
+                activeAssets: number;
+            };
+            leadsAsLead: ({
+                asset: {
+                    name: string;
+                };
+            } & {
+                amount: number;
+                leadCommission: number;
+                closerCommission: number | null;
+                totalCommission: number;
+                earnedLeadCommission: number | null;
+                earnedCloserCommission: number | null;
+                earnedTotalCommission: number | null;
+                pendingLeadCommission: number | null;
+                pendingCloserCommission: number | null;
+                pendingTotalCommission: number | null;
+                id: string;
+                assetId: string;
+                buyerId: string;
+                leadAgentId: string;
+                closerAgentId: string | null;
+                installmentPlanId: string | null;
+                companyId: string;
+                paymentType: string;
+                commissionPaymentStatus: string;
+                status: string;
+                date: Date;
+                createdAt: Date;
+                updatedAt: Date;
+            })[];
+            leadsAsCloser: ({
+                asset: {
+                    name: string;
+                };
+            } & {
+                amount: number;
+                leadCommission: number;
+                closerCommission: number | null;
+                totalCommission: number;
+                earnedLeadCommission: number | null;
+                earnedCloserCommission: number | null;
+                earnedTotalCommission: number | null;
+                pendingLeadCommission: number | null;
+                pendingCloserCommission: number | null;
+                pendingTotalCommission: number | null;
+                id: string;
+                assetId: string;
+                buyerId: string;
+                leadAgentId: string;
+                closerAgentId: string | null;
+                installmentPlanId: string | null;
+                companyId: string;
+                paymentType: string;
+                commissionPaymentStatus: string;
+                status: string;
+                date: Date;
+                createdAt: Date;
+                updatedAt: Date;
+            })[];
+        } & {
+            totalCommission: number;
+            id: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+            role: string;
+            userId: string;
+            clusterId: string;
+            activeDeals: number;
+            closedDeals: number;
+            performance: number;
+        };
+        freelancerProfile: {
+            cluster: {
+                totalCommission: number;
+                id: string;
+                status: string;
+                createdAt: Date;
+                updatedAt: Date;
+                name: string;
+                location: string;
+                code: string;
+                teamLead: string;
+                activeAssets: number;
+            };
+        } & {
+            totalCommission: number;
+            id: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+            userId: string;
+            clusterId: string;
+            activeDeals: number;
+            closedDeals: number;
+            performance: number;
+            registeredBy: string;
+            registrarName: string;
+            registrarType: string;
+        };
+        leadsCreated: {
+            id: string;
+            assetId: string | null;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+            name: string;
+            email: string;
+            phone: string;
+            assetInterest: string;
+            budget: number;
+            source: string;
+            leadSource: string;
+            createdBy: string | null;
+            assignedTo: string | null;
+            assignedCluster: string | null;
+            dateReceived: Date;
+        }[];
     }>;
     findByEmail(email: string): Promise<{
         id: string;
+        name: string;
         email: string;
-        name: string | null;
         role: string;
         agentProfile: {
             id: string;
             status: string;
-        } | null;
+        };
         freelancerProfile: {
             id: string;
             status: string;
-        } | null;
+        };
     }>;
     getUserStats(id: string, req: any): Promise<{
         userType: string;
@@ -235,16 +235,16 @@ export declare class UsersController {
         closedDeals: number;
         totalCommission: number;
         cluster: {
+            totalCommission: number;
             id: string;
-            name: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            activeAssets: number;
+            name: string;
+            location: string;
             code: string;
             teamLead: string;
-            location: string;
-            totalCommission: number;
+            activeAssets: number;
         };
         totalInvested?: undefined;
         activeInvestments?: undefined;
@@ -272,70 +272,70 @@ export declare class UsersController {
             referenceCode: string;
         };
     } & {
-        id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        totalCommission: number;
-        companyId: string;
+        amount: number;
         leadCommission: number;
         closerCommission: number | null;
-        installmentPlanId: string | null;
-        amount: number;
-        paymentType: string;
+        totalCommission: number;
         earnedLeadCommission: number | null;
         earnedCloserCommission: number | null;
         earnedTotalCommission: number | null;
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
-        commissionPaymentStatus: string;
-        date: Date;
+        id: string;
         assetId: string;
         buyerId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
+        commissionPaymentStatus: string;
+        status: string;
+        date: Date;
+        createdAt: Date;
+        updatedAt: Date;
     })[]>;
     getUserLeads(id: string, req: any): Promise<({
         asset: {
             name: string;
-        } | null;
+        };
     } & {
         id: string;
-        email: string;
-        name: string;
-        phone: string;
+        assetId: string | null;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        assetId: string | null;
+        name: string;
+        email: string;
+        phone: string;
         assetInterest: string;
         budget: number;
         source: string;
         leadSource: string;
-        assignedTo: string | null;
-        dateReceived: Date;
         createdBy: string | null;
+        assignedTo: string | null;
         assignedCluster: string | null;
+        dateReceived: Date;
     })[]>;
     create(dto: CreateUserDto): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
         createdAt: Date;
+        name: string;
+        email: string;
+        role: string;
     }>;
     update(id: string, dto: UpdateUserDto, req: any): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
         updatedAt: Date;
+        name: string;
+        email: string;
+        role: string;
     }>;
     updateRole(id: string, role: string): Promise<{
         id: string;
+        name: string;
         email: string;
-        name: string | null;
         role: string;
     }>;
     updatePassword(id: string, dto: UpdatePasswordDto): Promise<{
@@ -352,10 +352,10 @@ export declare class UsersController {
     }>;
     getUsersByRole(role: string): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
         createdAt: Date;
+        name: string;
+        email: string;
+        role: string;
     }[]>;
     getUserDashboard(id: string, req: any): Promise<{
         stats: {
@@ -364,16 +364,16 @@ export declare class UsersController {
             closedDeals: number;
             totalCommission: number;
             cluster: {
+                totalCommission: number;
                 id: string;
-                name: string;
+                status: string;
                 createdAt: Date;
                 updatedAt: Date;
-                status: string;
-                activeAssets: number;
+                name: string;
+                location: string;
                 code: string;
                 teamLead: string;
-                location: string;
-                totalCommission: number;
+                activeAssets: number;
             };
             totalInvested?: undefined;
             activeInvestments?: undefined;
@@ -397,52 +397,52 @@ export declare class UsersController {
         recentActivity: any[];
     }>;
     getAllAgents(): Promise<({
-        agentProfile: ({
+        agentProfile: {
             cluster: {
+                totalCommission: number;
                 id: string;
-                name: string;
+                status: string;
                 createdAt: Date;
                 updatedAt: Date;
-                status: string;
-                activeAssets: number;
+                name: string;
+                location: string;
                 code: string;
                 teamLead: string;
-                location: string;
-                totalCommission: number;
+                activeAssets: number;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
-        }) | null;
+        };
     } & {
         id: string;
-        email: string;
-        password: string;
-        name: string | null;
-        role: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
+        name: string | null;
+        email: string;
+        password: string;
+        role: string;
+        phone: string | null;
     })[]>;
     getAllInvestors(): Promise<{
         id: string;
-        email: string;
-        name: string | null;
         createdAt: Date;
+        name: string;
+        email: string;
     }[]>;
     searchUsers(query: string, role?: string): Promise<{
         id: string;
+        name: string;
         email: string;
-        name: string | null;
         role: string;
     }[]>;
     getUserCountByRole(): Promise<{

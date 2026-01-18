@@ -6,13 +6,13 @@ export declare class AuthService {
     constructor(prisma: PrismaService, jwtService: JwtService);
     validateUser(email: string, password: string): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
-        phone: string | null;
         createdAt: Date;
         updatedAt: Date;
-    } | null>;
+        name: string | null;
+        email: string;
+        role: string;
+        phone: string | null;
+    }>;
     login(user: any): Promise<{
         access_token: string;
         refresh_token: string;
@@ -40,8 +40,8 @@ export declare class AuthService {
     }>;
     validateToken(token: string): Promise<{
         id: string;
+        name: string;
         email: string;
-        name: string | null;
         role: string;
     }>;
     refreshToken(refreshToken: string): Promise<{
@@ -56,11 +56,11 @@ export declare class AuthService {
     }>;
     getProfile(userId: string): Promise<{
         id: string;
-        email: string;
-        name: string | null;
-        role: string;
         createdAt: Date;
         updatedAt: Date;
+        name: string;
+        email: string;
+        role: string;
     }>;
     changePassword(userId: string, currentPassword: string, newPassword: string): Promise<{
         message: string;

@@ -26,37 +26,29 @@ export declare class TransactionsController {
         };
         buyer: {
             id: string;
-            name: string | null;
+            name: string;
             email: string;
         };
         leadAgent: {
             id: string;
             user: {
-                name: string | null;
+                name: string;
                 email: string;
             };
         };
         closerAgent: {
             id: string;
             user: {
-                name: string | null;
+                name: string;
                 email: string;
             };
-        } | null;
+        };
         company: {
             id: string;
             name: string;
         };
     } & {
-        id: string;
-        assetId: string;
-        buyerId: string;
-        leadAgentId: string;
-        closerAgentId: string | null;
-        installmentPlanId: string | null;
-        companyId: string;
         amount: number;
-        paymentType: string;
         leadCommission: number;
         closerCommission: number | null;
         totalCommission: number;
@@ -66,6 +58,14 @@ export declare class TransactionsController {
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
+        id: string;
+        assetId: string;
+        buyerId: string;
+        leadAgentId: string;
+        closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
         commissionPaymentStatus: string;
         status: string;
         date: Date;
@@ -87,11 +87,11 @@ export declare class TransactionsController {
         };
         leadAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -102,13 +102,13 @@ export declare class TransactionsController {
             closedDeals: number;
             performance: number;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -118,17 +118,9 @@ export declare class TransactionsController {
             activeDeals: number;
             closedDeals: number;
             performance: number;
-        }) | null;
+        };
     } & {
-        id: string;
-        assetId: string;
-        buyerId: string;
-        leadAgentId: string;
-        closerAgentId: string | null;
-        installmentPlanId: string | null;
-        companyId: string;
         amount: number;
-        paymentType: string;
         leadCommission: number;
         closerCommission: number | null;
         totalCommission: number;
@@ -138,6 +130,14 @@ export declare class TransactionsController {
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
+        id: string;
+        assetId: string;
+        buyerId: string;
+        leadAgentId: string;
+        closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
         commissionPaymentStatus: string;
         status: string;
         date: Date;
@@ -150,11 +150,11 @@ export declare class TransactionsController {
         };
         leadAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -165,13 +165,13 @@ export declare class TransactionsController {
             closedDeals: number;
             performance: number;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -181,17 +181,9 @@ export declare class TransactionsController {
             activeDeals: number;
             closedDeals: number;
             performance: number;
-        }) | null;
+        };
     } & {
-        id: string;
-        assetId: string;
-        buyerId: string;
-        leadAgentId: string;
-        closerAgentId: string | null;
-        installmentPlanId: string | null;
-        companyId: string;
         amount: number;
-        paymentType: string;
         leadCommission: number;
         closerCommission: number | null;
         totalCommission: number;
@@ -201,6 +193,14 @@ export declare class TransactionsController {
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
+        id: string;
+        assetId: string;
+        buyerId: string;
+        leadAgentId: string;
+        closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
         commissionPaymentStatus: string;
         status: string;
         date: Date;
@@ -209,10 +209,10 @@ export declare class TransactionsController {
     })[]>;
     findOne(id: string): Promise<{
         asset: {
-            id: string;
-            companyId: string;
             leadCommission: number;
             closerCommission: number;
+            id: string;
+            companyId: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -259,17 +259,17 @@ export declare class TransactionsController {
         };
         buyer: {
             id: string;
-            name: string | null;
+            name: string;
             email: string;
         };
         leadAgent: {
             user: {
-                name: string | null;
+                name: string;
                 email: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -280,14 +280,14 @@ export declare class TransactionsController {
             closedDeals: number;
             performance: number;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
-                name: string | null;
+                name: string;
                 email: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -297,7 +297,7 @@ export declare class TransactionsController {
             activeDeals: number;
             closedDeals: number;
             performance: number;
-        }) | null;
+        };
         company: {
             id: string;
             status: string;
@@ -308,6 +308,7 @@ export declare class TransactionsController {
             address: string | null;
             email: string;
             phone: string;
+            activeAssets: number;
             registrationNumber: string | null;
             contactPerson: string;
             agreementStartDate: Date;
@@ -318,19 +319,10 @@ export declare class TransactionsController {
             accountName: string | null;
             bankName: string | null;
             accountNumber: string | null;
-            activeAssets: number;
             totalTransactions: number;
         };
     } & {
-        id: string;
-        assetId: string;
-        buyerId: string;
-        leadAgentId: string;
-        closerAgentId: string | null;
-        installmentPlanId: string | null;
-        companyId: string;
         amount: number;
-        paymentType: string;
         leadCommission: number;
         closerCommission: number | null;
         totalCommission: number;
@@ -340,6 +332,14 @@ export declare class TransactionsController {
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
+        id: string;
+        assetId: string;
+        buyerId: string;
+        leadAgentId: string;
+        closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
         commissionPaymentStatus: string;
         status: string;
         date: Date;
@@ -348,10 +348,10 @@ export declare class TransactionsController {
     }>;
     create(dto: CreateTransactionDto): Promise<{
         asset: {
-            id: string;
-            companyId: string;
             leadCommission: number;
             closerCommission: number;
+            id: string;
+            companyId: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -397,16 +397,16 @@ export declare class TransactionsController {
             totalAnnualReturn: number | null;
         };
         buyer: {
-            name: string | null;
+            name: string;
             email: string;
         };
         leadAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -417,13 +417,13 @@ export declare class TransactionsController {
             closedDeals: number;
             performance: number;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -433,7 +433,7 @@ export declare class TransactionsController {
             activeDeals: number;
             closedDeals: number;
             performance: number;
-        }) | null;
+        };
         company: {
             id: string;
             status: string;
@@ -444,6 +444,7 @@ export declare class TransactionsController {
             address: string | null;
             email: string;
             phone: string;
+            activeAssets: number;
             registrationNumber: string | null;
             contactPerson: string;
             agreementStartDate: Date;
@@ -454,19 +455,10 @@ export declare class TransactionsController {
             accountName: string | null;
             bankName: string | null;
             accountNumber: string | null;
-            activeAssets: number;
             totalTransactions: number;
         };
     } & {
-        id: string;
-        assetId: string;
-        buyerId: string;
-        leadAgentId: string;
-        closerAgentId: string | null;
-        installmentPlanId: string | null;
-        companyId: string;
         amount: number;
-        paymentType: string;
         leadCommission: number;
         closerCommission: number | null;
         totalCommission: number;
@@ -476,6 +468,14 @@ export declare class TransactionsController {
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
+        id: string;
+        assetId: string;
+        buyerId: string;
+        leadAgentId: string;
+        closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
         commissionPaymentStatus: string;
         status: string;
         date: Date;
@@ -489,10 +489,10 @@ export declare class TransactionsController {
     }>;
     update(id: string, dto: Partial<CreateTransactionDto>): Promise<{
         asset: {
-            id: string;
-            companyId: string;
             leadCommission: number;
             closerCommission: number;
+            id: string;
+            companyId: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -538,16 +538,16 @@ export declare class TransactionsController {
             totalAnnualReturn: number | null;
         };
         buyer: {
-            name: string | null;
+            name: string;
             email: string;
         };
         leadAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -558,13 +558,13 @@ export declare class TransactionsController {
             closedDeals: number;
             performance: number;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
-                name: string | null;
+                name: string;
             };
         } & {
-            id: string;
             totalCommission: number;
+            id: string;
             status: string;
             createdAt: Date;
             updatedAt: Date;
@@ -574,7 +574,7 @@ export declare class TransactionsController {
             activeDeals: number;
             closedDeals: number;
             performance: number;
-        }) | null;
+        };
         company: {
             id: string;
             status: string;
@@ -585,6 +585,7 @@ export declare class TransactionsController {
             address: string | null;
             email: string;
             phone: string;
+            activeAssets: number;
             registrationNumber: string | null;
             contactPerson: string;
             agreementStartDate: Date;
@@ -595,19 +596,10 @@ export declare class TransactionsController {
             accountName: string | null;
             bankName: string | null;
             accountNumber: string | null;
-            activeAssets: number;
             totalTransactions: number;
         };
     } & {
-        id: string;
-        assetId: string;
-        buyerId: string;
-        leadAgentId: string;
-        closerAgentId: string | null;
-        installmentPlanId: string | null;
-        companyId: string;
         amount: number;
-        paymentType: string;
         leadCommission: number;
         closerCommission: number | null;
         totalCommission: number;
@@ -617,6 +609,14 @@ export declare class TransactionsController {
         pendingLeadCommission: number | null;
         pendingCloserCommission: number | null;
         pendingTotalCommission: number | null;
+        id: string;
+        assetId: string;
+        buyerId: string;
+        leadAgentId: string;
+        closerAgentId: string | null;
+        installmentPlanId: string | null;
+        companyId: string;
+        paymentType: string;
         commissionPaymentStatus: string;
         status: string;
         date: Date;

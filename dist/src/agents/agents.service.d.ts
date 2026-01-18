@@ -3,120 +3,120 @@ export declare class AgentsService {
     private prisma;
     constructor(prisma: PrismaService);
     findAll(): Promise<({
-        user: {
-            id: string;
-            email: string;
-            name: string | null;
-        };
-        cluster: {
-            id: string;
-            name: string;
-        };
         _count: {
             leadsAsLead: number;
             leadsAsCloser: number;
         };
-    } & {
-        id: string;
-        role: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        totalCommission: number;
-        activeDeals: number;
-        closedDeals: number;
-        performance: number;
-        userId: string;
-        clusterId: string;
-    })[]>;
-    findById(id: string): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
+        };
+    } & {
+        totalCommission: number;
+        id: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
+        role: string;
+        userId: string;
+        clusterId: string;
+        activeDeals: number;
+        closedDeals: number;
+        performance: number;
+    })[]>;
+    findById(id: string): Promise<{
+        user: {
+            id: string;
+            name: string;
+            email: string;
+        };
+        cluster: {
+            totalCommission: number;
+            id: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            activeAssets: number;
+            name: string;
+            location: string;
             code: string;
             teamLead: string;
-            location: string;
-            totalCommission: number;
+            activeAssets: number;
         };
         leadsAsLead: ({
             asset: {
                 name: string;
             };
         } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            totalCommission: number;
-            companyId: string;
+            amount: number;
             leadCommission: number;
             closerCommission: number | null;
-            installmentPlanId: string | null;
-            amount: number;
-            paymentType: string;
+            totalCommission: number;
             earnedLeadCommission: number | null;
             earnedCloserCommission: number | null;
             earnedTotalCommission: number | null;
             pendingLeadCommission: number | null;
             pendingCloserCommission: number | null;
             pendingTotalCommission: number | null;
-            commissionPaymentStatus: string;
-            date: Date;
+            id: string;
             assetId: string;
             buyerId: string;
             leadAgentId: string;
             closerAgentId: string | null;
+            installmentPlanId: string | null;
+            companyId: string;
+            paymentType: string;
+            commissionPaymentStatus: string;
+            status: string;
+            date: Date;
+            createdAt: Date;
+            updatedAt: Date;
         })[];
         leadsAsCloser: ({
             asset: {
                 name: string;
             };
         } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            totalCommission: number;
-            companyId: string;
+            amount: number;
             leadCommission: number;
             closerCommission: number | null;
-            installmentPlanId: string | null;
-            amount: number;
-            paymentType: string;
+            totalCommission: number;
             earnedLeadCommission: number | null;
             earnedCloserCommission: number | null;
             earnedTotalCommission: number | null;
             pendingLeadCommission: number | null;
             pendingCloserCommission: number | null;
             pendingTotalCommission: number | null;
-            commissionPaymentStatus: string;
-            date: Date;
+            id: string;
             assetId: string;
             buyerId: string;
             leadAgentId: string;
             closerAgentId: string | null;
+            installmentPlanId: string | null;
+            companyId: string;
+            paymentType: string;
+            commissionPaymentStatus: string;
+            status: string;
+            date: Date;
+            createdAt: Date;
+            updatedAt: Date;
         })[];
     } & {
+        totalCommission: number;
         id: string;
-        role: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        role: string;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
     }>;
     create(data: {
         name: string;
@@ -128,61 +128,61 @@ export declare class AgentsService {
     }): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
-        role: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        role: string;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
     }>;
     update(id: string, data: any): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
-        role: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        role: string;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
     }>;
     delete(id: string): Promise<{
+        totalCommission: number;
         id: string;
-        role: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        role: string;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
     }>;
     getStats(): Promise<{
         totalAgents: number;
@@ -192,16 +192,16 @@ export declare class AgentsService {
         totalCommission: number;
     }>;
     updateAgentStats(agentId: string): Promise<{
+        totalCommission: number;
         id: string;
-        role: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        role: string;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
     }>;
 }

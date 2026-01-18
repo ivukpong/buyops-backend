@@ -22,10 +22,6 @@ export declare class InstallmentsController {
     private installmentsService;
     constructor(installmentsService: InstallmentsService);
     findAll(status?: string): Promise<({
-        company: {
-            id: string;
-            name: string;
-        };
         asset: {
             id: string;
             name: string;
@@ -34,48 +30,52 @@ export declare class InstallmentsController {
         leadAgent: {
             user: {
                 id: string;
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
                 id: string;
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
-        }) | null;
-        installments: {
+        };
+        company: {
             id: string;
+            name: string;
+        };
+        installments: {
+            amount: number;
+            id: string;
+            installmentPlanId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            installmentPlanId: string;
-            amount: number;
             paidAmount: number;
             dueDate: Date;
             paidDate: Date | null;
@@ -83,16 +83,17 @@ export declare class InstallmentsController {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        companyId: string;
         assetId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        companyId: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         buyerName: string;
         buyerEmail: string;
         buyerPhone: string;
+        transactionId: string | null;
         totalAmount: number;
         downPayment: number;
         remainingBalance: number;
@@ -103,7 +104,6 @@ export declare class InstallmentsController {
         frequency: string;
         startDate: Date;
         nextDueDate: Date | null;
-        transactionId: string | null;
     })[]>;
     getStats(): Promise<{
         activePlans: number;
@@ -114,17 +114,19 @@ export declare class InstallmentsController {
     }>;
     findOne(id: string): Promise<{
         asset: {
+            leadCommission: number;
+            closerCommission: number;
             id: string;
-            name: string;
+            companyId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            type: string;
-            address: string | null;
-            status: string;
-            location: string;
+            name: string;
             referenceCode: string;
+            type: string;
             projectStatus: string;
-            companyId: string;
+            location: string;
+            address: string | null;
             landSize: string | null;
             builtSize: string | null;
             constructionStart: Date | null;
@@ -157,54 +159,52 @@ export declare class InstallmentsController {
             offPlanSecurity: string | null;
             exitLiquidity: string;
             managementMode: string;
-            leadCommission: number;
-            closerCommission: number;
             featured: boolean;
             totalAnnualReturn: number | null;
         };
         leadAgent: {
             user: {
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
         };
-        closerAgent: ({
+        closerAgent: {
             user: {
+                name: string;
                 email: string;
-                name: string | null;
             };
         } & {
+            totalCommission: number;
             id: string;
-            role: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            totalCommission: number;
+            role: string;
+            userId: string;
+            clusterId: string;
             activeDeals: number;
             closedDeals: number;
             performance: number;
-            userId: string;
-            clusterId: string;
-        }) | null;
+        };
         installments: {
+            amount: number;
             id: string;
+            installmentPlanId: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            installmentPlanId: string;
-            amount: number;
             paidAmount: number;
             dueDate: Date;
             paidDate: Date | null;
@@ -212,16 +212,17 @@ export declare class InstallmentsController {
         }[];
     } & {
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        companyId: string;
         assetId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        companyId: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         buyerName: string;
         buyerEmail: string;
         buyerPhone: string;
+        transactionId: string | null;
         totalAmount: number;
         downPayment: number;
         remainingBalance: number;
@@ -232,15 +233,14 @@ export declare class InstallmentsController {
         frequency: string;
         startDate: Date;
         nextDueDate: Date | null;
-        transactionId: string | null;
     }>;
     getSchedule(id: string): Promise<{
+        amount: number;
         id: string;
+        installmentPlanId: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        installmentPlanId: string;
-        amount: number;
         paidAmount: number;
         dueDate: Date;
         paidDate: Date | null;
@@ -248,16 +248,17 @@ export declare class InstallmentsController {
     }[]>;
     create(dto: CreateInstallmentPlanDto): Promise<{
         id: string;
-        createdAt: Date;
-        updatedAt: Date;
-        status: string;
-        companyId: string;
         assetId: string;
         leadAgentId: string;
         closerAgentId: string | null;
+        companyId: string;
+        status: string;
+        createdAt: Date;
+        updatedAt: Date;
         buyerName: string;
         buyerEmail: string;
         buyerPhone: string;
+        transactionId: string | null;
         totalAmount: number;
         downPayment: number;
         remainingBalance: number;
@@ -268,7 +269,6 @@ export declare class InstallmentsController {
         frequency: string;
         startDate: Date;
         nextDueDate: Date | null;
-        transactionId: string | null;
     }>;
     sendReminder(dto: SendReminderDto): Promise<{
         message: string;
@@ -280,12 +280,12 @@ export declare class InstallmentsController {
         amount: number;
         paymentMethod: string;
     }): Promise<{
+        amount: number;
         id: string;
+        installmentPlanId: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        installmentPlanId: string;
-        amount: number;
         paidAmount: number;
         dueDate: Date;
         paidDate: Date | null;

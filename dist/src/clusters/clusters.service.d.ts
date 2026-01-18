@@ -3,114 +3,114 @@ export declare class ClustersService {
     private prisma;
     constructor(prisma: PrismaService);
     findAll(): Promise<({
+        _count: {
+            leads: number;
+            agents: number;
+            freelancers: number;
+        };
         agents: {
             id: string;
-            role: string;
-            user: {
-                email: string;
-                name: string | null;
-            };
             status: string;
+            user: {
+                name: string;
+                email: string;
+            };
+            role: string;
         }[];
         freelancers: {
             id: string;
             user: {
+                name: string;
                 email: string;
-                name: string | null;
             };
         }[];
-        _count: {
-            agents: number;
-            freelancers: number;
-            leads: number;
-        };
     } & {
+        totalCommission: number;
         id: string;
-        name: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        activeAssets: number;
+        name: string;
+        location: string;
         code: string;
         teamLead: string;
-        location: string;
-        totalCommission: number;
+        activeAssets: number;
     })[]>;
     findById(id: string): Promise<{
-        agents: ({
-            user: {
-                id: string;
-                email: string;
-                name: string | null;
-            };
-        } & {
-            id: string;
-            role: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            totalCommission: number;
-            activeDeals: number;
-            closedDeals: number;
-            performance: number;
-            userId: string;
-            clusterId: string;
-        })[];
-        freelancers: ({
-            user: {
-                id: string;
-                email: string;
-                name: string | null;
-            };
-        } & {
-            id: string;
-            createdAt: Date;
-            updatedAt: Date;
-            status: string;
-            totalCommission: number;
-            activeDeals: number;
-            closedDeals: number;
-            performance: number;
-            userId: string;
-            clusterId: string;
-            registeredBy: string;
-            registrarName: string;
-            registrarType: string;
-        })[];
+        _count: {
+            leads: number;
+            agents: number;
+            freelancers: number;
+        };
         leads: {
             id: string;
-            email: string;
-            name: string;
-            phone: string;
+            assetId: string | null;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            assetId: string | null;
+            name: string;
+            email: string;
+            phone: string;
             assetInterest: string;
             budget: number;
             source: string;
             leadSource: string;
-            assignedTo: string | null;
-            dateReceived: Date;
             createdBy: string | null;
+            assignedTo: string | null;
             assignedCluster: string | null;
+            dateReceived: Date;
         }[];
-        _count: {
-            agents: number;
-            freelancers: number;
-            leads: number;
-        };
+        agents: ({
+            user: {
+                id: string;
+                name: string;
+                email: string;
+            };
+        } & {
+            totalCommission: number;
+            id: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+            role: string;
+            userId: string;
+            clusterId: string;
+            activeDeals: number;
+            closedDeals: number;
+            performance: number;
+        })[];
+        freelancers: ({
+            user: {
+                id: string;
+                name: string;
+                email: string;
+            };
+        } & {
+            totalCommission: number;
+            id: string;
+            status: string;
+            createdAt: Date;
+            updatedAt: Date;
+            userId: string;
+            clusterId: string;
+            activeDeals: number;
+            closedDeals: number;
+            performance: number;
+            registeredBy: string;
+            registrarName: string;
+            registrarType: string;
+        })[];
     } & {
+        totalCommission: number;
         id: string;
-        name: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        activeAssets: number;
+        name: string;
+        location: string;
         code: string;
         teamLead: string;
-        location: string;
-        totalCommission: number;
+        activeAssets: number;
     }>;
     create(data: {
         name: string;
@@ -120,51 +120,51 @@ export declare class ClustersService {
         status: string;
     }): Promise<{
         _count: {
+            leads: number;
             agents: number;
             freelancers: number;
-            leads: number;
         };
     } & {
+        totalCommission: number;
         id: string;
-        name: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        activeAssets: number;
+        name: string;
+        location: string;
         code: string;
         teamLead: string;
-        location: string;
-        totalCommission: number;
+        activeAssets: number;
     }>;
     update(id: string, data: any): Promise<{
         _count: {
+            leads: number;
             agents: number;
             freelancers: number;
-            leads: number;
         };
     } & {
+        totalCommission: number;
         id: string;
-        name: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        activeAssets: number;
+        name: string;
+        location: string;
         code: string;
         teamLead: string;
-        location: string;
-        totalCommission: number;
+        activeAssets: number;
     }>;
     delete(id: string): Promise<{
+        totalCommission: number;
         id: string;
-        name: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        activeAssets: number;
+        name: string;
+        location: string;
         code: string;
         teamLead: string;
-        location: string;
-        totalCommission: number;
+        activeAssets: number;
     }>;
     getStats(): Promise<{
         totalClusters: number;
@@ -173,93 +173,93 @@ export declare class ClustersService {
         totalCommission: number;
     }>;
     updateClusterStats(clusterId: string): Promise<{
+        totalCommission: number;
         id: string;
-        name: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        activeAssets: number;
+        name: string;
+        location: string;
         code: string;
         teamLead: string;
-        location: string;
-        totalCommission: number;
+        activeAssets: number;
     }>;
     getPerformanceMetrics(clusterId: string): Promise<{
         cluster: {
-            agents: ({
-                user: {
-                    id: string;
-                    email: string;
-                    name: string | null;
-                };
-            } & {
-                id: string;
-                role: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: string;
-                totalCommission: number;
-                activeDeals: number;
-                closedDeals: number;
-                performance: number;
-                userId: string;
-                clusterId: string;
-            })[];
-            freelancers: ({
-                user: {
-                    id: string;
-                    email: string;
-                    name: string | null;
-                };
-            } & {
-                id: string;
-                createdAt: Date;
-                updatedAt: Date;
-                status: string;
-                totalCommission: number;
-                activeDeals: number;
-                closedDeals: number;
-                performance: number;
-                userId: string;
-                clusterId: string;
-                registeredBy: string;
-                registrarName: string;
-                registrarType: string;
-            })[];
+            _count: {
+                leads: number;
+                agents: number;
+                freelancers: number;
+            };
             leads: {
                 id: string;
-                email: string;
-                name: string;
-                phone: string;
+                assetId: string | null;
+                status: string;
                 createdAt: Date;
                 updatedAt: Date;
-                status: string;
-                assetId: string | null;
+                name: string;
+                email: string;
+                phone: string;
                 assetInterest: string;
                 budget: number;
                 source: string;
                 leadSource: string;
-                assignedTo: string | null;
-                dateReceived: Date;
                 createdBy: string | null;
+                assignedTo: string | null;
                 assignedCluster: string | null;
+                dateReceived: Date;
             }[];
-            _count: {
-                agents: number;
-                freelancers: number;
-                leads: number;
-            };
+            agents: ({
+                user: {
+                    id: string;
+                    name: string;
+                    email: string;
+                };
+            } & {
+                totalCommission: number;
+                id: string;
+                status: string;
+                createdAt: Date;
+                updatedAt: Date;
+                role: string;
+                userId: string;
+                clusterId: string;
+                activeDeals: number;
+                closedDeals: number;
+                performance: number;
+            })[];
+            freelancers: ({
+                user: {
+                    id: string;
+                    name: string;
+                    email: string;
+                };
+            } & {
+                totalCommission: number;
+                id: string;
+                status: string;
+                createdAt: Date;
+                updatedAt: Date;
+                userId: string;
+                clusterId: string;
+                activeDeals: number;
+                closedDeals: number;
+                performance: number;
+                registeredBy: string;
+                registrarName: string;
+                registrarType: string;
+            })[];
         } & {
+            totalCommission: number;
             id: string;
-            name: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            activeAssets: number;
+            name: string;
+            location: string;
             code: string;
             teamLead: string;
-            location: string;
-            totalCommission: number;
+            activeAssets: number;
         };
         metrics: {
             totalTransactions: number;

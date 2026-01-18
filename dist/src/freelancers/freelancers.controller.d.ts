@@ -15,24 +15,24 @@ export declare class FreelancersController {
     findAll(): Promise<({
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -47,24 +47,24 @@ export declare class FreelancersController {
     getByRegistrar(registrarId: string): Promise<({
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -72,32 +72,32 @@ export declare class FreelancersController {
     findOne(id: string): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
+            totalCommission: number;
             id: string;
-            name: string;
+            status: string;
             createdAt: Date;
             updatedAt: Date;
-            status: string;
-            activeAssets: number;
+            name: string;
+            location: string;
             code: string;
             teamLead: string;
-            location: string;
-            totalCommission: number;
+            activeAssets: number;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -105,24 +105,24 @@ export declare class FreelancersController {
     create(dto: CreateFreelancerDto): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
@@ -130,39 +130,39 @@ export declare class FreelancersController {
     update(id: string, dto: Partial<CreateFreelancerDto>): Promise<{
         user: {
             id: string;
+            name: string;
             email: string;
-            name: string | null;
         };
         cluster: {
             id: string;
             name: string;
         };
     } & {
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;
     }>;
     remove(id: string): Promise<{
+        totalCommission: number;
         id: string;
+        status: string;
         createdAt: Date;
         updatedAt: Date;
-        status: string;
-        totalCommission: number;
+        userId: string;
+        clusterId: string;
         activeDeals: number;
         closedDeals: number;
         performance: number;
-        userId: string;
-        clusterId: string;
         registeredBy: string;
         registrarName: string;
         registrarType: string;

@@ -478,10 +478,18 @@ export class ReportsService {
 
         // Calculate overall summary
         const totalClusters = clusterPerformance.length;
-        const totalAgentsOverall = clusterPerformance.reduce((sum, cluster) => sum + cluster.agents, 0);
-        const totalRevenueOverall = clusterPerformance.reduce((sum, cluster) => sum + cluster.revenue, 0);
-        const totalCommissionOverall = clusterPerformance.reduce((sum, cluster) => sum + cluster.totalCommission, 0);
-        const totalClosedDealsOverall = clusterPerformance.reduce((sum, cluster) => sum + cluster.closedDeals, 0);
+        const totalAgentsOverall = clusterPerformance.reduce(
+            (sum: number, cluster: { agents: number }) => sum + cluster.agents, 0);
+        const totalRevenueOverall = clusterPerformance.reduce(
+            (sum: number, cluster: { revenue: number }) => sum + cluster.revenue, 0);
+        const totalCommissionOverall = clusterPerformance.reduce(
+            (sum: number, cluster: { totalCommission: number }) =>
+                sum + cluster.totalCommission,
+            0
+        );
+
+        const totalClosedDealsOverall = clusterPerformance.reduce(
+            (sum: number, cluster: { closedDeals: number }) => sum + cluster.closedDeals, 0);
 
         return {
             data: clusterPerformance,
