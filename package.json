@@ -3,11 +3,12 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "start": "node dist/main.js",
-    "start:dev": "nest start --watch",
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\"",
+    "start": "node dist/main.js",
+    "start:prod": "node dist/main.js",
+    "start:dev": "nest start --watch",
     "prisma:generate": "prisma generate",
+    "format": "prettier --write \"src/**/*.ts\"",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:studio": "prisma studio",
     "seed": "ts-node -r tsconfig-paths/register prisma/seed.ts"
