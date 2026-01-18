@@ -9,7 +9,7 @@ import {
     UseGuards
 } from "@nestjs/common";
 import { LeadsService } from "./leads.service";
-import { AuthGuard } from "@nestjs/passport";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
 
@@ -34,7 +34,7 @@ class AssignLeadsDto {
 export class LeadsController {
     constructor(private leadsService: LeadsService) { }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN", "SALES")
     @Get()
     async findAll(
@@ -44,35 +44,35 @@ export class LeadsController {
         return this.leadsService.findAll({ source, status });
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get("stats")
     async getStats() {
         return this.leadsService.getStats();
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN", "SALES")
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.leadsService.findById(id);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN", "SALES")
     @Post()
     async create(@Body() dto: CreateLeadDto) {
         return this.leadsService.create(dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Post("assign")
     async assignLeads(@Body() dto: AssignLeadsDto) {
         return this.leadsService.assignLeads(dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN", "SALES")
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateLeadDto>) {

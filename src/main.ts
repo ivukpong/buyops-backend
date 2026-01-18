@@ -19,6 +19,20 @@ async function bootstrap() {
     allowedHeaders: ["Content-Type", "Authorization"], // allow JWT header
   });
 
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+
+      if (frontendOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'), false);
+      }
+    },
+    credentials: true,
+  });
+
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
 
   const port = process.env.PORT || 4000;

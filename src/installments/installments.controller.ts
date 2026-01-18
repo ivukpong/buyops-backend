@@ -9,7 +9,7 @@ import {
     UseGuards
 } from "@nestjs/common";
 import { InstallmentsService } from "./installments.service";
-import { AuthGuard } from "@nestjs/passport";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
 
@@ -38,49 +38,49 @@ class SendReminderDto {
 export class InstallmentsController {
     constructor(private installmentsService: InstallmentsService) { }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get()
     async findAll(@Query("status") status?: string) {
         return this.installmentsService.findAll({ status });
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get("stats")
     async getStats() {
         return this.installmentsService.getStats();
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.installmentsService.findById(id);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get(":id/schedule")
     async getSchedule(@Param("id") id: string) {
         return this.installmentsService.getInstallmentSchedule(id);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Post()
     async create(@Body() dto: CreateInstallmentPlanDto) {
         return this.installmentsService.create(dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Post("reminders/send")
     async sendReminder(@Body() dto: SendReminderDto) {
         return this.installmentsService.sendPaymentReminder(dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Put(":id/installments/:installmentId/pay")
     async recordPayment(

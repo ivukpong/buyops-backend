@@ -9,7 +9,7 @@ import {
     UseGuards
 } from "@nestjs/common";
 import { FreelancersService } from "./freelancers.service";
-import { AuthGuard } from "@nestjs/passport";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
 
@@ -28,49 +28,49 @@ class CreateFreelancerDto {
 export class FreelancersController {
     constructor(private freelancersService: FreelancersService) { }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get()
     async findAll() {
         return this.freelancersService.findAll();
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get("stats")
     async getStats() {
         return this.freelancersService.getStats();
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get("by-registrar/:registrarId")
     async getByRegistrar(@Param("registrarId") registrarId: string) {
         return this.freelancersService.getFreelancersByRegistrar(registrarId);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.freelancersService.findById(id);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Post()
     async create(@Body() dto: CreateFreelancerDto) {
         return this.freelancersService.create(dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateFreelancerDto>) {
         return this.freelancersService.update(id, dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Delete(":id")
     async remove(@Param("id") id: string) {

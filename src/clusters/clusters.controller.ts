@@ -9,7 +9,7 @@ import {
     UseGuards
 } from "@nestjs/common";
 import { ClustersService } from "./clusters.service";
-import { AuthGuard } from "@nestjs/passport";
+import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
 
@@ -25,42 +25,42 @@ class CreateClusterDto {
 export class ClustersController {
     constructor(private clustersService: ClustersService) { }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get()
     async findAll() {
         return this.clustersService.findAll();
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get("stats")
     async getStats() {
         return this.clustersService.getStats();
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.clustersService.findById(id);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Post()
     async create(@Body() dto: CreateClusterDto) {
         return this.clustersService.create(dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateClusterDto>) {
         return this.clustersService.update(id, dto);
     }
 
-    @UseGuards(AuthGuard("jwt"), RolesGuard)
+    @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Delete(":id")
     async remove(@Param("id") id: string) {
