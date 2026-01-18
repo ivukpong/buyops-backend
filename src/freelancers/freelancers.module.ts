@@ -1,0 +1,12 @@
+import { Module } from '@nestjs/common';
+import { FreelancersController } from './freelancers.controller';
+import { FreelancersService } from './freelancers.service';
+import { PrismaModule } from '../prisma/prisma.module';
+
+@Module({
+  imports: [PrismaModule],
+  controllers: [FreelancersController],
+  providers: [FreelancersService],
+  exports: [FreelancersService],
+})
+export class FreelancersModule { }

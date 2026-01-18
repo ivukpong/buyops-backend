@@ -1,0 +1,319 @@
+generator client {
+  provider = "prisma-client-js"
+  engineType = "library"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Company {
+  id                  String   @id @default(uuid())
+  name                String
+  type                String
+  registrationNumber  String?
+  contactPerson       String
+  email               String   @unique
+  phone               String
+  address             String?
+  agreementStartDate  DateTime
+  agreementExpiryDate DateTime
+  commissionRate      Float
+  paymentTerms        String
+  notes               String?
+  accountName         String?
+  bankName            String?
+  accountNumber       String?
+  status              String   @default("active")
+  activeAssets        Int      @default(0)
+  totalTransactions   Int      @default(0)
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  assets           Asset[]
+  transactions     Transaction[]
+  installmentPlans InstallmentPlan[]
+}
+
+model Asset {
+  id                    String    @id @default(uuid())
+  name                  String
+  referenceCode         String    @unique
+  type                  String
+  projectStatus         String
+  location              String
+  address               String?
+  companyId             String
+  landSize              String?
+  builtSize             String?
+  constructionStart     DateTime?
+  constructionEnd       DateTime?
+  propertyCategory      String
+  totalUnits            Int
+  availableUnits        Int
+  unitConfiguration     String?
+  furnishingStatus      String?
+  sharedFacilities      String[]
+  facilityManagement    Boolean   @default(true)
+  ownershipType         String    @default("Full")
+  fractionTotal         Int?
+  costPerFraction       Float?
+  basePrice             Float
+  markup                Float
+  finalPrice            Float
+  paymentOptions        String[]
+  installmentPeriods    String[]
+  downPaymentAmount     Float?
+  offPlanDiscount       Float?
+  stageBasedDiscount    Float?
+  projectedRentalIncome Float?
+  rentalFrequency       String?
+  operatingCost         Float?
+  capitalAppreciation   Float?
+  firstPayoutDate       DateTime?
+  constructionStage     String?
+  riskLevel             String
+  offPlanSecurity       String?
+  exitLiquidity         String
+  managementMode        String
+  leadCommission        Float
+  closerCommission      Float
+  status                String    @default("draft")
+  featured              Boolean   @default(false)
+  totalAnnualReturn     Float?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  company          Company           @relation(fields: [companyId], references: [id])
+  transactions     Transaction[]
+  installmentPlans InstallmentPlan[]
+  leads            Lead[]
+}
+
+model Cluster {
+  id              String   @id @default(uuid())
+  name            String
+  code            String   @unique
+  teamLead        String
+  location        String
+  status          String   @default("active")
+  activeAssets    Int      @default(0)
+  totalCommission Float    @default(0)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  agents      Agent[]
+  freelancers Freelancer[]
+  leads       Lead[]
+}
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  password  String
+  name      String?
+  role      String   @default("USER")
+  phone     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  agentProfile      Agent?        @relation("UserToAgent")
+  freelancerProfile Freelancer?   @relation("UserToFreelancer")
+  leadsCreated      Lead[]        @relation("LeadCreator")
+  transactions      Transaction[] @relation("BuyerTransactions")
+  sales             Sale[]        @relation("UserSales")
+  investments       Investment[]  @relation("UserInvestments")
+}
+
+model Agent {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  clusterId       String
+  role            String
+  activeDeals     Int      @default(0)
+  closedDeals     Int      @default(0)
+  totalCommission Float    @default(0)
+  performance     Int      @default(0)
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user    User    @relation("UserToAgent", fields: [userId], references: [id])
+  cluster Cluster @relation(fields: [clusterId], references: [id])
+
+  leadsAsLead           Transaction[]     @relation("TransactionLeadAgent")
+  leadsAsCloser         Transaction[]     @relation("TransactionCloserAgent")
+  installmentPlansLead  InstallmentPlan[] @relation("InstallmentLeadAgent")
+  installmentPlansClose InstallmentPlan[] @relation("InstallmentCloserAgent")
+}
+
+model Freelancer {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  registeredBy    String
+  registrarName   String
+  registrarType   String
+  clusterId       String
+  activeDeals     Int      @default(0)
+  closedDeals     Int      @default(0)
+  totalCommission Float    @default(0)
+  performance     Int      @default(0)
+  status          String   @default("active")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  user    User    @relation("UserToFreelancer", fields: [userId], references: [id])
+  cluster Cluster @relation(fields: [clusterId], references: [id])
+}
+
+model Lead {
+  id              String   @id @default(uuid())
+  name            String
+  email           String
+  phone           String
+  assetId         String?
+  assetInterest   String
+  budget          Float
+  source          String
+  leadSource      String
+  createdBy       String?
+  status          String   @default("pending")
+  assignedTo      String?
+  assignedCluster String?
+  dateReceived    DateTime @default(now())
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  asset   Asset?   @relation(fields: [assetId], references: [id])
+  creator User?    @relation("LeadCreator", fields: [createdBy], references: [id])
+  cluster Cluster? @relation(fields: [assignedCluster], references: [id])
+}
+
+model Transaction {
+  id                      String   @id @default(uuid())
+  assetId                 String
+  buyerId                 String
+  leadAgentId             String
+  closerAgentId           String?
+  installmentPlanId       String?  @unique // ← makes it 1:1 (optional but recommended)
+  companyId               String
+  amount                  Float
+  paymentType             String
+  leadCommission          Float
+  closerCommission        Float?
+  totalCommission         Float
+  earnedLeadCommission    Float?
+  earnedCloserCommission  Float?
+  earnedTotalCommission   Float?
+  pendingLeadCommission   Float?
+  pendingCloserCommission Float?
+  pendingTotalCommission  Float?
+  commissionPaymentStatus String   @default("unpaid")
+  status                  String
+  date                    DateTime @default(now())
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  asset       Asset   @relation(fields: [assetId], references: [id])
+  buyer       User    @relation("BuyerTransactions", fields: [buyerId], references: [id])
+  leadAgent   Agent   @relation("TransactionLeadAgent", fields: [leadAgentId], references: [id])
+  closerAgent Agent?  @relation("TransactionCloserAgent", fields: [closerAgentId], references: [id])
+  company     Company @relation(fields: [companyId], references: [id])
+
+  // ─── Add this back-relation field ───
+  installmentPlan InstallmentPlan? @relation("TransactionToInstallmentPlan")
+}
+
+model InstallmentPlan {
+  id                    String    @id @default(uuid())
+  buyerName             String
+  buyerEmail            String
+  buyerPhone            String
+  assetId               String
+  companyId             String
+  transactionId         String?   @unique
+  totalAmount           Float
+  downPayment           Float
+  remainingBalance      Float
+  paidAmount            Float     @default(0)
+  numberOfInstallments  Int
+  completedInstallments Int       @default(0)
+  installmentAmount     Float
+  frequency             String
+  startDate             DateTime
+  nextDueDate           DateTime?
+  leadAgentId           String
+  closerAgentId         String?
+  status                String    @default("active")
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  asset        Asset         @relation(fields: [assetId], references: [id])
+  company      Company       @relation(fields: [companyId], references: [id])
+  transaction  Transaction?  @relation("TransactionToInstallmentPlan", fields: [transactionId], references: [id])
+  leadAgent    Agent         @relation("InstallmentLeadAgent", fields: [leadAgentId], references: [id])
+  closerAgent  Agent?        @relation("InstallmentCloserAgent", fields: [closerAgentId], references: [id])
+  installments Installment[]
+}
+
+model Installment {
+  id                String    @id @default(uuid())
+  installmentPlanId String
+  dueDate           DateTime
+  amount            Float
+  paidAmount        Float     @default(0)
+  status            String    @default("upcoming")
+  paidDate          DateTime?
+  paymentMethod     String?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  plan InstallmentPlan @relation(fields: [installmentPlanId], references: [id])
+}
+
+model Sale {
+  id        String   @id @default(uuid())
+  productId String
+  quantity  Int
+  total     Float
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user    User    @relation("UserSales", fields: [userId], references: [id])
+  product Product @relation(fields: [productId], references: [id])
+}
+
+model Product {
+  id          String   @id @default(uuid())
+  name        String
+  description String?
+  price       Float?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  sales Sale[]
+}
+
+model Investment {
+  id        String   @id @default(uuid())
+  amount    Float
+  note      String?
+  userId    String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation("UserInvestments", fields: [userId], references: [id])
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  agentName String?
+  leadName  String?
+  assetName String?
+  amount    Float?
+  read      Boolean  @default(false)
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
