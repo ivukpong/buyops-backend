@@ -1,15 +1,24 @@
-// src/prisma/prisma.service.ts
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
+import { PrismaPg } from '@prisma/adapter-pg';
 import { PrismaClient } from '@prisma/client';
+import { Pool } from 'pg';               // ← import pg Pool
 
 @Injectable()
-export class PrismaService
-  extends PrismaClient
-  implements OnModuleInit, OnModuleDestroy {
+export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
   constructor() {
-    super({
-      // optional: log: ['query', 'info', 'warn', 'error'],
-    });
+    // Create a connection pool (recommended for production)
+    const connectionString = process.env.DATABASE_URL;
+
+    if (!connectionString) {
+      throw new Error('DATABASE_URL is not set');
+    }
+
+    const pool = new Pool({ connectionString });
+
+    const adapter = new PrismaPg(pool);
+
+    // Pass the adapter here – this is the key change for Prisma 7
+    super({ adapter });
   }
 
   async onModuleInit() {
