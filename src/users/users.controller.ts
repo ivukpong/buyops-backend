@@ -84,6 +84,26 @@ export class UsersController {
   }
 
   /**
+   * Get current user profile
+   * GET /users/me
+   * Authenticated users only
+   */
+  @Get("me")
+  async getProfile(@Req() req: any) {
+    return this.usersService.findById(req.user.id);
+  }
+
+  /**
+   * Update current user profile
+   * PUT /users/me
+   * Authenticated users only
+   */
+  @Put("me")
+  async updateProfile(@Req() req: any, @Body() dto: UpdateUserDto) {
+    return this.usersService.updateUser(req.user.id, dto);
+  }
+
+  /**
    * Get user by ID
    * GET /users/:id
    * Admin or own profile
