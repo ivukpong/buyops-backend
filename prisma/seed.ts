@@ -33,18 +33,23 @@ async function main() {
 
     // ─── Clear existing data ─────────────────────
     console.log('🧹 Clearing existing data...');
-    await prisma.$transaction([
-        prisma.installment.deleteMany(),
-        prisma.installmentPlan.deleteMany(),
-        prisma.transaction.deleteMany(),
-        prisma.lead.deleteMany(),
-        prisma.asset.deleteMany(),
-        prisma.freelancer.deleteMany(),
-        prisma.agent.deleteMany(),
-        prisma.user.deleteMany(),
-        prisma.cluster.deleteMany(),
-        prisma.company.deleteMany(),
-    ]);
+    
+    // Delete in correct order to respect foreign key constraints
+    await prisma.notification.deleteMany();
+    await prisma.investment.deleteMany();
+    await prisma.sale.deleteMany();
+    await prisma.product.deleteMany();
+    await prisma.installment.deleteMany();
+    await prisma.installmentPlan.deleteMany();
+    await prisma.transaction.deleteMany();
+    await prisma.lead.deleteMany();
+    await prisma.asset.deleteMany();
+    await prisma.freelancer.deleteMany();
+    await prisma.agent.deleteMany();
+    await prisma.user.deleteMany();
+    await prisma.cluster.deleteMany();
+    await prisma.company.deleteMany();
+    
     console.log('🧹 Database cleared');
 
     // ─── Admin user ─────────────────────────────
@@ -238,8 +243,41 @@ async function main() {
     );
     console.log(`✅ Assets created: ${assets.length}`);
 
+    // ─── Test Investor (with known credentials) ───────────
+    const testInvestor = await prisma.user.create({
+        data: {
+            email: 'investor@buyops.com',
+            password: agentPasswordHash, // Password: Agent@123
+            name: 'Test Investor',
+            role: 'INVESTOR',
+            phone: '+2348011111111',
+        },
+    });
+    console.log(`✅ Test Investor created: ${testInvestor.email} (Password: Agent@123)`);
+
+    // ─── Regular Users (Investors) ─────────────
+    const investors = [testInvestor]; // Include test investor
+    for (let i = 0; i < 15; i++) {
+        const firstName = faker.person.firstName();
+        const lastName = faker.person.lastName();
+        const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`;
+
+        const user = await prisma.user.create({
+            data: {
+                email,
+                password: agentPasswordHash,
+                name: `${firstName} ${lastName}`,
+                role: 'INVESTOR',
+                phone: faker.phone.number(),
+            },
+        });
+        investors.push(user);
+    }
+    console.log(`✅ Investor users created: ${investors.length}`);
+
     // ─── Transactions + Installments ───────────
     const sellers = agents; // only agents can be lead/closer
+    const transactionsCreated = [];
     for (let i = 0; i < 35; i++) {
         const asset = faker.helpers.arrayElement(assets);
         const seller = faker.helpers.arrayElement(sellers);
@@ -253,14 +291,8 @@ async function main() {
         const leadCommission = salePrice * 0.025;
         const totalCommission = salePrice * 0.04;
 
-        // Pick a buyer (User)
-        const buyer = await prisma.user.create({
-            data: {
-                email: faker.internet.email(),
-                password: agentPasswordHash,
-                name: faker.person.fullName(),
-            },
-        });
+        // Pick a buyer (User) from investors
+        const buyer = faker.helpers.arrayElement(investors);
 
         const tx = await prisma.transaction.create({
             data: {
@@ -271,13 +303,13 @@ async function main() {
                 amount: salePrice,
                 totalCommission,
                 leadCommission,
-                paymentType: 'CASH', // required
+                paymentType: 'CASH',
                 status: 'completed',
                 date: faker.date.between({ from: new Date('2025-04-01'), to: new Date() }),
-                buyerId: buyer.id, // ✅ required field
+                buyerId: buyer.id,
             },
         });
-
+        transactionsCreated.push(tx);
 
         // 65% chance of InstallmentPlan
         if (Math.random() > 0.35) {
@@ -285,11 +317,13 @@ async function main() {
             const installmentAmount = salePrice / numberOfInstallments;
             const downPayment = faker.number.float({ min: salePrice * 0.1, max: salePrice * 0.3 });
             const remainingBalance = salePrice - downPayment;
+            const paidInstallments = faker.number.int({ min: 0, max: Math.floor(numberOfInstallments * 0.6) });
+            const paidAmount = downPayment + (paidInstallments * installmentAmount);
 
-            await prisma.installmentPlan.create({
+            const plan = await prisma.installmentPlan.create({
                 data: {
                     transactionId: tx.id,
-                    assetId: tx.assetId,          // required
+                    assetId: tx.assetId,
                     companyId: tx.companyId,
                     leadAgentId: tx.leadAgentId,
                     closerAgentId: tx.closerAgentId,
@@ -301,17 +335,39 @@ async function main() {
                     remainingBalance,
                     installmentAmount,
                     numberOfInstallments,
-                    paidAmount: faker.number.float({ min: downPayment, max: salePrice }),
-                    frequency: 'monthly',         // required
-                    status: faker.helpers.arrayElement(['active', 'completed', 'overdue']),
+                    paidAmount,
+                    completedInstallments: paidInstallments,
+                    frequency: 'monthly',
+                    status: paidInstallments >= numberOfInstallments ? 'completed' : paidInstallments > 0 ? 'active' : 'overdue',
                     startDate: tx.date,
                     nextDueDate: faker.date.future({ refDate: tx.date }),
                 },
             });
+
+            // Create individual Installment records
+            const startDate = new Date(tx.date);
+            for (let j = 0; j < numberOfInstallments; j++) {
+                const dueDate = new Date(startDate);
+                dueDate.setMonth(dueDate.getMonth() + j + 1);
+                
+                const isPaid = j < paidInstallments;
+                const now = new Date();
+                
+                await prisma.installment.create({
+                    data: {
+                        installmentPlanId: plan.id,
+                        dueDate,
+                        amount: installmentAmount,
+                        paidAmount: isPaid ? installmentAmount : 0,
+                        status: isPaid ? 'paid' : j === paidInstallments ? 'upcoming' : 'upcoming',
+                        paidDate: isPaid && dueDate < now ? faker.date.between({ from: dueDate, to: now }) : null,
+                        paymentMethod: isPaid ? faker.helpers.arrayElement(['Bank Transfer', 'Card', 'Cash']) : null,
+                    },
+                });
+            }
         }
-
-
     }
+    console.log(`✅ Transactions created: ${transactionsCreated.length}`);
 
     // ─── Leads ──────────────────────────────────
     for (let i = 0; i < 18; i++) {
@@ -330,6 +386,99 @@ async function main() {
         });
     }
     console.log('✅ Leads created: 18');
+
+    // ─── Investments ───────────────────────────
+    const investments = [];
+    for (const investor of investors.slice(0, 10)) {
+        const numInvestments = faker.number.int({ min: 1, max: 3 });
+        for (let i = 0; i < numInvestments; i++) {
+            const investment = await prisma.investment.create({
+                data: {
+                    userId: investor.id,
+                    amount: faker.number.float({ min: 10_000_000, max: 150_000_000, fractionDigits: 2 }),
+                    note: faker.helpers.arrayElement([
+                        'Initial investment in property portfolio',
+                        'Additional investment for expansion',
+                        'Diversification investment',
+                        null,
+                    ]),
+                },
+            });
+            investments.push(investment);
+        }
+    }
+    console.log(`✅ Investments created: ${investments.length}`);
+
+    // ─── Products ──────────────────────────────
+    const products = await Promise.all(
+        [
+            {
+                name: 'Property Management Package - Basic',
+                description: 'Basic property management services including tenant screening and rent collection',
+                price: 50000,
+            },
+            {
+                name: 'Property Management Package - Premium',
+                description: 'Full property management with maintenance, tenant relations, and financial reporting',
+                price: 120000,
+            },
+            {
+                name: 'Legal Documentation Service',
+                description: 'Complete legal documentation for property transactions',
+                price: 75000,
+            },
+            {
+                name: 'Property Valuation Report',
+                description: 'Professional property valuation and market analysis',
+                price: 35000,
+            },
+        ].map((data) => prisma.product.create({ data }))
+    );
+    console.log(`✅ Products created: ${products.length}`);
+
+    // ─── Sales ─────────────────────────────────
+    const sales = [];
+    for (let i = 0; i < 25; i++) {
+        const product = faker.helpers.arrayElement(products);
+        const user = faker.helpers.arrayElement([...investors, admin]);
+        const quantity = faker.number.int({ min: 1, max: 5 });
+        
+        const sale = await prisma.sale.create({
+            data: {
+                userId: user.id,
+                productId: product.id,
+                quantity,
+                total: (product.price || 0) * quantity,
+            },
+        });
+        sales.push(sale);
+    }
+    console.log(`✅ Sales created: ${sales.length}`);
+
+    // ─── Notifications ─────────────────────────
+    const notifications = [];
+    
+    // Payment ready notifications
+    for (let i = 0; i < 5; i++) {
+        const tx = faker.helpers.arrayElement(transactionsCreated);
+        const asset = await prisma.asset.findUnique({ where: { id: tx.assetId } });
+        const leadAgent = await prisma.agent.findUnique({ 
+            where: { id: tx.leadAgentId },
+            include: { user: true }
+        });
+        
+        const notification = await prisma.notification.create({
+            data: {
+                agentName: leadAgent?.user.name || 'Agent',
+                leadName: `Buyer ${i + 1}`,
+                assetName: asset?.name || 'Property',
+                amount: tx.amount,
+                read: faker.datatype.boolean(),
+            },
+        });
+        notifications.push(notification);
+    }
+    console.log(`✅ Notifications created: ${notifications.length}`);
 
     console.log('🎉 Database seeding completed successfully!');
 }

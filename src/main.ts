@@ -13,16 +13,16 @@ async function bootstrap() {
     : ["http://localhost:5173"]; // default frontend
 
   app.enableCors({
-    origin: frontendOrigins,           // list of allowed origins
-    credentials: true,                 // allow cookies / auth headers
-    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"], // allow JWT header
-  });
-
-  app.enableCors({
     origin: (origin, callback) => {
+      // Allow requests with no origin (mobile apps, Postman, etc.)
       if (!origin) return callback(null, true);
 
+      // In development, allow all origins
+      if (process.env.NODE_ENV !== 'production') {
+        return callback(null, true);
+      }
+
+      // In production, check against allowed origins
       if (frontendOrigins.includes(origin)) {
         callback(null, true);
       } else {
@@ -30,10 +30,20 @@ async function bootstrap() {
       }
     },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   });
 
 
-  app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true, // Enable class-transformer
+      transformOptions: {
+        enableImplicitConversion: true,
+      },
+    }),
+  );
 
   const port = process.env.PORT || 4000;
   await app.listen(port);

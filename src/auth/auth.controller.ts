@@ -12,9 +12,11 @@ import {
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
 import { IsEmail, IsNotEmpty, MinLength, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 
 // ── DTOs ────────────────────────────────────────────────
 export class LoginDto {
+  @Transform(({ value }) => value?.trim().toLowerCase())
   @IsEmail({}, { message: 'Please provide a valid email address' })
   email!: string;
 
@@ -23,6 +25,7 @@ export class LoginDto {
 }
 
 export class RegisterDto {
+  @Transform(({ value }) => value?.trim().toLowerCase())
   @IsEmail({}, { message: 'Please provide a valid email address' })
   email!: string;
 
@@ -52,6 +55,7 @@ export class ChangePasswordDto {
 }
 
 export class ForgotPasswordDto {
+  @Transform(({ value }) => value?.trim().toLowerCase())
   @IsEmail({}, { message: 'Please provide a valid email address' })
   email!: string;
 }
