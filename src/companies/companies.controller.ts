@@ -29,6 +29,7 @@ export class CompaniesController {
     @Roles("ADMIN")
     @Get(":id")
     async findOne(@Param("id") id: string) {
+        console.log("Fetching company with ID:", id);
         return this.companiesService.findById(id);
     }
 

@@ -1992,6 +1992,7 @@ let CompaniesController = class CompaniesController {
         return this.companiesService.findAll();
     }
     async findOne(id) {
+        console.log("Fetching company with ID:", id);
         return this.companiesService.findById(id);
     }
     async create(dto) {
