@@ -12,25 +12,7 @@ import { CompaniesService } from "./companies.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
-
-class CreateCompanyDto {
-    name!: string;
-    type!: string;
-    registrationNumber?: string;
-    contactPerson!: string;
-    email!: string;
-    phone!: string;
-    address?: string;
-    agreementStartDate!: string;
-    agreementExpiryDate!: string;
-    commissionRate!: number;
-    paymentTerms!: string;
-    notes?: string;
-    accountName?: string;
-    bankName?: string;
-    accountNumber?: string;
-    status!: string;
-}
+import { CreateCompanyDto } from './dto/create-company.dto';
 
 @Controller("companies")
 export class CompaniesController {

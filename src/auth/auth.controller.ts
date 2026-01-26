@@ -11,33 +11,36 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { IsEmail, IsNotEmpty, MinLength, IsOptional } from 'class-validator';
+import { IsEmail, IsNotEmpty, MinLength, IsOptional, IsString, Matches } from 'class-validator';
 import { Transform } from 'class-transformer';
 
 // ── DTOs ────────────────────────────────────────────────
 export class LoginDto {
   @Transform(({ value }) => value?.trim().toLowerCase())
-  @IsEmail({}, { message: 'Please provide a valid email address' })
-  email!: string;
+  @IsEmail()
+  email: string;
 
-  @IsNotEmpty({ message: 'Password is required' })
-  password!: string;
+  @IsString()
+  password: string;
 }
 
 export class RegisterDto {
   @Transform(({ value }) => value?.trim().toLowerCase())
-  @IsEmail({}, { message: 'Please provide a valid email address' })
-  email!: string;
+  @IsEmail()
+  email: string;
 
-  @IsNotEmpty({ message: 'Password is required' })
-  @MinLength(6, { message: 'Password must be at least 6 characters long' })
-  password!: string;
+  @IsString()
+  @MinLength(8)
+  @Matches(/^(?=.*[0-9])(?=.*[!@#$%^&*])/, {
+    message: 'Password must include at least one number and one special character',
+  })
+  password: string;
 
-  @IsOptional()
-  name?: string;
+  @IsString()
+  name: string;
 
-  @IsOptional()
-  role?: string;
+  @IsString()
+  role: string;
 }
 
 export class RefreshTokenDto {
@@ -105,9 +108,9 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
+  @UseGuards(AuthGuard('jwt'))
   @Post('refresh')
-  @HttpCode(HttpStatus.OK)
-  async refreshToken(@Body() dto: RefreshTokenDto) {
+  async refreshToken(@Body() dto: RefreshTokenDto, @Req() req: any) {
     return this.authService.refreshToken(dto.refreshToken);
   }
 
