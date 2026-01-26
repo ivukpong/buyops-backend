@@ -3970,11 +3970,22 @@ async function bootstrap() {
         ? process.env.FRONTEND_ORIGINS.split(",").map((o) => o.trim())
         : ["http://localhost:5173"];
     app.enableCors({
-        origin: [
-            'https://your-admin-app-domain.com',
-            'http://localhost:3000'
-        ],
+        origin: (origin, callback) => {
+            if (!origin)
+                return callback(null, true);
+            if (process.env.NODE_ENV !== 'production') {
+                return callback(null, true);
+            }
+            if (frontendOrigins.includes(origin)) {
+                callback(null, true);
+            }
+            else {
+                callback(new Error('Not allowed by CORS'), false);
+            }
+        },
         credentials: true,
+        methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+        allowedHeaders: ["Content-Type", "Authorization"],
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         whitelist: true,
