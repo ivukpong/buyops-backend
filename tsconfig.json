@@ -10,11 +10,13 @@
     "sourceMap": true,
     "outDir": "./dist",
     "baseUrl": "./",
+    "ignoreDeprecations": "6.0",
     "incremental": true,
     "skipLibCheck": true,
     "strict": false,
     "esModuleInterop": true,
     "moduleResolution": "node",
+    // Deprecated node10 removed, using default
     "noImplicitAny": false
   },
   "exclude": ["node_modules", "dist"]

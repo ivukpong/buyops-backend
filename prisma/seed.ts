@@ -35,7 +35,7 @@ async function main() {
     console.log('🧹 Clearing existing data...');
     
     // Delete in correct order to respect foreign key constraints
-    await prisma.notification.deleteMany();
+    // await prisma.notification.deleteMany(); // Removed: notification model does not exist
     await prisma.investment.deleteMany();
     await prisma.sale.deleteMany();
     await prisma.product.deleteMany();
@@ -210,6 +210,19 @@ async function main() {
                 managementMode: 'Self-Managed',
                 leadCommission: 2.5,
                 closerCommission: 1.5,
+                images: [faker.image.urlPicsumPhotos({ width: 800, height: 600 })],
+                documents: [faker.system.fileName()],
+                facilities: [faker.commerce.productAdjective() + ' Pool'],
+                paymentOptions: ['Full Payment', 'Installment'],
+                bedrooms: 3,
+                bathrooms: 3,
+                area: '250 sqm',
+                furnishing: 'Furnished',
+                rentalYield: 7.5,
+                totalAnnualReturn: 12.2,
+                capitalAppreciation: 8.1,
+                monthlyRentalIncome: 1200000,
+                firstPayoutDate: faker.date.future(),
             },
             {
                 name: 'Maitama Heights',
@@ -229,6 +242,19 @@ async function main() {
                 managementMode: 'Professional Manager',
                 leadCommission: 2.0,
                 closerCommission: 1.0,
+                images: [faker.image.urlPicsumPhotos({ width: 800, height: 600 })],
+                documents: [faker.system.fileName()],
+                facilities: [faker.commerce.productAdjective() + ' Gym'],
+                paymentOptions: ['Full Payment', 'Installment'],
+                bedrooms: 5,
+                bathrooms: 4,
+                area: '400 sqm',
+                furnishing: 'Semi-Furnished',
+                rentalYield: 6.2,
+                totalAnnualReturn: 10.5,
+                capitalAppreciation: 6.8,
+                monthlyRentalIncome: 1800000,
+                firstPayoutDate: faker.date.future(),
             },
         ].map(async (data) => {
             const sold = faker.number.int({ min: 8, max: 35 });
@@ -455,30 +481,7 @@ async function main() {
     }
     console.log(`✅ Sales created: ${sales.length}`);
 
-    // ─── Notifications ─────────────────────────
-    const notifications = [];
-    
-    // Payment ready notifications
-    for (let i = 0; i < 5; i++) {
-        const tx = faker.helpers.arrayElement(transactionsCreated);
-        const asset = await prisma.asset.findUnique({ where: { id: tx.assetId } });
-        const leadAgent = await prisma.agent.findUnique({ 
-            where: { id: tx.leadAgentId },
-            include: { user: true }
-        });
-        
-        const notification = await prisma.notification.create({
-            data: {
-                agentName: leadAgent?.user.name || 'Agent',
-                leadName: `Buyer ${i + 1}`,
-                assetName: asset?.name || 'Property',
-                amount: tx.amount,
-                read: faker.datatype.boolean(),
-            },
-        });
-        notifications.push(notification);
-    }
-    console.log(`✅ Notifications created: ${notifications.length}`);
+    // ─── Notifications seeding skipped: notification model does not exist in schema ──
 
     console.log('🎉 Database seeding completed successfully!');
 }
