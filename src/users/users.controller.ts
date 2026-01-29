@@ -16,7 +16,7 @@ import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { UsersService } from "./users.service";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
-import { IsEmail, IsOptional, IsString, MinLength } from "class-validator";
+import { IsEmail, IsOptional, IsString, MinLength, Matches } from "class-validator";
 
 // DTOs
 export class UpdateUserDto {
@@ -48,15 +48,20 @@ export class CreateUserDto {
   email!: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(8, { message: 'Password must be at least 8 characters' })
+  @Matches(/^(?=.*[0-9])(?=.*[!@#$%^&*])/, {
+    message: 'Password must include at least one number and one special character',
+  })
   password!: string;
 
   @IsString()
   name!: string;
 
-  @IsOptional()
   @IsString()
-  role?: string;
+  @Matches(/^(ADMIN|INVESTOR|SALES)$/i, {
+    message: 'Role must be one of: ADMIN, INVESTOR, SALES',
+  })
+  role!: string;
 
   @IsOptional()
   @IsString()

@@ -7,6 +7,39 @@ import { CreateAssetDto } from './assets.controller';
 export class AssetsService {
     constructor(private prisma: PrismaService) { }
 
+    // --- SAVED PROPERTIES ---
+    async getSavedProperties(userId: string) {
+        // Return all assets saved by the user
+        const saved = await this.prisma.savedProperty.findMany({
+            where: { userId },
+            include: {
+                asset: {
+                    include: {
+                        company: { select: { id: true, name: true } },
+                    },
+                },
+            },
+        });
+        // Return just the asset objects
+        return saved.map((s) => s.asset);
+    }
+
+    async saveProperty(userId: string, assetId: string) {
+        // Create or ignore if already exists
+        return this.prisma.savedProperty.upsert({
+            where: { userId_assetId: { userId, assetId } },
+            update: {},
+            create: { userId, assetId },
+        });
+    }
+
+    async unsaveProperty(userId: string, assetId: string) {
+        // Remove the saved property if exists
+        return this.prisma.savedProperty.delete({
+            where: { userId_assetId: { userId, assetId } },
+        });
+    }
+
     async findAll(filters?: { type?: string; status?: string; location?: string }) {
         const where: any = {};
 

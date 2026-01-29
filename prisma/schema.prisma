@@ -87,6 +87,7 @@ model Asset {
   transactions     Transaction[]
   installmentPlans InstallmentPlan[]
   leads            Lead[]
+  savedByUsers     SavedProperty[]
 
   @@index([companyId])
   @@index([status])
@@ -127,6 +128,7 @@ model User {
   transactions      Transaction[] @relation("BuyerTransactions")
   sales             Sale[]        @relation("UserSales")
   investments       Investment[]  @relation("UserInvestments")
+  savedProperties   SavedProperty[]
 
   @@index([email])
   @@index([role])
@@ -335,17 +337,27 @@ model Investment {
   @@index([userId])
 }
 
-model Notification {
-  id        String   @id @default(uuid())
-  agentName String?
-  leadName  String?
-  assetName String?
-  amount    Float?
-  read      Boolean  @default(false)
-  timestamp DateTime @default(now())
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  @@index([read])
-  @@index([timestamp])
+
+  model SavedProperty {
+    id        String   @id @default(uuid())
+    userId    String
+    assetId   String
+    agentName String?
+    leadName  String?
+    assetName String?
+    amount    Float?
+    read      Boolean  @default(false)
+    timestamp DateTime @default(now())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    user  User  @relation(fields: [userId], references: [id])
+    asset Asset @relation(fields: [assetId], references: [id])
+
+    @@unique([userId, assetId])
+    @@index([userId])
+    @@index([assetId])
+    @@index([read])
+    @@index([timestamp])
 }

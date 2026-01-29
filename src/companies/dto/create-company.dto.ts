@@ -1,11 +1,19 @@
-import { IsString, IsEmail, IsNumber } from 'class-validator';
+import { IsString, IsEmail, IsNumber, IsEnum, IsOptional } from 'class-validator';
+
+export enum CompanyTypeEnum {
+  LIMITED = 'LIMITED',
+  ENTERPRISE = 'ENTERPRISE',
+  PARTNERSHIP = 'PARTNERSHIP',
+  SOLE_PROPRIETORSHIP = 'SOLE_PROPRIETORSHIP',
+  NGO = 'NGO',
+}
 
 export class CreateCompanyDto {
   @IsString()
   name: string;
 
-  @IsString()
-  type: string;
+  @IsEnum(CompanyTypeEnum, { message: 'type must be a valid company type' })
+  type: CompanyTypeEnum;
 
   @IsEmail()
   email: string;
@@ -22,5 +30,19 @@ export class CreateCompanyDto {
   @IsNumber()
   commissionRate: number;
 
-  // Add other required fields as per Figma
+  @IsString()
+  paymentTerms: string;
+
+  @IsString()
+  bankName: string;
+
+  @IsString()
+  bankAccountNumber: string;
+
+  @IsString()
+  bankAccountName: string;
+
+  @IsOptional()
+  @IsString()
+  notes?: string;
 }

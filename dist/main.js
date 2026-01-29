@@ -558,11 +558,13 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
+var _a, _b, _c, _d, _e;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AssetsController = exports.CreateAssetDto = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const assets_service_1 = __webpack_require__(/*! ./assets.service */ "./src/assets/assets.service.ts");
+const express_1 = __webpack_require__(/*! express */ "express");
+const common_2 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
 const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
 const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
@@ -572,6 +574,15 @@ exports.CreateAssetDto = CreateAssetDto;
 let AssetsController = class AssetsController {
     constructor(assetsService) {
         this.assetsService = assetsService;
+    }
+    async getSavedProperties(req) {
+        return this.assetsService.getSavedProperties(req.user.id);
+    }
+    async saveProperty(id, req) {
+        return this.assetsService.saveProperty(req.user.id, id);
+    }
+    async unsaveProperty(id, req) {
+        return this.assetsService.unsaveProperty(req.user.id, id);
     }
     async findAll(type, status, location) {
         return this.assetsService.findAll({ type, status, location });
@@ -593,6 +604,32 @@ let AssetsController = class AssetsController {
     }
 };
 exports.AssetsController = AssetsController;
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('saved'),
+    __param(0, (0, common_2.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_b = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "getSavedProperties", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)(':id/save'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_2.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_c = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _c : Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "saveProperty", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)(':id/save'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_2.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_d = typeof express_1.Request !== "undefined" && express_1.Request) === "function" ? _d : Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "unsaveProperty", null);
 __decorate([
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)("type")),
@@ -625,7 +662,7 @@ __decorate([
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_b = typeof Partial !== "undefined" && Partial) === "function" ? _b : Object]),
+    __metadata("design:paramtypes", [String, typeof (_e = typeof Partial !== "undefined" && Partial) === "function" ? _e : Object]),
     __metadata("design:returntype", Promise)
 ], AssetsController.prototype, "update", null);
 __decorate([
@@ -709,6 +746,31 @@ const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./
 let AssetsService = class AssetsService {
     constructor(prisma) {
         this.prisma = prisma;
+    }
+    async getSavedProperties(userId) {
+        const saved = await this.prisma.savedProperty.findMany({
+            where: { userId },
+            include: {
+                asset: {
+                    include: {
+                        company: { select: { id: true, name: true } },
+                    },
+                },
+            },
+        });
+        return saved.map((s) => s.asset);
+    }
+    async saveProperty(userId, assetId) {
+        return this.prisma.savedProperty.upsert({
+            where: { userId_assetId: { userId, assetId } },
+            update: {},
+            create: { userId, assetId },
+        });
+    }
+    async unsaveProperty(userId, assetId) {
+        return this.prisma.savedProperty.delete({
+            where: { userId_assetId: { userId, assetId } },
+        });
     }
     async findAll(filters) {
         const where = {};
@@ -1996,7 +2058,15 @@ let CompaniesController = class CompaniesController {
         return this.companiesService.findById(id);
     }
     async create(dto) {
-        return this.companiesService.create(dto);
+        try {
+            return await this.companiesService.create(dto);
+        }
+        catch (err) {
+            if (err.name === 'ValidationError' || err.status === 400) {
+                throw err;
+            }
+            throw new Error('Invalid company data: ' + (err.message || err));
+        }
     }
     async update(id, dto) {
         return this.companiesService.update(id, dto);
@@ -2283,8 +2353,16 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CreateCompanyDto = void 0;
+exports.CreateCompanyDto = exports.CompanyTypeEnum = void 0;
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+var CompanyTypeEnum;
+(function (CompanyTypeEnum) {
+    CompanyTypeEnum["LIMITED"] = "LIMITED";
+    CompanyTypeEnum["ENTERPRISE"] = "ENTERPRISE";
+    CompanyTypeEnum["PARTNERSHIP"] = "PARTNERSHIP";
+    CompanyTypeEnum["SOLE_PROPRIETORSHIP"] = "SOLE_PROPRIETORSHIP";
+    CompanyTypeEnum["NGO"] = "NGO";
+})(CompanyTypeEnum || (exports.CompanyTypeEnum = CompanyTypeEnum = {}));
 class CreateCompanyDto {
 }
 exports.CreateCompanyDto = CreateCompanyDto;
@@ -2293,7 +2371,7 @@ __decorate([
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsEnum)(CompanyTypeEnum, { message: 'type must be a valid company type' }),
     __metadata("design:type", String)
 ], CreateCompanyDto.prototype, "type", void 0);
 __decorate([
@@ -2316,6 +2394,27 @@ __decorate([
     (0, class_validator_1.IsNumber)(),
     __metadata("design:type", Number)
 ], CreateCompanyDto.prototype, "commissionRate", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "paymentTerms", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "bankName", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "bankAccountNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "bankAccountName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "notes", void 0);
 
 
 /***/ }),
@@ -5715,7 +5814,10 @@ __decorate([
 ], CreateUserDto.prototype, "email", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(6),
+    (0, class_validator_1.MinLength)(8, { message: 'Password must be at least 8 characters' }),
+    (0, class_validator_1.Matches)(/^(?=.*[0-9])(?=.*[!@#$%^&*])/, {
+        message: 'Password must include at least one number and one special character',
+    }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "password", void 0);
 __decorate([
@@ -5723,8 +5825,10 @@ __decorate([
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "name", void 0);
 __decorate([
-    (0, class_validator_1.IsOptional)(),
     (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^(ADMIN|INVESTOR|SALES)$/i, {
+        message: 'Role must be one of: ADMIN, INVESTOR, SALES',
+    }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);
 __decorate([

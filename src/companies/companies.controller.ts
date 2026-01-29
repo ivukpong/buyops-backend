@@ -37,7 +37,14 @@ export class CompaniesController {
     @Roles("ADMIN")
     @Post()
     async create(@Body() dto: CreateCompanyDto) {
-        return this.companiesService.create(dto);
+        try {
+            return await this.companiesService.create(dto);
+        } catch (err) {
+            if (err.name === 'ValidationError' || err.status === 400) {
+                throw err;
+            }
+            throw new Error('Invalid company data: ' + (err.message || err));
+        }
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)

@@ -10,6 +10,8 @@ import {
     UseGuards
 } from "@nestjs/common";
 import { AssetsService } from "./assets.service";
+import { Request } from 'express';
+import { Req } from '@nestjs/common';
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
@@ -66,6 +68,25 @@ export class CreateAssetDto {
 @Controller("assets")
 export class AssetsController {
     constructor(private assetsService: AssetsService) { }
+    // --- SAVED PROPERTIES ENDPOINTS ---
+    @UseGuards(JwtAuthGuard)
+    @Get('saved')
+    async getSavedProperties(@Req() req: Request) {
+        // Assume user id is in req.user.id (from JWT)
+        return this.assetsService.getSavedProperties(req.user.id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Post(':id/save')
+    async saveProperty(@Param('id') id: string, @Req() req: Request) {
+        return this.assetsService.saveProperty(req.user.id, id);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Delete(':id/save')
+    async unsaveProperty(@Param('id') id: string, @Req() req: Request) {
+        return this.assetsService.unsaveProperty(req.user.id, id);
+    }
 
     @Get()
     async findAll(
