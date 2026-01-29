@@ -1022,7 +1022,7 @@ let AuthController = class AuthController {
     async logout(req) {
         return { message: 'Logged out successfully' };
     }
-    async refreshToken(dto, req) {
+    async refreshToken(dto) {
         return this.authService.refreshToken(dto.refreshToken);
     }
     async changePassword(req, dto) {
@@ -1085,12 +1085,10 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "logout", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Post)('refresh'),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [RefreshTokenDto, Object]),
+    __metadata("design:paramtypes", [RefreshTokenDto]),
     __metadata("design:returntype", Promise)
 ], AuthController.prototype, "refreshToken", null);
 __decorate([

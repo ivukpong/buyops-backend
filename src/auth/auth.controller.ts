@@ -108,9 +108,9 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
-  @UseGuards(AuthGuard('jwt'))
   @Post('refresh')
-  async refreshToken(@Body() dto: RefreshTokenDto, @Req() req: any) {
+  async refreshToken(@Body() dto: RefreshTokenDto) {
+    // Only allow refresh if a valid refresh token is provided, do not require access token
     return this.authService.refreshToken(dto.refreshToken);
   }
 
