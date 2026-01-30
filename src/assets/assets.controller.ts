@@ -1,130 +1,109 @@
 import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    Param,
-    Post,
-    Put,
-    Query,
-    UseGuards
-} from "@nestjs/common";
-import { AssetsService } from "./assets.service";
-import { Request } from 'express';
-import { Req } from '@nestjs/common';
-import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
-import { RolesGuard } from "../common/roles.guard";
-import { Roles } from "../common/roles.decorator";
-import { Company } from "@prisma/client";
+  Controller,
+  Get,
+  Post,
+  Put,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { AssetsService } from './assets.service';
 
-export class CreateAssetDto {
-    name!: string;
-    referenceCode!: string;
-    type!: string;
-    projectStatus!: string;
-    location!: string;
-    address!: string;
-    companyId!: string;
-    company!: Company;
-    landSize?: string;
-    builtSize?: string;
-    constructionStart?: string;
-    constructionEnd?: string;
-    propertyCategory!: string;
-    totalUnits!: number;
-    availableUnits?: number;
-    unitConfiguration?: string;
-    furnishingStatus?: string;
-    sharedFacilities?: string[];
-    facilityManagement!: boolean;
-    ownershipType!: string;
-    fractionTotal?: number;
-    costPerFraction?: number;
-    basePrice!: number;
-    markup!: number;
-    finalPrice!: number;
-    paymentOptions!: string[];
-    installmentPeriods?: string[];
-    downPaymentAmount?: number;
-    offPlanDiscount?: number;
-    stageBasedDiscount?: number;
-    projectedRentalIncome?: number;
-    rentalFrequency?: string;
-    operatingCost?: number;
-    capitalAppreciation?: number;
-    firstPayoutDate?: string;
-    constructionStage?: string;
-    riskLevel!: string;
-    offPlanSecurity?: string;
-    exitLiquidity!: string;
-    managementMode!: string;
-    leadCommission!: number;
-    closerCommission!: number;
-    status!: string;
-    featured?: boolean;
-    totalAnnualReturn?: number;
-}
+// ══════════════════════════════════════════════════════════════════════════
+// ASSETS CONTROLLER - Complete API Endpoints
+// Includes all CRUD + publish/unpublish + images/documents management
+// ══════════════════════════════════════════════════════════════════════════
 
-@Controller("assets")
+@Controller('assets')
+@UseGuards(AuthGuard('jwt'))
 export class AssetsController {
-    constructor(private assetsService: AssetsService) { }
-    // --- SAVED PROPERTIES ENDPOINTS ---
-    @UseGuards(JwtAuthGuard)
-    @Get('saved')
-    async getSavedProperties(@Req() req: Request) {
-        // Assume user id is in req.user.id (from JWT)
-        return this.assetsService.getSavedProperties(req.user.id);
-    }
+  constructor(private assetsService: AssetsService) {}
 
-    @UseGuards(JwtAuthGuard)
-    @Post(':id/save')
-    async saveProperty(@Param('id') id: string, @Req() req: Request) {
-        return this.assetsService.saveProperty(req.user.id, id);
-    }
+  // ═══ BASIC CRUD ═══
 
-    @UseGuards(JwtAuthGuard)
-    @Delete(':id/save')
-    async unsaveProperty(@Param('id') id: string, @Req() req: Request) {
-        return this.assetsService.unsaveProperty(req.user.id, id);
-    }
+  @Get()
+  async findAll(@Query() query: any) {
+    return this.assetsService.findAll(query);
+  }
 
-    @Get()
-    async findAll(
-        @Query("type") type?: string,
-        @Query("status") status?: string,
-        @Query("location") location?: string
-    ) {
-        return this.assetsService.findAll({ type, status, location });
-    }
+  @Get(':id')
+  async findOne(@Param('id') id: string) {
+    return this.assetsService.findById(id);
+  }
 
-    @Get(":id")
-    async findOne(@Param("id") id: string) {
-        return this.assetsService.findById(id);
-    }
+  @Post()
+  @HttpCode(HttpStatus.CREATED)
+  async create(@Body() createAssetDto: any) {
+    return this.assetsService.create(createAssetDto);
+  }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
-    @Post()
-    async create(@Body() dto: CreateAssetDto) {
-        return this.assetsService.create(dto);
-    }
+  @Put(':id')
+  async update(@Param('id') id: string, @Body() updateAssetDto: any) {
+    return this.assetsService.update(id, updateAssetDto);
+  }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
-    @Put(":id")
-    async update(@Param("id") id: string, @Body() dto: Partial<CreateAssetDto>) {
-        return this.assetsService.update(id, dto);
-    }
+  @Delete(':id')
+  @HttpCode(HttpStatus.OK)
+  async delete(@Param('id') id: string) {
+    return this.assetsService.delete(id);
+  }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
-    @Delete(":id")
-    async remove(@Param("id") id: string) {
-        return this.assetsService.delete(id);
-    }
+  // ═══ PUBLISH/UNPUBLISH ═══
 
-    @Get("stats/overview")
-    async getStats() {
-        return this.assetsService.getStats();
-    }
+  @Put(':id/publish')
+  @HttpCode(HttpStatus.OK)
+  async publish(@Param('id') id: string) {
+    return this.assetsService.publish(id);
+  }
+
+  @Put(':id/unpublish')
+  @HttpCode(HttpStatus.OK)
+  async unpublish(@Param('id') id: string) {
+    return this.assetsService.unpublish(id);
+  }
+
+  // ═══ IMAGE MANAGEMENT ═══
+
+  @Post(':id/images')
+  @HttpCode(HttpStatus.CREATED)
+  async addImage(
+    @Param('id') id: string,
+    @Body() imageData: { url: string; caption?: string }
+  ) {
+    return this.assetsService.addImage(id, imageData);
+  }
+
+  @Delete(':id/images/:imageId')
+  @HttpCode(HttpStatus.OK)
+  async deleteImage(
+    @Param('id') id: string,
+    @Param('imageId') imageId: string
+  ) {
+    return this.assetsService.deleteImage(id, imageId);
+  }
+
+  // ═══ DOCUMENT MANAGEMENT ═══
+
+  @Post(':id/documents')
+  @HttpCode(HttpStatus.CREATED)
+  async addDocument(
+    @Param('id') id: string,
+    @Body() documentData: { url: string; name: string; type: string }
+  ) {
+    return this.assetsService.addDocument(id, documentData);
+  }
+
+  @Delete(':id/documents/:documentId')
+  @HttpCode(HttpStatus.OK)
+  async deleteDocument(
+    @Param('id') id: string,
+    @Param('documentId') documentId: string
+  ) {
+    return this.assetsService.deleteDocument(id, documentId);
+  }
 }

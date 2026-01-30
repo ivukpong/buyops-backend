@@ -8,38 +8,67 @@ import {
   Req,
   HttpCode,
   HttpStatus,
+  BadRequestException,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { AuthService } from './auth.service';
-import { IsEmail, IsNotEmpty, MinLength, IsOptional, IsString, Matches } from 'class-validator';
+import { 
+  IsEmail, 
+  IsNotEmpty, 
+  MinLength, 
+  IsString, 
+  IsIn,
+  Matches 
+} from 'class-validator';
 import { Transform } from 'class-transformer';
 
-// ── DTOs ────────────────────────────────────────────────
+// ══════════════════════════════════════════════════════════════════════════
+// DTOs with ALL BUG FIXES
+// ══════════════════════════════════════════════════════════════════════════
+
 export class LoginDto {
+  // BUG_001 FIX: Case-insensitive email
+  // BUG_002 FIX: Trim whitespace
   @Transform(({ value }) => value?.trim().toLowerCase())
-  @IsEmail()
+  @IsEmail({}, { message: 'Please provide a valid email address' })
   email: string;
 
   @IsString()
+  @IsNotEmpty({ message: 'Password is required' })
   password: string;
 }
 
 export class RegisterDto {
+  // BUG_001 & BUG_002 FIX: Transform email
   @Transform(({ value }) => value?.trim().toLowerCase())
-  @IsEmail()
+  @IsEmail({}, { message: 'Please provide a valid email address' })
   email: string;
 
+  // BUG_009 FIX: ISO 27001 compliant password policy
+  // - Minimum 8 characters
+  // - At least one uppercase letter
+  // - At least one lowercase letter
+  // - At least one number
+  // - At least one special character
   @IsString()
-  @MinLength(8)
-  @Matches(/^(?=.*[0-9])(?=.*[!@#$%^&*])/, {
-    message: 'Password must include at least one number and one special character',
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/, {
+    message: 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&#)',
   })
   password: string;
 
+  // BUG_010 FIX: Name field is required
   @IsString()
+  @IsNotEmpty({ message: 'Name is required' })
+  @MinLength(2, { message: 'Name must be at least 2 characters' })
   name: string;
 
+  // BUG_011 FIX: Role field is required and validated
   @IsString()
+  @IsNotEmpty({ message: 'Role is required' })
+  @IsIn(['ADMIN', 'AGENT', 'FREELANCER', 'USER', 'TEAM_LEAD', 'INVESTOR'], { 
+    message: 'Role must be one of: ADMIN, AGENT, FREELANCER, USER, TEAM_LEAD, INVESTOR' 
+  })
   role: string;
 }
 
@@ -52,8 +81,12 @@ export class ChangePasswordDto {
   @IsNotEmpty({ message: 'Current password is required' })
   currentPassword!: string;
 
-  @IsNotEmpty({ message: 'New password is required' })
-  @MinLength(6, { message: 'New password must be at least 6 characters long' })
+  // Apply same password policy as registration
+  @IsString()
+  @MinLength(8, { message: 'New password must be at least 8 characters long' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/, {
+    message: 'New password must include at least one uppercase letter, one lowercase letter, one number, and one special character',
+  })
   newPassword!: string;
 }
 
@@ -67,10 +100,17 @@ export class ResetPasswordDto {
   @IsNotEmpty({ message: 'Reset token is required' })
   token!: string;
 
-  @IsNotEmpty({ message: 'New password is required' })
-  @MinLength(6, { message: 'Password must be at least 6 characters long' })
+  @IsString()
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/, {
+    message: 'Password must include at least one uppercase letter, one lowercase letter, one number, and one special character',
+  })
   newPassword!: string;
 }
+
+// ══════════════════════════════════════════════════════════════════════════
+// CONTROLLER
+// ══════════════════════════════════════════════════════════════════════════
 
 @Controller('auth')
 export class AuthController {
@@ -79,7 +119,14 @@ export class AuthController {
   @Post('register')
   @HttpCode(HttpStatus.CREATED)
   async register(@Body() dto: RegisterDto) {
-    return this.authService.register(dto);
+    try {
+      return await this.authService.register(dto);
+    } catch (error) {
+      if (error.code === 'P2002') {
+        throw new BadRequestException('Email already exists');
+      }
+      throw error;
+    }
   }
 
   @Post('login')
@@ -108,10 +155,14 @@ export class AuthController {
     return { message: 'Logged out successfully' };
   }
 
+  // BUG_004 FIX: Refresh token endpoint now requires authentication
+  // This prevents unauthorized access to refresh tokens
+  @UseGuards(AuthGuard('jwt'))
   @Post('refresh')
-  async refreshToken(@Body() dto: RefreshTokenDto) {
-    // Only allow refresh if a valid refresh token is provided, do not require access token
-    return this.authService.refreshToken(dto.refreshToken);
+  @HttpCode(HttpStatus.OK)
+  async refreshToken(@Req() req: any, @Body() dto: RefreshTokenDto) {
+    // Now requires valid Bearer access token AND refresh token
+    return this.authService.refreshToken(dto.refreshToken, req.user.id);
   }
 
   @UseGuards(AuthGuard('jwt'))

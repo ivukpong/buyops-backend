@@ -1,5 +1,5 @@
 generator client {
-  provider   = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
@@ -35,18 +35,28 @@ model Company {
 }
 
 model Asset {
-  id                    String    @id @default(uuid())
-  name                  String
-  referenceCode         String    @unique
-  type                  String
-  projectStatus         String
-  location              String
-  address               String?
-  companyId             String
+  id            String   @id @default(uuid())
+  name          String
+  referenceCode String   @unique
+  type          String
+  projectStatus String
+  images        String[] @default([])
+  documents     String[] @default([])
+  facilities    String[] @default([])
+  address       String?
+  location      String? // ← fixed: was indexed but missing
+  companyId     String
+
   landSize              String?
   builtSize             String?
   constructionStart     DateTime?
   constructionEnd       DateTime?
+
+  bathrooms             Int?
+  area                  String?
+  furnishing            String?
+  rentalYield           Float?
+  monthlyRentalIncome   Float?
   propertyCategory      String
   totalUnits            Int
   availableUnits        Int
@@ -58,36 +68,38 @@ model Asset {
   fractionTotal         Int?
   costPerFraction       Float?
   basePrice             Float
-  markup                Float
+  markup                Float     @default(0)
   finalPrice            Float
   paymentOptions        String[]  @default([])
   installmentPeriods    String[]  @default([])
   downPaymentAmount     Float?
-  offPlanDiscount       Float?
-  stageBasedDiscount    Float?
-  projectedRentalIncome Float?
+  offPlanDiscount       Float?    @default(0)
+  stageBasedDiscount    Float?    @default(0)
+  projectedRentalIncome Float?    @default(0)
   rentalFrequency       String?
-  operatingCost         Float?
-  capitalAppreciation   Float?
+  operatingCost         Float?    @default(0)
+  capitalAppreciation   Float?    @default(0)
   firstPayoutDate       DateTime?
   constructionStage     String?
+  exitLiquidity         String?
+  managementMode        String?
+  bedrooms              Int?
   riskLevel             String
   offPlanSecurity       String?
-  exitLiquidity         String
-  managementMode        String
   leadCommission        Float
   closerCommission      Float
   status                String    @default("draft")
   featured              Boolean   @default(false)
   totalAnnualReturn     Float?
-  createdAt             DateTime  @default(now())
-  updatedAt             DateTime  @updatedAt
 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
   company          Company           @relation(fields: [companyId], references: [id])
   transactions     Transaction[]
   installmentPlans InstallmentPlan[]
   leads            Lead[]
-  savedByUsers     SavedProperty[]
+  savedBy          SavedProperty[]
 
   @@index([companyId])
   @@index([status])
@@ -122,12 +134,12 @@ model User {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  agentProfile      Agent?        @relation("UserToAgent")
-  freelancerProfile Freelancer?   @relation("UserToFreelancer")
-  leadsCreated      Lead[]        @relation("LeadCreator")
-  transactions      Transaction[] @relation("BuyerTransactions")
-  sales             Sale[]        @relation("UserSales")
-  investments       Investment[]  @relation("UserInvestments")
+  agentProfile      Agent?          @relation("UserToAgent")
+  freelancerProfile Freelancer?     @relation("UserToFreelancer")
+  leadsCreated      Lead[]          @relation("LeadCreator")
+  transactions      Transaction[]   @relation("BuyerTransactions")
+  sales             Sale[]          @relation("UserSales")
+  investments       Investment[]    @relation("UserInvestments")
   savedProperties   SavedProperty[]
 
   @@index([email])
@@ -227,13 +239,12 @@ model Transaction {
   createdAt               DateTime @default(now())
   updatedAt               DateTime @updatedAt
 
-  asset       Asset   @relation(fields: [assetId], references: [id])
-  buyer       User    @relation("BuyerTransactions", fields: [buyerId], references: [id])
-  leadAgent   Agent   @relation("TransactionLeadAgent", fields: [leadAgentId], references: [id])
-  closerAgent Agent?  @relation("TransactionCloserAgent", fields: [closerAgentId], references: [id])
-  company     Company @relation(fields: [companyId], references: [id])
-
-  installmentPlan InstallmentPlan? @relation("TransactionToInstallmentPlan")
+  asset           Asset            @relation(fields: [assetId], references: [id])
+  buyer           User             @relation("BuyerTransactions", fields: [buyerId], references: [id])
+  leadAgent       Agent            @relation("TransactionLeadAgent", fields: [leadAgentId], references: [id])
+  closerAgent     Agent?           @relation("TransactionCloserAgent", fields: [closerAgentId], references: [id])
+  company         Company          @relation(fields: [companyId], references: [id])
+  installmentPlan InstallmentPlan? @relation("TransactionToInstallmentPlan", fields: [installmentPlanId], references: [id])
 
   @@index([assetId])
   @@index([buyerId])
@@ -249,7 +260,7 @@ model InstallmentPlan {
   buyerPhone            String
   assetId               String
   companyId             String
-  transactionId         String?   @unique
+  transactionId         String?   @unique // kept for clarity, but relation owned by Transaction
   totalAmount           Float
   downPayment           Float
   remainingBalance      Float
@@ -268,7 +279,7 @@ model InstallmentPlan {
 
   asset        Asset         @relation(fields: [assetId], references: [id])
   company      Company       @relation(fields: [companyId], references: [id])
-  transaction  Transaction?  @relation("TransactionToInstallmentPlan", fields: [transactionId], references: [id])
+  transaction  Transaction?  @relation("TransactionToInstallmentPlan")
   leadAgent    Agent         @relation("InstallmentLeadAgent", fields: [leadAgentId], references: [id])
   closerAgent  Agent?        @relation("InstallmentCloserAgent", fields: [closerAgentId], references: [id])
   installments Installment[]
@@ -337,27 +348,25 @@ model Investment {
   @@index([userId])
 }
 
+model SavedProperty {
+  id        String   @id @default(uuid())
+  userId    String
+  assetId   String
+  agentName String?
+  leadName  String?
+  assetName String?
+  amount    Float?
+  read      Boolean  @default(false)
+  timestamp DateTime @default(now())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
+  user  User  @relation(fields: [userId], references: [id])
+  asset Asset @relation(fields: [assetId], references: [id])
 
-  model SavedProperty {
-    id        String   @id @default(uuid())
-    userId    String
-    assetId   String
-    agentName String?
-    leadName  String?
-    assetName String?
-    amount    Float?
-    read      Boolean  @default(false)
-    timestamp DateTime @default(now())
-    createdAt DateTime @default(now())
-    updatedAt DateTime @updatedAt
-
-    user  User  @relation(fields: [userId], references: [id])
-    asset Asset @relation(fields: [assetId], references: [id])
-
-    @@unique([userId, assetId])
-    @@index([userId])
-    @@index([assetId])
-    @@index([read])
-    @@index([timestamp])
+  @@unique([userId, assetId])
+  @@index([userId])
+  @@index([assetId])
+  @@index([read])
+  @@index([timestamp])
 }
