@@ -1,557 +1,371 @@
-// prisma/seed.ts
 import { PrismaClient } from '@prisma/client';
-import { faker } from '@faker-js/faker';
-import * as dotenv from 'dotenv';
-import bcrypt from 'bcryptjs';
 import { PrismaPg } from '@prisma/adapter-pg';
+import { Pool } from 'pg';
+import * as bcrypt from 'bcrypt';
+import 'dotenv/config';
 
-dotenv.config({ path: '.env' });
-
-if (!process.env.DATABASE_URL) {
-    throw new Error('DATABASE_URL is not set. Make sure .env exists.');
+const connectionString = process.env.DATABASE_URL;
+if (!connectionString) {
+  console.error('❌ DATABASE_URL is missing!');
+  process.exit(1);
 }
+console.log('DEBUG: Using (masked):', connectionString.replace(/:.*@/, ':****@'));
 
-
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
-
-const prisma = new PrismaClient({
-    adapter
-});
-
+const pool = new Pool({ connectionString });
+const adapter = new PrismaPg(pool);
+const prisma = new PrismaClient({ adapter });
+const NOW = new Date();
 
 async function main() {
-    console.log('🌱 Starting database seeding...');
+  // USERS
+  const password = await bcrypt.hash('TestPass2026!', 10);
+  const admin = await prisma.user.upsert({
+    where: { email: 'admin@buyops.com' },
+    update: {},
+    create: { email: 'admin@buyops.com', password, name: 'Iniobong Admin', role: 'ADMIN' },
+  });
+  const agentUser = await prisma.user.upsert({
+    where: { email: 'agent1@buyops.com' },
+    update: {},
+    create: { email: 'agent1@buyops.com', password, name: 'Chinedu Okeke', role: 'AGENT' },
+  });
+  const freelancerUser = await prisma.user.upsert({
+    where: { email: 'freelancer1@buyops.com' },
+    update: {},
+    create: { email: 'freelancer1@buyops.com', password, name: 'Grace Freelance', role: 'FREELANCER' },
+  });
+  const investor1 = await prisma.user.upsert({
+    where: { email: 'customer1@buyops.com' },
+    update: {},
+    create: { email: 'customer1@buyops.com', password, name: 'Fatima Ibrahim', role: 'INVESTOR' },
+  });
+  const investor2 = await prisma.user.upsert({
+    where: { email: 'customer2@buyops.com' },
+    update: {},
+    create: { email: 'customer2@buyops.com', password, name: 'Tunde Adebayo', role: 'INVESTOR' },
+  });
 
-    const SALT_ROUNDS = 10;
-    const ADMIN_PASSWORD = 'Admin@123';
-    const AGENT_PASSWORD = 'Agent@123';
+  // CLUSTERS
+  const cluster = await prisma.cluster.upsert({
+    where: { name: 'Lagos Sales Team' },
+    update: {},
+    create: {
+      name: 'Lagos Sales Team',
+      code: 'LAG-SALES',
+      status: 'active',
+      location: 'Lagos',
+      managerId: admin.id,
+    },
+  });
 
-    const [adminPasswordHash, agentPasswordHash] = await Promise.all([
-        bcrypt.hash(ADMIN_PASSWORD, SALT_ROUNDS),
-        bcrypt.hash(AGENT_PASSWORD, SALT_ROUNDS),
-    ]);
+  // AGENT PROFILE
+  const agent = await prisma.agent.upsert({
+    where: { userId: agentUser.id },
+    update: {},
+    create: {
+      userId: agentUser.id,
+      clusterId: cluster.id,
+      status: 'ACTIVE',
+      closedDeals: 2,
+      totalCommission: 2000000,
+    },
+  });
 
-    // ─── Clear existing data ─────────────────────
-    console.log('🧹 Clearing existing data...');
-    
-    // Delete in correct order to respect foreign key constraints
-    // await prisma.notification.deleteMany(); // Removed: notification model does not exist
-    await prisma.investment.deleteMany();
-    await prisma.sale.deleteMany();
-    await prisma.product.deleteMany();
-    await prisma.installment.deleteMany();
-    await prisma.installmentPlan.deleteMany();
-    await prisma.transaction.deleteMany();
-    await prisma.lead.deleteMany();
-    await prisma.asset.deleteMany();
-    await prisma.freelancer.deleteMany();
-    await prisma.agent.deleteMany();
-    await prisma.user.deleteMany();
-    await prisma.cluster.deleteMany();
-    await prisma.company.deleteMany();
-    
-    console.log('🧹 Database cleared');
+  // FREELANCER PROFILE
+  const freelancer = await prisma.freelancer.upsert({
+    where: { userId: freelancerUser.id },
+    update: {},
+    create: {
+      userId: freelancerUser.id,
+      clusterId: cluster.id,
+      status: 'ACTIVE',
+      activeDeals: 1,
+      closedDeals: 1,
+      totalCommission: 500000,
+      registeredBy: admin.id,
+      registrarName: admin.name,
+      registrarType: 'ADMIN',
+    },
+  });
 
-    // ─── Admin user ─────────────────────────────
-    const admin = await prisma.user.create({
-        data: {
-            email: 'admin@buyops.com',
-            password: adminPasswordHash,
-            name: 'BuyOps Super Admin',
-            role: 'ADMIN',
-            phone: '+2348000000000',
-        },
-    });
-    console.log(`✅ Admin created: ${admin.email}`);
+  // COMPANIES
+  const elara = await prisma.company.upsert({
+    where: { name: 'Elara Gardens Ltd' },
+    update: {},
+    create: {
+      name: 'Elara Gardens Ltd',
+      type: 'DEVELOPER',
+      registrationNumber: 'RC-1987654',
+      status: 'ACTIVE',
+      contactPerson: 'Iniobong Admin',
+      email: 'info@elara.ng',
+      phone: '+2348091112233',
+      address: 'Plot 17, Admiralty Way, Lekki Phase 1',
+      agreementStartDate: new Date('2026-01-01'),
+      agreementExpiryDate: new Date('2027-01-01'),
+      commissionRate: 5.5,
+      paymentTerms: 'Full payment within 30 days',
+      accountName: 'Elara Gardens Ltd',
+      bankName: 'GTBank',
+      accountNumber: '0123456789',
+      notes: 'Preferred developer partner',
+    },
+  });
+  const primevest = await prisma.company.upsert({
+    where: { name: 'Primevest Properties' },
+    update: {},
+    create: {
+      name: 'Primevest Properties',
+      type: 'REALTOR',
+      registrationNumber: 'RC-1234567',
+      status: 'ACTIVE',
+      contactPerson: 'Aisha Sales Lead',
+      email: 'contact@primevest.ng',
+      phone: '+2348039998877',
+      address: 'Maitama, Abuja',
+      agreementStartDate: new Date('2026-02-01'),
+      agreementExpiryDate: new Date('2027-02-01'),
+      commissionRate: 4.0,
+      paymentTerms: 'Installment allowed',
+      accountName: 'Primevest Properties',
+      bankName: 'Access Bank',
+      accountNumber: '9876543210',
+      notes: 'Top Abuja realtor',
+    },
+  });
 
-    // ─── Companies ──────────────────────────────
-    const companies = await Promise.all(
-        [
-            {
-                name: 'Luxury Estates Ltd',
-                type: 'Developer',
-                registrationNumber: 'RC-1234567',
-                contactPerson: 'Aisha Ibrahim',
-                email: 'info@luxuryestates.ng',
-                phone: '+2348012345678',
-                address: 'Plot 45, Victoria Island, Lagos',
-                agreementStartDate: new Date('2024-01-01'),
-                agreementExpiryDate: new Date('2027-12-31'),
-                commissionRate: 5.5,
-                paymentTerms: '30 days after closing',
-                bankName: 'GTBank',
-                accountName: 'Luxury Estates Ltd',
-                accountNumber: '0123456789',
-                status: 'active',
-            },
-            {
-                name: 'Abuja Prime Investments',
-                type: 'Investment Platform',
-                registrationNumber: 'RC-9876543',
-                contactPerson: 'Chinedu Okeke',
-                email: 'contact@abujaprime.com',
-                phone: '+2348098765432',
-                address: 'Maitama, Abuja',
-                agreementStartDate: new Date('2025-03-01'),
-                agreementExpiryDate: new Date('2028-02-28'),
-                commissionRate: 4.0,
-                paymentTerms: 'Net 45',
-                bankName: 'Zenith Bank',
-                accountName: 'Abuja Prime Investments',
-                accountNumber: '9876543210',
-                status: 'active',
-            },
-        ].map((data) => prisma.company.create({ data }))
-    );
-    console.log(`✅ Companies created: ${companies.length}`);
+  // ASSETS
+  const asset1 = await prisma.asset.upsert({
+    where: { name: 'Elara Pearl Duplexes' },
+    update: {},
+    create: {
+      name: 'Elara Pearl Duplexes',
+      companyId: elara.id,
+      type: 'DUPLEX',
+      status: 'published',
+      basePrice: 145_000_000,
+      finalPrice: 145_000_000,
+      location: 'Lekki Phase 1',
+      bedrooms: 4,
+      bathrooms: 4,
+      area: 350,
+      description: 'Luxury 4-bedroom duplexes in Lekki.',
+      totalUnits: 10,
+      availableUnits: 8,
+      projectedRentalIncome: 6000000,
+      rentalYieldMin: 3.5,
+      rentalYieldMax: 5.2,
+      capitalAppreciation: 7.5,
+      capitalAppreciationMin: 5.0,
+      capitalAppreciationMax: 10.0,
+      totalReturnsMin: 8.5,
+      totalReturnsMax: 15.2,
+      riskLevel: 'Low',
+      riskFactors: ['Market', 'Liquidity'],
+    },
+  });
+  const asset2 = await prisma.asset.upsert({
+    where: { name: 'Primeview Terraces' },
+    update: {},
+    create: {
+      name: 'Primeview Terraces',
+      companyId: primevest.id,
+      type: 'TERRACE',
+      status: 'published',
+      basePrice: 120_000_000,
+      finalPrice: 120_000_000,
+      location: 'Maitama, Abuja',
+      bedrooms: 3,
+      bathrooms: 3,
+      area: 250,
+      description: 'Modern 3-bedroom terraces in Maitama.',
+      totalUnits: 6,
+      availableUnits: 4,
+      projectedRentalIncome: 4000000,
+      rentalYieldMin: 2.8,
+      rentalYieldMax: 4.5,
+      capitalAppreciation: 6.0,
+      capitalAppreciationMin: 4.0,
+      capitalAppreciationMax: 8.0,
+      totalReturnsMin: 6.8,
+      totalReturnsMax: 12.5,
+      riskLevel: 'Medium',
+      riskFactors: ['Market'],
+    },
+  });
 
-    // ─── Clusters ───────────────────────────────
-    const clusters = await Promise.all(
-        [
-            {
-                name: 'Lagos Island Elite',
-                code: 'LAG-ELITE',
-                teamLead: 'Tunde Adebayo',
-                location: 'Lagos Island',
-                status: 'active',
-            },
-            {
-                name: 'Abuja High-End',
-                code: 'ABJ-PREMIUM',
-                teamLead: 'Fatima Yusuf',
-                location: 'Abuja',
-                status: 'active',
-            },
-        ].map((data) => prisma.cluster.create({ data }))
-    );
-    console.log(`✅ Clusters created: ${clusters.length}`);
+  // ASSET IMAGES
+  await prisma.assetImage.createMany({
+    data: [
+      { assetId: asset1.id, url: 'https://example.com/duplex1.jpg', caption: 'Front View', order: 1 },
+      { assetId: asset1.id, url: 'https://example.com/duplex2.jpg', caption: 'Living Room', order: 2 },
+      { assetId: asset2.id, url: 'https://example.com/terrace1.jpg', caption: 'Terrace View', order: 1 },
+    ],
+    skipDuplicates: true,
+  });
 
-    // ─── Agents ────────────────────────────────
-    const agents = [];
-    for (let i = 0; i < 8; i++) {
-        const firstName = faker.person.firstName();
-        const lastName = faker.person.lastName();
-        const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@buyops.ng`;
+  // ASSET DOCUMENTS
+  await prisma.assetDocument.createMany({
+    data: [
+      { assetId: asset1.id, url: 'https://example.com/title-deed.pdf', title: 'Title Deed', type: 'PDF' },
+      { assetId: asset2.id, url: 'https://example.com/layout-plan.pdf', title: 'Layout Plan', type: 'PDF' },
+    ],
+    skipDuplicates: true,
+  });
 
-        const user = await prisma.user.create({
-            data: {
-                email,
-                password: agentPasswordHash,
-                name: `${firstName} ${lastName}`,
-                role: 'AGENT',
-                phone: faker.phone.number(),
-            },
-        });
+  // INSTALLMENT PLANS
+  const plan1 = await prisma.installmentPlan.create({
+    data: {
+      assetId: asset1.id,
+      companyId: elara.id,
+      totalAmount: 145_000_000,
+      downPayment: 43_500_000,
+      remainingBalance: 101_500_000,
+      paidAmount: 0,
+      numberOfInstallments: 18,
+      completedInstallments: 0,
+      installmentAmount: 101_500_000 / 18,
+      frequency: 'monthly',
+      startDate: NOW,
+      nextDueDate: new Date(NOW.getTime() + 30 * 24 * 60 * 60 * 1000),
+      leadAgentId: agent.id,
+      status: 'active',
+    },
+  });
 
-        const agent = await prisma.agent.create({
-            data: {
-                userId: user.id,
-                clusterId: clusters[i % clusters.length].id,
-                role: i % 3 === 0 ? 'Senior Agent' : 'Agent',
-                status: 'active',
-                totalCommission: faker.number.float({ min: 450_000, max: 6_200_000, fractionDigits: 2 }),
-                closedDeals: faker.number.int({ min: 3, max: 24 }),
-            },
-        });
-        agents.push(agent);
-    }
+  // TRANSACTIONS
+  const transaction1 = await prisma.transaction.create({
+    data: {
+      assetId: asset1.id,
+      buyerId: investor1.id,
+      totalAmount: 145_000_000,
+      commission: 145_000_000 * 0.055,
+      totalCommission: 145_000_000 * 0.055,
+      earnedTotalCommission: 0,
+      leadCommission: 2_000_000,
+      closerCommission: 2_975_000,
+      status: 'COMPLETED',
+      commissionPaymentStatus: 'UNPAID',
+      date: NOW,
+      leadAgentId: agent.id,
+      companyId: elara.id,
+    },
+  });
 
-    // ─── Freelancers ───────────────────────────
-    const freelancers = [];
-    for (let i = 0; i < 5; i++) {
-        const firstName = faker.person.firstName();
-        const lastName = faker.person.lastName();
-        const email = `freelance.${firstName.toLowerCase()}@buyops.ng`;
+  // INSTALLMENTS
+  await prisma.installment.createMany({
+    data: [
+      {
+        transactionId: transaction1.id,
+        installmentPlanId: plan1.id,
+        dueDate: new Date(NOW.getTime() + 30 * 24 * 60 * 60 * 1000),
+        amount: transaction1.totalAmount / 18,
+        paidAmount: 0,
+        status: 'PENDING',
+      },
+      {
+        transactionId: transaction1.id,
+        installmentPlanId: plan1.id,
+        dueDate: new Date(NOW.getTime() + 60 * 24 * 60 * 60 * 1000),
+        amount: transaction1.totalAmount / 18,
+        paidAmount: 0,
+        status: 'PENDING',
+      },
+    ],
+    skipDuplicates: true,
+  });
 
-        const user = await prisma.user.create({
-            data: {
-                email,
-                password: agentPasswordHash,
-                name: `${firstName} ${lastName} (Freelance)`,
-                role: 'FREELANCER',
-                phone: faker.phone.number(),
-            },
-        });
+  // LEADS
+  await prisma.lead.createMany({
+    data: [
+      {
+        name: 'Mohammed Yusuf',
+        email: 'mohd.yusuf@gmail.com',
+        phone: '+2348123456789',
+        source: 'Instagram Ad',
+        status: 'NEW',
+        budget: 120_000_000,
+        location: 'Lekki / Ikoyi',
+        assetInterest: asset1.id,
+        assignedToId: agent.id,
+        dateReceived: NOW,
+        createdById: admin.id,
+      },
+      {
+        name: 'Ngozi Okafor',
+        email: 'ngozi.okafor@gmail.com',
+        phone: '+2348098765432',
+        source: 'Referral',
+        status: 'CONTACTED',
+        budget: 100_000_000,
+        location: 'Abuja',
+        assetInterest: asset2.id,
+        assignedToId: agent.id,
+        dateReceived: NOW,
+        createdById: admin.id,
+      },
+    ],
+    skipDuplicates: true,
+  });
 
-        const freelancer = await prisma.freelancer.create({
-            data: {
-                userId: user.id,
-                clusterId: clusters[i % clusters.length].id,
-                registeredBy: admin.id,
-                registrarName: 'System Admin',
-                registrarType: 'ADMIN',
-                status: 'active',
-                totalCommission: faker.number.float({ min: 280_000, max: 3_800_000, fractionDigits: 2 }),
-                closedDeals: faker.number.int({ min: 2, max: 15 }),
-            },
-        });
-        freelancers.push(freelancer);
-    }
-    console.log(`✅ Agents: ${agents.length} | Freelancers: ${freelancers.length}`);
+  // COMMISSIONS
+  await prisma.commission.createMany({
+    data: [
+      {
+        transactionId: transaction1.id,
+        agentId: agent.id,
+        amount: 145_000_000 * 0.055,
+        rate: 5.5,
+        status: 'UNPAID',
+      },
+    ],
+    skipDuplicates: true,
+  });
 
-    // ─── Assets ────────────────────────────────
-    const assets = await Promise.all(
-        [
-            {
-                name: 'Eko Atlantic Luxury Apartments',
-                referenceCode: 'EA-LUX-001',
-                type: 'Residential',
-                projectStatus: 'Off-Plan',
-                location: 'Victoria Island',
-                address: 'Eko Atlantic City, Lagos',
-                companyId: companies[0].id,
-                totalUnits: 120,
-                availableUnits: 100,
-                propertyCategory: 'Apartment',
-                basePrice: 85_000_000,
-                markup: 15,
-                finalPrice: 85_000_000 * 1.15,
-                riskLevel: 'Medium',
-                status: 'Completed',
-                exitLiquidity: 'Secondary Market',
-                managementMode: 'Self-Managed',
-                leadCommission: 2.5,
-                closerCommission: 1.5,
-                images: [faker.image.urlPicsumPhotos({ width: 800, height: 600 })],
-                documents: [faker.system.fileName()],
-                facilities: [faker.commerce.productAdjective() + ' Pool'],
-                paymentOptions: ['Full Payment', 'Installment'],
-                bedrooms: 3,
-                bathrooms: 3,
-                area: '250 sqm',
-                furnishing: 'Furnished',
-                rentalYield: 7.5,
-                monthlyRentalIncome: 1200000,
-                totalAnnualReturn: 12.2,
-                capitalAppreciation: 8.1,
-                firstPayoutDate: faker.date.future(),
-                landSize: '500 sqm',
-                builtSize: '250 sqm',
-                constructionStart: faker.date.past(),
-                constructionEnd: faker.date.future(),
-                unitConfiguration: '3 Bedroom',
-                furnishingStatus: 'Furnished',
-                sharedFacilities: ['Pool', 'Gym'],
-                facilityManagement: true,
-                ownershipType: 'Full',
-                fractionTotal: 10,
-                costPerFraction: 8500000,
-                installmentPeriods: ['6 months', '12 months'],
-                downPaymentAmount: 8500000,
-                offPlanDiscount: 2.5,
-                stageBasedDiscount: 1.5,
-                projectedRentalIncome: 1300000,
-                rentalFrequency: 'Monthly',
-                operatingCost: 50000,
-                constructionStage: 'Foundation',
-                offPlanSecurity: 'Bank Guarantee',
-                featured: true,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                // UI fields
-                soldFractions: 5,
-                totalFractions: 10,
-                discount: 5,
-                price: 90000000,
-                minFraction: 1,
-              },
-              {
-                name: 'Maitama Heights',
-                referenceCode: 'MH-RES-002',
-                type: 'Residential',
-                projectStatus: 'Completed',
-                location: 'Maitama',
-                address: 'Maitama District, Abuja',
-                companyId: companies[1].id,
-                totalUnits: 68,
-                availableUnits: 50,
-                propertyCategory: 'Villa',
-                basePrice: 145_000_000,
-                markup: 12,
-                finalPrice: 145_000_000 * 1.12,
-                riskLevel: 'Low',
-                status: 'Under Development',
-                exitLiquidity: 'Direct Sale',
-                managementMode: 'Professional Manager',
-                leadCommission: 2.0,
-                closerCommission: 1.0,
-                images: [faker.image.urlPicsumPhotos({ width: 800, height: 600 })],
-                documents: [faker.system.fileName()],
-                facilities: [faker.commerce.productAdjective() + ' Gym'],
-                paymentOptions: ['Full Payment', 'Installment'],
-                bedrooms: 5,
-                bathrooms: 4,
-                area: '400 sqm',
-                furnishing: 'Semi-Furnished',
-                rentalYield: 6.2,
-                monthlyRentalIncome: 1800000,
-                totalAnnualReturn: 10.5,
-                capitalAppreciation: 6.8,
-                firstPayoutDate: faker.date.future(),
-                landSize: '800 sqm',
-                builtSize: '400 sqm',
-                constructionStart: faker.date.past(),
-                constructionEnd: faker.date.past(),
-                unitConfiguration: '5 Bedroom',
-                furnishingStatus: 'Semi-Furnished',
-                sharedFacilities: ['Gym', 'Garden'],
-                facilityManagement: true,
-                ownershipType: 'Full',
-                fractionTotal: 8,
-                costPerFraction: 18125000,
-                installmentPeriods: ['12 months', '24 months'],
-                downPaymentAmount: 14500000,
-                offPlanDiscount: 1.0,
-                stageBasedDiscount: 0.5,
-                projectedRentalIncome: 2000000,
-                rentalFrequency: 'Monthly',
-                operatingCost: 80000,
-                constructionStage: 'Completed',
-                offPlanSecurity: 'Insurance',
-                featured: false,
-                createdAt: new Date(),
-                updatedAt: new Date(),
-                // UI fields
-                soldFractions: 3,
-                totalFractions: 8,
-                discount: 10,
-                price: 160000000,
-                minFraction: 1,
-              },
-        ].map(async (data) => {
-            return prisma.asset.create({
-                data,
-            });
-        })
-    );
-    console.log(`✅ Assets created: ${assets.length}`);
+  // SAVED PROPERTIES
+  await prisma.savedProperty.createMany({
+    data: [
+      {
+        userId: investor2.id,
+        assetId: asset2.id,
+        assetName: asset2.name,
+        amount: 120_000_000,
+        read: false,
+        timestamp: NOW,
+      },
+    ],
+    skipDuplicates: true,
+  });
 
-    // ─── Test Investor (with known credentials) ───────────
-    const testInvestor = await prisma.user.create({
-        data: {
-            email: 'investor@buyops.com',
-            password: agentPasswordHash, // Password: Agent@123
-            name: 'Test Investor',
-            role: 'INVESTOR',
-            phone: '+2348011111111',
-        },
-    });
-    console.log(`✅ Test Investor created: ${testInvestor.email} (Password: Agent@123)`);
+  // NOTIFICATIONS
+  await prisma.notification.createMany({
+    data: [
+      {
+        userId: investor1.id,
+        title: 'Welcome to BuyOps!',
+        message: 'Your purchase of Elara Pearl Duplex is now in progress. Next payment due in 30 days.',
+        type: 'SUCCESS',
+        read: false,
+      },
+      {
+        userId: agentUser.id,
+        title: 'New Lead Assigned',
+        message: 'You have been assigned a new lead: Mohammed Yusuf.',
+        type: 'INFO',
+        read: false,
+      },
+    ],
+    skipDuplicates: true,
+  });
 
-    // ─── Regular Users (Investors) ─────────────
-    const investors = [testInvestor]; // Include test investor
-    for (let i = 0; i < 15; i++) {
-        const firstName = faker.person.firstName();
-        const lastName = faker.person.lastName();
-        const email = `${firstName.toLowerCase()}.${lastName.toLowerCase()}@example.com`;
-
-        const user = await prisma.user.create({
-            data: {
-                email,
-                password: agentPasswordHash,
-                name: `${firstName} ${lastName}`,
-                role: 'INVESTOR',
-                phone: faker.phone.number(),
-            },
-        });
-        investors.push(user);
-    }
-    console.log(`✅ Investor users created: ${investors.length}`);
-
-    // ─── Transactions + Installments ───────────
-    const sellers = agents; // only agents can be lead/closer
-    const transactionsCreated = [];
-    for (let i = 0; i < 35; i++) {
-        const asset = faker.helpers.arrayElement(assets);
-        const seller = faker.helpers.arrayElement(sellers);
-
-        const salePrice = faker.number.float({
-            min: asset.basePrice * 0.95,
-            max: asset.finalPrice * 1.08,
-            fractionDigits: 2,
-        });
-
-        const leadCommission = salePrice * 0.025;
-        const totalCommission = salePrice * 0.04;
-
-        // Pick a buyer (User) from investors
-        const buyer = faker.helpers.arrayElement(investors);
-
-        const tx = await prisma.transaction.create({
-            data: {
-                assetId: asset.id,
-                leadAgentId: seller.id,
-                closerAgentId: seller.id,
-                companyId: asset.companyId,
-                amount: salePrice,
-                totalCommission,
-                leadCommission,
-                paymentType: 'CASH',
-                status: 'completed',
-                date: faker.date.between({ from: new Date('2025-04-01'), to: new Date() }),
-                buyerId: buyer.id,
-            },
-        });
-        transactionsCreated.push(tx);
-
-        // 65% chance of InstallmentPlan
-        if (Math.random() > 0.35) {
-            const numberOfInstallments = faker.number.int({ min: 6, max: 18 });
-            const installmentAmount = salePrice / numberOfInstallments;
-            const downPayment = faker.number.float({ min: salePrice * 0.1, max: salePrice * 0.3 });
-            const remainingBalance = salePrice - downPayment;
-            const paidInstallments = faker.number.int({ min: 0, max: Math.floor(numberOfInstallments * 0.6) });
-            const paidAmount = downPayment + (paidInstallments * installmentAmount);
-
-            const plan = await prisma.installmentPlan.create({
-                data: {
-                    transactionId: tx.id,
-                    assetId: tx.assetId,
-                    companyId: tx.companyId,
-                    leadAgentId: tx.leadAgentId,
-                    closerAgentId: tx.closerAgentId,
-                    buyerName: buyer.name || '',
-                    buyerEmail: buyer.email,
-                    buyerPhone: buyer.phone || '',
-                    totalAmount: salePrice,
-                    downPayment,
-                    remainingBalance,
-                    installmentAmount,
-                    numberOfInstallments,
-                    paidAmount,
-                    completedInstallments: paidInstallments,
-                    frequency: 'monthly',
-                    status: paidInstallments >= numberOfInstallments ? 'completed' : paidInstallments > 0 ? 'active' : 'overdue',
-                    startDate: tx.date,
-                    nextDueDate: faker.date.future({ refDate: tx.date }),
-                },
-            });
-
-            // Create individual Installment records
-            const startDate = new Date(tx.date);
-            for (let j = 0; j < numberOfInstallments; j++) {
-                const dueDate = new Date(startDate);
-                dueDate.setMonth(dueDate.getMonth() + j + 1);
-                
-                const isPaid = j < paidInstallments;
-                const now = new Date();
-                
-                await prisma.installment.create({
-                    data: {
-                        installmentPlanId: plan.id,
-                        dueDate,
-                        amount: installmentAmount,
-                        paidAmount: isPaid ? installmentAmount : 0,
-                        status: isPaid ? 'paid' : j === paidInstallments ? 'upcoming' : 'upcoming',
-                        paidDate: isPaid && dueDate < now ? faker.date.between({ from: dueDate, to: now }) : null,
-                        paymentMethod: isPaid ? faker.helpers.arrayElement(['Bank Transfer', 'Card', 'Cash']) : null,
-                    },
-                });
-            }
-        }
-    }
-    console.log(`✅ Transactions created: ${transactionsCreated.length}`);
-
-    // ─── Leads ──────────────────────────────────
-    for (let i = 0; i < 18; i++) {
-        await prisma.lead.create({
-            data: {
-                name: faker.person.fullName(),
-                email: faker.internet.email(),
-                phone: faker.phone.number(),
-                assetInterest: faker.helpers.arrayElement(assets).name,
-                budget: faker.number.float({ min: 40_000_000, max: 320_000_000 }),
-                source: faker.helpers.arrayElement(['Website', 'Instagram', 'Referral', 'Google Ads', 'Event']),
-                leadSource: faker.helpers.arrayElement(['Organic', 'Paid', 'Partner']),
-                status: faker.helpers.arrayElement(['pending', 'assigned', 'qualified', 'lost']),
-                assignedCluster: faker.helpers.arrayElement(clusters).id,
-            },
-        });
-    }
-    console.log('✅ Leads created: 18');
-
-    // ─── Investments ───────────────────────────
-    const investments = [];
-    for (const investor of investors.slice(0, 10)) {
-        const numInvestments = faker.number.int({ min: 1, max: 3 });
-        for (let i = 0; i < numInvestments; i++) {
-            const investment = await prisma.investment.create({
-                data: {
-                    userId: investor.id,
-                    amount: faker.number.float({ min: 10_000_000, max: 150_000_000, fractionDigits: 2 }),
-                    note: faker.helpers.arrayElement([
-                        'Initial investment in property portfolio',
-                        'Additional investment for expansion',
-                        'Diversification investment',
-                        'Long-term growth',
-                        'Short-term gain',
-                        'Retirement plan',
-                    ]),
-                    createdAt: faker.date.past(),
-                    updatedAt: new Date(),
-                },
-            });
-            investments.push(investment);
-        }
-    }
-    console.log(`✅ Investments created: ${investments.length}`);
-
-    // ─── Products ──────────────────────────────
-    const products = await Promise.all(
-        [
-            {
-                name: 'Property Management Package - Basic',
-                description: 'Basic property management services including tenant screening and rent collection',
-                price: 50000,
-            },
-            {
-                name: 'Property Management Package - Premium',
-                description: 'Full property management with maintenance, tenant relations, and financial reporting',
-                price: 120000,
-            },
-            {
-                name: 'Legal Documentation Service',
-                description: 'Complete legal documentation for property transactions',
-                price: 75000,
-            },
-            {
-                name: 'Property Valuation Report',
-                description: 'Professional property valuation and market analysis',
-                price: 35000,
-            },
-        ].map((data) => prisma.product.create({ data }))
-    );
-    console.log(`✅ Products created: ${products.length}`);
-
-    // ─── Sales ─────────────────────────────────
-    const sales = [];
-    for (let i = 0; i < 25; i++) {
-        const product = faker.helpers.arrayElement(products);
-        const user = faker.helpers.arrayElement([...investors, admin]);
-        const quantity = faker.number.int({ min: 1, max: 5 });
-        
-        const sale = await prisma.sale.create({
-            data: {
-                userId: user.id,
-                productId: product.id,
-                quantity,
-                total: (product.price || 0) * quantity,
-            },
-        });
-        sales.push(sale);
-    }
-    console.log(`✅ Sales created: ${sales.length}`);
-
-    // ─── Notifications seeding skipped: notification model does not exist in schema ──
-
-    console.log('🎉 Database seeding completed successfully!');
+  console.log('\n✨ Seed completed successfully!');
 }
 
 main()
-    .catch((err) => {
-        console.error('❌ Seeding failed:', err);
-        process.exit(1);
-    })
-    .finally(async () => {
-        await prisma.$disconnect();
-    });
+  .catch((e) => {
+    console.error('Seed failed:', e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

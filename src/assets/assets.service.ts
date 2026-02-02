@@ -1,520 +1,217 @@
-import { 
-  Injectable, 
-  NotFoundException, 
-  BadRequestException,
-  ForbiddenException,
-  InternalServerErrorException 
-} from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-
-// ══════════════════════════════════════════════════════════════════════════
-// ASSETS SERVICE - Complete Implementation
-// Includes publish/unpublish, image/document management
-// ══════════════════════════════════════════════════════════════════════════
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class AssetsService {
-    constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-    async findAll(filters?: any) {
-        try {
-            const where: any = {};
+  async publish(id: string) {
+    await this.findById(id);
+    return this.prisma.asset.update({
+      where: { id },
+      data: { status: 'published', publishedAt: new Date() },
+    });
+  }
 
-            // Apply filters
-            if (filters?.type) {
-                where.type = filters.type;
-            }
+  async unpublish(id: string) {
+    await this.findById(id);
+    return this.prisma.asset.update({
+      where: { id },
+      data: { status: 'draft', publishedAt: null },
+    });
+  }
 
-            if (filters?.status) {
-                where.status = filters.status;
-            }
+  async deleteImage(assetId: string, imageId: string) {
+    await this.findById(assetId);
+    return this.prisma.assetImage.delete({ where: { id: imageId } });
+  }
 
-            if (filters?.location) {
-                where.location = {
-                    contains: filters.location,
-                    mode: 'insensitive'
-                };
-            }
+  async deleteDocument(assetId: string, documentId: string) {
+    await this.findById(assetId);
+    return this.prisma.assetDocument.delete({ where: { id: documentId } });
+  }
 
-            if (filters?.companyId) {
-                where.companyId = filters.companyId;
-            }
+  async findAll(filters?: { status?: string; type?: string; companyId?: string }) {
+    const where: any = {};
+    if (filters?.status) where.status = filters.status;
+    if (filters?.type) where.type = filters.type;
+    if (filters?.companyId) where.companyId = filters.companyId;
 
-            if (filters?.search) {
-                where.OR = [
-                    { name: { contains: filters.search, mode: 'insensitive' } },
-                    { referenceCode: { contains: filters.search, mode: 'insensitive' } },
-                    { location: { contains: filters.search, mode: 'insensitive' } },
-                ];
-            }
+    const assets = await this.prisma.asset.findMany({
+      where,
+      include: {
+        company: { select: { id: true, name: true } },
+        images: { orderBy: { order: 'asc' } },
+        documents: true,
+        leads: { orderBy: { createdAt: 'desc' }, take: 10 },
+        transactions: { orderBy: { date: 'desc' }, take: 10 },
+        installmentPlans: true,
+        _count: { select: { leads: true, transactions: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
 
-            return await this.prisma.asset.findMany({
-                where,
-                include: {
-                    company: {
-                        select: {
-                            id: true,
-                            name: true,
-                            type: true,
-                        },
-                    },
-                },
-                orderBy: {
-                    createdAt: 'desc',
-                },
-            });
-        } catch (error) {
-            console.error('Failed to fetch assets:', error);
-            throw new InternalServerErrorException('Failed to fetch assets');
-        }
+    return assets.map(asset => ({
+      id: asset.id,
+      title: asset.title ?? asset.name,
+      type: asset.type,
+      price: asset.price,
+      priceRange: asset.priceRange,
+      commission: asset.commission,
+      commissionRate: asset.commissionRate,
+      location: asset.location,
+      status: asset.status,
+      projectStatus: asset.projectStatus,
+      area: asset.area,
+      units: asset.units,
+      bedrooms: asset.bedrooms,
+      bathrooms: asset.bathrooms,
+      parking: asset.parking,
+      furnished: asset.furnished,
+      facilities: asset.facilities ?? [],
+      ownershipOptions: asset.ownershipOptions ?? [],
+      fractionCost: asset.fractionCost,
+      fundingStatus: asset.fundingStatus,
+      rentalYield: asset.rentalYield,
+      capitalAppreciation: asset.capitalAppreciation,
+      totalReturns: asset.totalReturns,
+      riskLevel: asset.riskLevel,
+      constructionStage: asset.constructionStage,
+      images: asset.images ?? 0,
+      virtualTours: asset.virtualTours ?? 0,
+      documents: asset.documents ?? 0,
+      description: asset.description,
+      leads: asset.leads ?? [],
+      finalPrice: Number(asset.finalPrice) || 0,
+      projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
+      rentalYield: asset.rentalYield,
+      capitalAppreciation: asset.capitalAppreciation,
+      totalAnnualReturn: asset.totalAnnualReturn,
+    }));
+  }
+
+  async findById(id: string) {
+    const asset = await this.prisma.asset.findUnique({
+      where: { id },
+      include: {
+        company: true,
+        images: { orderBy: { order: 'asc' } },
+        documents: true,
+        leads: { orderBy: { createdAt: 'desc' }, take: 10 },
+        transactions: { orderBy: { date: 'desc' }, take: 10 },
+        installmentPlans: true,
+        _count: { select: { leads: true, transactions: true } },
+      },
+    });
+
+    if (!asset) throw new NotFoundException(`Asset with ID ${id} not found`);
+    return asset;
+  }
+
+  async create(data: any) {
+    if (!data.name) throw new BadRequestException('Asset name is required');
+    if (!data.companyId) throw new BadRequestException('Company ID is required');
+
+    // Verify company exists
+    const company = await this.prisma.company.findUnique({ where: { id: data.companyId } });
+    if (!company) throw new NotFoundException('Company not found');
+
+    return this.prisma.asset.create({
+      data: {
+        name: data.name,
+        companyId: data.companyId,
+        type: data.type || null,
+        status: data.status || 'draft',
+        location: data.location || null,
+        referenceCode: data.referenceCode || null,
+        basePrice: data.basePrice ? parseFloat(data.basePrice) : null,
+        markup: data.markup ? parseFloat(data.markup) : null,
+        finalPrice: data.finalPrice ? parseFloat(data.finalPrice) : null,
+        description: data.description || null,
+        publishedAt: data.status === 'published' ? new Date() : null,
+        totalUnits: data.totalUnits ? parseInt(data.totalUnits) : null,
+        availableUnits: data.availableUnits ? parseInt(data.availableUnits) : null,
+        projectedRentalIncome: data.projectedRentalIncome ? parseFloat(data.projectedRentalIncome) : null,
+        rentalYieldMin: data.rentalYieldMin ? parseFloat(data.rentalYieldMin) : null,
+        rentalYieldMax: data.rentalYieldMax ? parseFloat(data.rentalYieldMax) : null,
+        capitalAppreciation: data.capitalAppreciation ? parseFloat(data.capitalAppreciation) : null,
+        capitalAppreciationMin: data.capitalAppreciationMin ? parseFloat(data.capitalAppreciationMin) : null,
+        capitalAppreciationMax: data.capitalAppreciationMax ? parseFloat(data.capitalAppreciationMax) : null,
+        totalReturnsMin: data.totalReturnsMin ? parseFloat(data.totalReturnsMin) : null,
+        totalReturnsMax: data.totalReturnsMax ? parseFloat(data.totalReturnsMax) : null,
+        riskLevel: data.riskLevel || null,
+        riskFactors: data.riskFactors || [],
+      },
+      include: { company: { select: { id: true, name: true } } },
+    });
+  }
+
+  async update(id: string, data: any) {
+    await this.findById(id); // throws if not found
+
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.type !== undefined) updateData.type = data.type;
+    if (data.status !== undefined) {
+      updateData.status = data.status;
+      if (data.status === 'published' && !updateData.publishedAt) {
+        updateData.publishedAt = new Date();
+      }
     }
-
-    async findById(id: string) {
-        if (!id || id.trim() === '') {
-            throw new BadRequestException('Asset ID is required');
-        }
-
-        const asset = await this.prisma.asset.findUnique({
-            where: { id },
-            include: {
-                company: true,
-                images: true,
-                documents: true,
-                transactions: {
-                    take: 10,
-                    orderBy: { date: 'desc' },
-                },
-            },
-        });
-
-        if (!asset) {
-            throw new NotFoundException(`Asset with ID ${id} not found`);
-        }
-
-        return asset;
-    }
-
-    async create(data: any) {
-        try {
-            // Validation
-            if (!data.name || data.name.trim() === '') {
-                throw new BadRequestException('Asset name is required');
-            }
-
-            if (!data.companyId) {
-                throw new BadRequestException('Company ID is required');
-            }
-
-            if (!data.type) {
-                throw new BadRequestException('Asset type is required');
-            }
-
-            if (!data.location) {
-                throw new BadRequestException('Location is required');
-            }
-
-            // Verify company exists
-            const company = await this.prisma.company.findUnique({
-                where: { id: data.companyId },
-            });
-
-            if (!company) {
-                throw new BadRequestException('Invalid company ID');
-            }
-
-            // Generate reference code if not provided
-            if (!data.referenceCode) {
-                const prefix = data.type.substring(0, 3).toUpperCase();
-                const timestamp = Date.now().toString().slice(-6);
-                data.referenceCode = `${prefix}-${timestamp}`;
-            }
-
-            // Calculate final price if not provided
-            if (data.basePrice && data.markup) {
-                data.finalPrice = data.basePrice + data.markup;
-            }
-
-            // Calculate total return if not provided
-            if (data.rentalYieldMin && data.capitalAppreciationMin) {
-                data.totalReturnMin = data.rentalYieldMin + data.capitalAppreciationMin;
-            }
-
-            if (data.rentalYieldMax && data.capitalAppreciationMax) {
-                data.totalReturnMax = data.rentalYieldMax + data.capitalAppreciationMax;
-            }
-
-            const asset = await this.prisma.asset.create({
-                data: {
-                    ...data,
-                    status: data.status || 'draft',
-                },
-                include: {
-                    company: true,
-                },
-            });
-
-            // Update company stats
-            await this.updateCompanyStats(data.companyId);
-
-            return asset;
-
-        } catch (error) {
-            if (error.code === 'P2002') {
-                throw new BadRequestException('Asset with this reference code already exists');
-            }
-
-            if (error instanceof BadRequestException) {
-                throw error;
-            }
-
-            console.error('Asset creation error:', error);
-            throw new InternalServerErrorException('Failed to create asset');
-        }
-    }
-
-    async update(id: string, data: any) {
-        try {
-            // Check if asset exists
-            const existingAsset = await this.findById(id);
-
-            // If changing company, verify new company exists
-            if (data.companyId && data.companyId !== existingAsset.companyId) {
-                const company = await this.prisma.company.findUnique({
-                    where: { id: data.companyId },
-                });
-
-                if (!company) {
-                    throw new BadRequestException('Invalid company ID');
-                }
-            }
-
-            // Recalculate fields if needed
-            if (data.basePrice !== undefined || data.markup !== undefined) {
-                const basePrice = data.basePrice ?? existingAsset.basePrice;
-                const markup = data.markup ?? existingAsset.markup;
-                data.finalPrice = basePrice + markup;
-            }
-
-            if (data.rentalYieldMin !== undefined || data.capitalAppreciationMin !== undefined) {
-                const rentalYieldMin = data.rentalYieldMin ?? existingAsset.rentalYieldMin;
-                const capitalAppreciationMin = data.capitalAppreciationMin ?? existingAsset.capitalAppreciationMin;
-                data.totalReturnMin = rentalYieldMin + capitalAppreciationMin;
-            }
-
-            if (data.rentalYieldMax !== undefined || data.capitalAppreciationMax !== undefined) {
-                const rentalYieldMax = data.rentalYieldMax ?? existingAsset.rentalYieldMax;
-                const capitalAppreciationMax = data.capitalAppreciationMax ?? existingAsset.capitalAppreciationMax;
-                data.totalReturnMax = rentalYieldMax + capitalAppreciationMax;
-            }
-
-            const asset = await this.prisma.asset.update({
-                where: { id },
-                data,
-                include: {
-                    company: true,
-                },
-            });
-
-            // Update company stats if company changed
-            if (data.companyId && data.companyId !== existingAsset.companyId) {
-                await this.updateCompanyStats(existingAsset.companyId);
-                await this.updateCompanyStats(data.companyId);
-            }
-
-            return asset;
-
-        } catch (error) {
-            if (error instanceof NotFoundException || error instanceof BadRequestException) {
-                throw error;
-            }
-
-            console.error('Asset update error:', error);
-            throw new InternalServerErrorException('Failed to update asset');
-        }
-    }
-
-    // ═══ PUBLISH/UNPUBLISH ENDPOINTS ═══
-
-    async publish(id: string) {
-        try {
-            const asset = await this.findById(id);
-
-            // Validation: Check if asset has all required fields for publishing
-            if (!asset.name || !asset.type || !asset.location) {
-                throw new BadRequestException('Asset must have name, type, and location to be published');
-            }
-
-            if (!asset.finalPrice || asset.finalPrice <= 0) {
-                throw new BadRequestException('Asset must have a valid price to be published');
-            }
-
-            if (asset.status === 'published') {
-                throw new BadRequestException('Asset is already published');
-            }
-
-            const updatedAsset = await this.prisma.asset.update({
-                where: { id },
-                data: {
-                    status: 'published',
-                    publishedAt: new Date(),
-                },
-                include: {
-                    company: true,
-                },
-            });
-
-            // Update company stats
-            await this.updateCompanyStats(asset.companyId);
-
-            return {
-                message: 'Asset published successfully',
-                asset: updatedAsset,
-            };
-
-        } catch (error) {
-            if (error instanceof NotFoundException || error instanceof BadRequestException) {
-                throw error;
-            }
-
-            console.error('Asset publish error:', error);
-            throw new InternalServerErrorException('Failed to publish asset');
-        }
-    }
-
-    async unpublish(id: string) {
-        try {
-            const asset = await this.findById(id);
-
-            if (asset.status !== 'published') {
-                throw new BadRequestException('Only published assets can be unpublished');
-            }
-
-            // Check if asset has active transactions
-            const activeTransactions = await this.prisma.transaction.count({
-                where: {
-                    assetId: id,
-                    status: {
-                        in: ['pending', 'partial'],
-                    },
-                },
-            });
-
-            if (activeTransactions > 0) {
-                throw new ForbiddenException(
-                    `Cannot unpublish asset with ${activeTransactions} active transactions`
-                );
-            }
-
-            const updatedAsset = await this.prisma.asset.update({
-                where: { id },
-                data: {
-                    status: 'draft',
-                },
-                include: {
-                    company: true,
-                },
-            });
-
-            // Update company stats
-            await this.updateCompanyStats(asset.companyId);
-
-            return {
-                message: 'Asset unpublished successfully',
-                asset: updatedAsset,
-            };
-
-        } catch (error) {
-            if (error instanceof NotFoundException || 
-                error instanceof BadRequestException || 
-                error instanceof ForbiddenException) {
-                throw error;
-            }
-
-            console.error('Asset unpublish error:', error);
-            throw new InternalServerErrorException('Failed to unpublish asset');
-        }
-    }
-
-    // ═══ IMAGE MANAGEMENT ═══
-
-    async addImage(assetId: string, imageData: { url: string; caption?: string }) {
-        try {
-            const asset = await this.findById(assetId);
-
-            const image = await this.prisma.assetImage.create({
-                data: {
-                    assetId,
-                    url: imageData.url,
-                    caption: imageData.caption || null,
-                },
-            });
-
-            return image;
-
-        } catch (error) {
-            if (error instanceof NotFoundException) {
-                throw error;
-            }
-
-            console.error('Add image error:', error);
-            throw new InternalServerErrorException('Failed to add image');
-        }
-    }
-
-    async deleteImage(assetId: string, imageId: string) {
-        try {
-            // Verify asset exists
-            await this.findById(assetId);
-
-            // Verify image belongs to asset
-            const image = await this.prisma.assetImage.findFirst({
-                where: {
-                    id: imageId,
-                    assetId,
-                },
-            });
-
-            if (!image) {
-                throw new NotFoundException('Image not found for this asset');
-            }
-
-            await this.prisma.assetImage.delete({
-                where: { id: imageId },
-            });
-
-            return {
-                message: 'Image deleted successfully',
-                id: imageId,
-            };
-
-        } catch (error) {
-            if (error instanceof NotFoundException) {
-                throw error;
-            }
-
-            console.error('Delete image error:', error);
-            throw new InternalServerErrorException('Failed to delete image');
-        }
-    }
-
-    // ═══ DOCUMENT MANAGEMENT ═══
-
-    async addDocument(assetId: string, documentData: { url: string; name: string; type: string }) {
-        try {
-            const asset = await this.findById(assetId);
-
-            const document = await this.prisma.assetDocument.create({
-                data: {
-                    assetId,
-                    url: documentData.url,
-                    name: documentData.name,
-                    type: documentData.type,
-                },
-            });
-
-            return document;
-
-        } catch (error) {
-            if (error instanceof NotFoundException) {
-                throw error;
-            }
-
-            console.error('Add document error:', error);
-            throw new InternalServerErrorException('Failed to add document');
-        }
-    }
-
-    async deleteDocument(assetId: string, documentId: string) {
-        try {
-            // Verify asset exists
-            await this.findById(assetId);
-
-            // Verify document belongs to asset
-            const document = await this.prisma.assetDocument.findFirst({
-                where: {
-                    id: documentId,
-                    assetId,
-                },
-            });
-
-            if (!document) {
-                throw new NotFoundException('Document not found for this asset');
-            }
-
-            await this.prisma.assetDocument.delete({
-                where: { id: documentId },
-            });
-
-            return {
-                message: 'Document deleted successfully',
-                id: documentId,
-            };
-
-        } catch (error) {
-            if (error instanceof NotFoundException) {
-                throw error;
-            }
-
-            console.error('Delete document error:', error);
-            throw new InternalServerErrorException('Failed to delete document');
-        }
-    }
-
-    // ═══ HELPER METHODS ═══
-
-    async delete(id: string) {
-        try {
-            const asset = await this.findById(id);
-
-            // Check if asset can be deleted
-            const transactionsCount = await this.prisma.transaction.count({
-                where: { assetId: id },
-            });
-
-            if (transactionsCount > 0) {
-                throw new ForbiddenException(
-                    `Cannot delete asset with ${transactionsCount} transactions. Unpublish instead.`
-                );
-            }
-
-            await this.prisma.asset.delete({
-                where: { id },
-            });
-
-            // Update company stats
-            await this.updateCompanyStats(asset.companyId);
-
-            return {
-                message: 'Asset deleted successfully',
-                id,
-            };
-
-        } catch (error) {
-            if (error instanceof NotFoundException || error instanceof ForbiddenException) {
-                throw error;
-            }
-
-            console.error('Asset deletion error:', error);
-            throw new InternalServerErrorException('Failed to delete asset');
-        }
-    }
-
-    private async updateCompanyStats(companyId: string) {
-        try {
-            const activeAssets = await this.prisma.asset.count({
-                where: {
-                    companyId,
-                    status: 'published',
-                },
-            });
-
-            await this.prisma.company.update({
-                where: { id: companyId },
-                data: { activeAssets },
-            });
-        } catch (error) {
-            console.error('Failed to update company stats:', error);
-            // Don't throw - this is not critical
-        }
-    }
+    if (data.location !== undefined) updateData.location = data.location;
+    if (data.referenceCode !== undefined) updateData.referenceCode = data.referenceCode;
+    if (data.basePrice !== undefined) updateData.basePrice = parseFloat(data.basePrice);
+    if (data.markup !== undefined) updateData.markup = parseFloat(data.markup);
+    if (data.finalPrice !== undefined) updateData.finalPrice = parseFloat(data.finalPrice);
+    if (data.description !== undefined) updateData.description = data.description;
+    if (data.companyId !== undefined) updateData.companyId = data.companyId;
+    if (data.totalUnits !== undefined) updateData.totalUnits = parseInt(data.totalUnits);
+    if (data.availableUnits !== undefined) updateData.availableUnits = parseInt(data.availableUnits);
+    if (data.riskLevel !== undefined) updateData.riskLevel = data.riskLevel;
+
+    return this.prisma.asset.update({
+      where: { id },
+      data: updateData,
+      include: { company: { select: { id: true, name: true } } },
+    });
+  }
+
+  async delete(id: string) {
+    await this.findById(id);
+    await this.prisma.asset.delete({ where: { id } });
+    return { message: 'Asset deleted successfully', id };
+  }
+
+  // FIX 13: AssetImage and AssetDocument now exist in schema
+  async addImage(assetId: string, imageData: { url: string; caption?: string; order?: number }) {
+    await this.findById(assetId);
+    return this.prisma.assetImage.create({
+      data: {
+        assetId,
+        url: imageData.url,
+        caption: imageData.caption || null,
+        order: imageData.order || 0,
+      },
+    });
+  }
+
+  async removeImage(imageId: string) {
+    return this.prisma.assetImage.delete({ where: { id: imageId } });
+  }
+
+  async addDocument(assetId: string, docData: { url: string; title?: string; type?: string }) {
+    await this.findById(assetId);
+    return this.prisma.assetDocument.create({
+      data: {
+        assetId,
+        url: docData.url,
+        title: docData.title || null,
+        type: docData.type || null,
+      },
+    });
+  }
+
+  async removeDocument(docId: string) {
+    return this.prisma.assetDocument.delete({ where: { id: docId } });
+  }
 }

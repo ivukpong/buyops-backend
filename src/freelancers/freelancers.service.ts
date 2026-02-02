@@ -1,242 +1,154 @@
-import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import * as bcrypt from "bcrypt";
+import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class FreelancersService {
-    constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-    async findAll() {
-        return this.prisma.freelancer.findMany({
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
+  // FIX 24: orderBy createdAt now valid (field added to schema)
+  async findAll() {
+    const freelancers = await this.prisma.freelancer.findMany({
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        cluster: { select: { id: true, name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    return freelancers.map(freelancer => ({
+      id: freelancer.id,
+      name: freelancer.user?.name ?? "",
+      email: freelancer.user?.email ?? "",
+      registeredBy: freelancer.registeredBy ?? "",
+      registrarName: freelancer.registrarName ?? "",
+      registrarType: freelancer.registrarType ?? "",
+      cluster: freelancer.cluster?.name ?? "",
+      clusterId: freelancer.cluster?.id ?? "",
+      activeDeals: freelancer.activeDeals ?? 0,
+      closedDeals: freelancer.closedDeals ?? 0,
+      totalCommission: freelancer.totalCommission ?? 0,
+      performance: freelancer.closedDeals > 0 ? Math.min(100, Math.round((freelancer.closedDeals / 10) * 100)) : 0, // Example logic
+      status: freelancer.status?.toLowerCase() ?? "pending",
+    }));
+  }
+
+  async findById(id: string) {
+    const freelancer = await this.prisma.freelancer.findUnique({
+      where: { id },
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        cluster: true,
+      },
+    });
+
+    if (!freelancer) throw new NotFoundException(`Freelancer with ID ${id} not found`);
+    return freelancer;
+  }
+
+  // FIX 23: registeredBy/registrarName/registrarType now exist in schema
+  async create(data: {
+    name: string;
+    email: string;
+    phone?: string;
+    registeredBy?: string;
+    registrarName?: string;
+    registrarType?: string;
+    cluster?: string;
+    status?: string;
+  }) {
+    let user = await this.prisma.user.findUnique({ where: { email: data.email } });
+
+    if (user) {
+      const existing = await this.prisma.freelancer.findUnique({ where: { userId: user.id } });
+      if (existing) throw new ConflictException('User is already registered as a freelancer');
+    } else {
+      const hashedPassword = await bcrypt.hash('password123', 10);
+      user = await this.prisma.user.create({
+        data: { email: data.email, password: hashedPassword, name: data.name, role: 'FREELANCER' },
+      });
     }
 
-    async findById(id: string) {
-        const freelancer = await this.prisma.freelancer.findUnique({
-            where: { id },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: true,
-            },
-        });
+    return this.prisma.freelancer.create({
+      data: {
+        userId: user.id,
+        clusterId: data.cluster || null,
+        status: (data.status as any) || 'PENDING',
+        registeredBy: data.registeredBy || null,
+        registrarName: data.registrarName || null,
+        registrarType: data.registrarType || null,
+        activeDeals: 0,
+        closedDeals: 0,
+        totalCommission: 0,
+      },
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        cluster: { select: { id: true, name: true } },
+      },
+    });
+  }
 
-        if (!freelancer) {
-            throw new NotFoundException(`Freelancer with ID ${id} not found`);
-        }
+  async update(id: string, data: any) {
+    const freelancer = await this.findById(id);
 
-        return freelancer;
+    if (data.name || data.email) {
+      await this.prisma.user.update({
+        where: { id: freelancer.userId },
+        data: {
+          ...(data.name ? { name: data.name } : {}),
+          ...(data.email ? { email: data.email } : {}),
+        },
+      });
     }
 
-    async create(data: {
-        name: string;
-        email: string;
-        phone: string;
-        registeredBy: string;
-        registrarName: string;
-        registrarType: string;
-        cluster: string;
-        status: string;
-    }) {
-        // Check if user with this email exists
-        const existingUser = await this.prisma.user.findUnique({
-            where: { email: data.email },
-        });
+    const updateData: any = {};
+    if (data.cluster) updateData.clusterId = data.cluster;
+    if (data.status) updateData.status = data.status;
+    if (data.registeredBy !== undefined) updateData.registeredBy = data.registeredBy;
+    if (data.registrarName !== undefined) updateData.registrarName = data.registrarName;
+    if (data.registrarType !== undefined) updateData.registrarType = data.registrarType;
 
-        if (existingUser) {
-            // Check if user is already a freelancer
-            const existingFreelancer = await this.prisma.freelancer.findUnique({
-                where: { userId: existingUser.id },
-            });
+    return this.prisma.freelancer.update({
+      where: { id },
+      data: updateData,
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        cluster: { select: { id: true, name: true } },
+      },
+    });
+  }
 
-            if (existingFreelancer) {
-                throw new ConflictException("User is already registered as a freelancer");
-            }
-        }
+  async delete(id: string) {
+    await this.findById(id);
+    await this.prisma.freelancer.delete({ where: { id } });
+    return { message: 'Freelancer deleted successfully', id };
+  }
 
-        // Create user if doesn't exist
-        let user;
-        if (existingUser) {
-            user = existingUser;
-        } else {
-            const hashedPassword = await bcrypt.hash("password123", 10); // Default password
-            user = await this.prisma.user.create({
-                data: {
-                    email: data.email,
-                    password: hashedPassword,
-                    name: data.name,
-                    role: "SALES",
-                },
-            });
-        }
+  async getStats() {
+    const [total, active, agg] = await Promise.all([
+      this.prisma.freelancer.count(),
+      this.prisma.freelancer.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.freelancer.aggregate({
+        _sum: { totalCommission: true, activeDeals: true, closedDeals: true },
+      }),
+    ]);
 
-        // Create freelancer profile
-        const freelancer = await this.prisma.freelancer.create({
-            data: {
-                userId: user.id,
-                registeredBy: data.registeredBy,
-                registrarName: data.registrarName,
-                registrarType: data.registrarType,
-                clusterId: data.cluster,
-                status: data.status || "active",
-                activeDeals: 0,
-                closedDeals: 0,
-                totalCommission: 0,
-                performance: 0,
-            },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
+    return {
+      totalFreelancers: total,
+      activeFreelancers: active,
+      totalActiveDeals: agg._sum.activeDeals || 0,
+      totalClosedDeals: agg._sum.closedDeals || 0,
+      totalCommission: agg._sum.totalCommission || 0,
+    };
+  }
 
-        return freelancer;
-    }
-
-    async update(id: string, data: any) {
-        // Check if freelancer exists
-        const freelancer = await this.findById(id);
-
-        // Update user info if provided
-        if (data.name || data.email) {
-            await this.prisma.user.update({
-                where: { id: freelancer.userId },
-                data: {
-                    name: data.name,
-                    email: data.email,
-                },
-            });
-        }
-
-        // Update freelancer profile
-        const updateData: any = {};
-        if (data.cluster) updateData.clusterId = data.cluster;
-        if (data.status) updateData.status = data.status;
-        if (data.registeredBy) updateData.registeredBy = data.registeredBy;
-        if (data.registrarName) updateData.registrarName = data.registrarName;
-        if (data.registrarType) updateData.registrarType = data.registrarType;
-
-        return this.prisma.freelancer.update({
-            where: { id },
-            data: updateData,
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
-    }
-
-    async delete(id: string) {
-        // Check if freelancer exists
-        const freelancer = await this.findById(id);
-
-        // Check if freelancer has active deals
-        // This would require a separate deals/transactions table for freelancers
-        // For now, just delete the profile
-
-        // Delete freelancer profile (user remains)
-        return this.prisma.freelancer.delete({
-            where: { id },
-        });
-    }
-
-    async getStats() {
-        const [
-            totalFreelancers,
-            activeFreelancers,
-            totalCommission,
-        ] = await Promise.all([
-            this.prisma.freelancer.count(),
-            this.prisma.freelancer.count({ where: { status: "active" } }),
-            this.prisma.freelancer.aggregate({
-                _sum: {
-                    totalCommission: true,
-                    activeDeals: true,
-                    closedDeals: true,
-                },
-            }),
-        ]);
-
-        return {
-            totalFreelancers,
-            activeFreelancers,
-            totalActiveDeals: totalCommission._sum.activeDeals || 0,
-            totalClosedDeals: totalCommission._sum.closedDeals || 0,
-            totalCommission: totalCommission._sum.totalCommission || 0,
-        };
-    }
-
-    async getFreelancersByRegistrar(registrarId: string) {
-        return this.prisma.freelancer.findMany({
-            where: {
-                registeredBy: registrarId,
-            },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
-    }
-
-    async updateFreelancerStats(freelancerId: string) {
-        // This would be called after deals are completed
-        // For now, just return the freelancer
-        return this.findById(freelancerId);
-    }
+  async getFreelancersByRegistrar(registrarId: string) {
+    return this.prisma.freelancer.findMany({
+      where: { registeredBy: registrarId },
+      include: {
+        user: { select: { id: true, name: true, email: true } },
+        cluster: { select: { id: true, name: true } },
+      },
+    });
+  }
 }

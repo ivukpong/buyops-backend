@@ -10,7 +10,8 @@ import {
   IsDateString,
   MinLength,
   MaxLength,
-  Matches
+  Matches,
+  IsIn
 } from 'class-validator';
 import { Transform } from 'class-transformer';
 

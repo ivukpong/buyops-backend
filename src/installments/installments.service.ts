@@ -7,55 +7,52 @@ export class InstallmentsService {
 
     async findAll(filters?: { status?: string }) {
         const where: any = {};
-
         if (filters?.status && filters.status !== 'all') {
-            where.status = filters.status;
+            where.status = filters.status.toUpperCase();
         }
 
-        return this.prisma.installmentPlan.findMany({
+        const plans = await this.prisma.installmentPlan.findMany({
             where,
             include: {
-                asset: {
-                    select: {
-                        id: true,
-                        name: true,
-                        referenceCode: true,
-                    },
-                },
-                leadAgent: {
-                    include: {
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                email: true,
-                            },
-                        },
-                    },
-                },
-                closerAgent: {
-                    include: {
-                        user: {
-                            select: {
-                                id: true,
-                                name: true,
-                                email: true,
-                            },
-                        },
-                    },
-                },
-                installments: true,
-                company: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
+                asset: { select: { name: true } },
+                company: { select: { name: true } },
+                leadAgent: { include: { user: { select: { name: true } } } },
+                closerAgent: { include: { user: { select: { name: true } } } },
+                installments: { orderBy: { dueDate: 'asc' } },
             },
-            orderBy: {
-                createdAt: 'desc',
-            },
+            orderBy: { createdAt: 'desc' },
         });
+
+        return plans.map(plan => ({
+            id: plan.id,
+            asset: plan.asset?.name ?? "",
+            buyer: plan.buyerName ?? "",
+            buyerEmail: plan.buyerEmail ?? "",
+            buyerPhone: plan.buyerPhone ?? "",
+            totalAmount: plan.totalAmount,
+            downPayment: plan.downPayment,
+            paidAmount: plan.paidAmount,
+            remainingBalance: plan.remainingBalance,
+            numberOfInstallments: plan.numberOfInstallments,
+            completedInstallments: plan.completedInstallments,
+            installmentAmount: plan.installmentAmount,
+            frequency: plan.frequency,
+            startDate: plan.startDate?.toISOString().split("T")[0] ?? "",
+            nextDueDate: plan.nextDueDate?.toISOString().split("T")[0] ?? "",
+            status: plan.status?.toLowerCase(),
+            company: plan.company?.name ?? "",
+            leadAgent: plan.leadAgent?.user?.name ?? "",
+            closerAgent: plan.closerAgent?.user?.name ?? "",
+            installments: plan.installments.map(inst => ({
+                id: inst.id,
+                dueDate: inst.dueDate?.toISOString().split("T")[0] ?? "",
+                amount: inst.amount,
+                paidAmount: inst.paidAmount,
+                status: inst.status?.toLowerCase(),
+                paidDate: inst.paidDate ? inst.paidDate.toISOString().split("T")[0] : null,
+                paymentMethod: inst.paymentMethod ?? "",
+            })),
+        }));
     }
 
     async create(dto: any) {
@@ -134,7 +131,7 @@ export class InstallmentsService {
             where: { id: installmentId },
             data: {
                 paidAmount: installment.paidAmount + data.amount,
-                status: installment.paidAmount + data.amount >= installment.amount ? "paid" : "partial",
+                status: installment.paidAmount + data.amount >= installment.amount ? "PAID" : "PARTIAL",
                 paidDate: new Date(),
                 paymentMethod: data.paymentMethod,
             },
@@ -145,7 +142,7 @@ export class InstallmentsService {
         const completedInstallments = await this.prisma.installment.count({
             where: {
                 installmentPlanId: planId,
-                status: "paid",
+                status: "PAID",
             },
         });
 
@@ -153,7 +150,7 @@ export class InstallmentsService {
         const nextInstallment = await this.prisma.installment.findFirst({
             where: {
                 installmentPlanId: planId,
-                status: { in: ["pending", "upcoming", "overdue"] },
+                status: { in: ["PENDING", "UPCOMING", "OVERDUE"] },
             },
             orderBy: {
                 dueDate: "asc",
@@ -169,7 +166,7 @@ export class InstallmentsService {
                 paidAmount: newPaidAmount,
                 completedInstallments,
                 nextDueDate: nextInstallment?.dueDate || null,
-                status: isCompleted ? "completed" : "active",
+                status: isCompleted ? "COMPLETED" : "ACTIVE",
             },
         });
 
@@ -181,10 +178,16 @@ export class InstallmentsService {
         reminderDate: string;
         method: string;
     }) {
+        // FIX 34: use installmentPlan relation (not plan)
         const installment = await this.prisma.installment.findUnique({
             where: { id: data.installmentId },
             include: {
-                plan: true,
+                installmentPlan: {
+                    include: {
+                        asset: { select: { name: true } },
+                        leadAgent: { include: { user: { select: { name: true, email: true } } } },
+                    },
+                },
             },
         });
 
@@ -193,8 +196,8 @@ export class InstallmentsService {
         }
 
         // In production, this would send actual email/SMS
-        // For now, just log the reminder
-        console.log(`Sending ${data.method} reminder to ${installment.plan.buyerEmail}`);
+        const agentEmail = installment.installmentPlan?.leadAgent?.user?.email || 'unknown';
+        console.log(`Sending ${data.method} reminder for asset "${installment.installmentPlan?.asset?.name}" to agent ${agentEmail}`);
 
         return {
             message: "Reminder sent successfully",
@@ -212,10 +215,10 @@ export class InstallmentsService {
             totalCollected,
             overduePayments,
         ] = await Promise.all([
-            this.prisma.installmentPlan.count({ where: { status: "active" } }),
-            this.prisma.installmentPlan.count({ where: { status: "completed" } }),
+            this.prisma.installmentPlan.count({ where: { status: "ACTIVE" } }),
+            this.prisma.installmentPlan.count({ where: { status: "COMPLETED" } }),
             this.prisma.installmentPlan.aggregate({
-                where: { status: "active" },
+                where: { status: "ACTIVE" },
                 _sum: {
                     remainingBalance: true,
                     paidAmount: true,
@@ -227,7 +230,7 @@ export class InstallmentsService {
                 },
             }),
             this.prisma.installment.count({
-                where: { status: "overdue" },
+                where: { status: "OVERDUE" },
             }),
         ]);
 
@@ -251,10 +254,10 @@ export class InstallmentsService {
         await this.prisma.installment.updateMany({
             where: {
                 dueDate: { lt: today },
-                status: { in: ["pending", "upcoming"] },
+                status: { in: ["PENDING", "UPCOMING"] },
             },
             data: {
-                status: "overdue",
+                status: "OVERDUE",
             },
         });
 
@@ -265,10 +268,10 @@ export class InstallmentsService {
         await this.prisma.installment.updateMany({
             where: {
                 dueDate: { lte: weekFromNow, gte: today },
-                status: "upcoming",
+                status: "UPCOMING",
             },
             data: {
-                status: "pending",
+                status: "PENDING",
             },
         });
     }
@@ -293,7 +296,7 @@ export class InstallmentsService {
                 dueDate,
                 amount: installmentAmount,
                 paidAmount: 0,
-                status: i === 0 ? "pending" : "upcoming",
+                status: i === 0 ? "PENDING" : "UPCOMING",
             });
         }
 

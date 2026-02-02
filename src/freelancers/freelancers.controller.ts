@@ -28,50 +28,43 @@ class CreateFreelancerDto {
 export class FreelancersController {
     constructor(private freelancersService: FreelancersService) { }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    
     @Get()
     async findAll() {
         return this.freelancersService.findAll();
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    
     @Get("stats")
     async getStats() {
         return this.freelancersService.getStats();
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    
     @Get("by-registrar/:registrarId")
     async getByRegistrar(@Param("registrarId") registrarId: string) {
         return this.freelancersService.getFreelancersByRegistrar(registrarId);
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.freelancersService.findById(id);
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    
     @Post()
     async create(@Body() dto: CreateFreelancerDto) {
         return this.freelancersService.create(dto);
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateFreelancerDto>) {
         return this.freelancersService.update(id, dto);
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    
     @Delete(":id")
     async remove(@Param("id") id: string) {
         return this.freelancersService.delete(id);

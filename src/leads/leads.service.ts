@@ -1,273 +1,136 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
+import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class LeadsService {
-    constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-    async findAll(filters?: { source?: string; status?: string }) {
-        const where: any = {};
-
-        if (filters?.source && filters.source !== "all") {
-            where.leadSource = filters.source;
-        }
-
-        if (filters?.status && filters.status !== "all") {
-            where.status = filters.status;
-        }
-
-        return this.prisma.lead.findMany({
-            where,
-            include: {
-                asset: {
-                    select: {
-                        id: true,
-                        name: true,
-                        location: true,
-                    },
-                },
-                creator: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-            orderBy: {
-                dateReceived: "desc",
-            },
-        });
+    // Assign leads to a cluster or all
+  async assignLeads(dto: { leadIds: string[]; assignmentType: 'cluster' | 'all'; clusterId?: string }) {
+    if (dto.assignmentType === 'all') {
+      // Make leads available to all clusters
+      await this.prisma.lead.updateMany({
+        where: { id: { in: dto.leadIds } },
+        data: { status: 'available', assignedCluster: null, assignedToId: null },
+      });
+    } else if (dto.assignmentType === 'cluster' && dto.clusterId) {
+      // Assign leads to a specific cluster
+      await this.prisma.lead.updateMany({
+        where: { id: { in: dto.leadIds } },
+        data: { status: 'assigned', assignedCluster: dto.clusterId },
+      });
+    } else {
+      throw new BadRequestException('Invalid assignment type or missing clusterId');
     }
+    return { message: 'Leads assigned', ...dto };
+  }
 
-    async findById(id: string) {
-        const lead = await this.prisma.lead.findUnique({
-            where: { id },
-            include: {
-                asset: true,
-                creator: {
-                    select: {
-                        id: true,
-                        name: true,
-                        email: true,
-                    },
-                },
-                cluster: true,
-            },
-        });
+  async findAll(filters?: { status?: string; assetId?: string; assignedToId?: string; source?: string }) {
+    const where: any = {};
+    if (filters?.status) where.status = filters.status;
+    if (filters?.assetId) where.assetId = filters.assetId;
+    if (filters?.assignedToId) where.assignedToId = filters.assignedToId;
+    if (filters?.source) where.source = filters.source;
 
-        if (!lead) {
-            throw new NotFoundException(`Lead with ID ${id} not found`);
-        }
+    return this.prisma.lead.findMany({
+      where,
+      include: {
+        asset: { select: { id: true, name: true, type: true, location: true } },
+        assignedTo: { include: { user: { select: { id: true, name: true } } } },
+        createdBy: { select: { id: true, name: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+  }
 
-        return lead;
-    }
+  async findById(id: string) {
+    const lead = await this.prisma.lead.findUnique({
+      where: { id },
+      include: {
+        asset: true,
+        assignedTo: { include: { user: true, cluster: true } },
+        createdBy: { select: { id: true, name: true, email: true } },
+      },
+    });
 
-    async create(data: {
-        name: string;
-        email: string;
-        phone: string;
-        assetInterest: string;
-        budget: number;
-        source: string;
-        leadSource: string;
-        createdBy?: string;
-    }) {
-        return this.prisma.lead.create({
-            data: {
-                name: data.name,
-                email: data.email,
-                phone: data.phone,
-                assetInterest: data.assetInterest,
-                budget: data.budget,
-                source: data.source,
-                leadSource: data.leadSource,
-                createdBy: data.createdBy,
-                status: "pending",
-                dateReceived: new Date(),
-            },
-            include: {
-                creator: {
-                    select: {
-                        name: true,
-                        email: true,
-                    },
-                },
-            },
-        });
-    }
+    if (!lead) throw new NotFoundException(`Lead with ID ${id} not found`);
+    return lead;
+  }
 
-    async update(id: string, data: any) {
-        // Check if lead exists
-        await this.findById(id);
+  async create(data: any, createdById: string) {
+    if (!data.name) throw new BadRequestException('Lead name is required');
+    if (!data.email) throw new BadRequestException('Email is required');
 
-        return this.prisma.lead.update({
-            where: { id },
-            data,
-            include: {
-                asset: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
-    }
+    return this.prisma.lead.create({
+      data: {
+        name: data.name,
+        email: data.email,
+        phone: data.phone || null,
+        assetInterest: data.assetInterest || null,
+        budget: data.budget ? parseFloat(data.budget) : null,
+        source: data.source || null,
+        leadSource: data.leadSource || "investor-app",
+        location: data.location || null,
+        notes: data.notes || null,
+        status: data.status || "pending",
+        assignedToId: data.assignedToId || null,
+        assignedCluster: data.assignedCluster || null,
+        createdById,
+        dateReceived: data.dateReceived ? new Date(data.dateReceived) : new Date(),
+      },
+      include: {
+        asset: { select: { id: true, name: true } },
+        assignedTo: { include: { user: { select: { id: true, name: true } } } },
+        createdBy: { select: { id: true, name: true } },
+      },
+    });
+  }
 
-    async assignLeads(data: {
-        leadIds: string[];
-        assignmentType: "cluster" | "all";
-        clusterId?: string;
-    }) {
-        const { leadIds, assignmentType, clusterId } = data;
+  async update(id: string, data: any) {
+    await this.findById(id);
 
-        // Verify all leads exist
-        const leads = await this.prisma.lead.findMany({
-            where: {
-                id: { in: leadIds },
-            },
-        });
+    const updateData: any = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.email !== undefined) updateData.email = data.email;
+    if (data.phone !== undefined) updateData.phone = data.phone;
+    if (data.status !== undefined) updateData.status = data.status;
+    if (data.budget !== undefined) updateData.budget = parseFloat(data.budget);
+    if (data.source !== undefined) updateData.source = data.source;
+    if (data.leadSource !== undefined) updateData.leadSource = data.leadSource;
+    if (data.location !== undefined) updateData.location = data.location;
+    if (data.notes !== undefined) updateData.notes = data.notes;
+    if (data.assetInterest !== undefined) updateData.assetInterest = data.assetInterest;
+    if (data.assignedToId !== undefined) updateData.assignedToId = data.assignedToId;
+    if (data.assignedCluster !== undefined) updateData.assignedCluster = data.assignedCluster;
 
-        if (leads.length !== leadIds.length) {
-            throw new NotFoundException("One or more leads not found");
-        }
+    return this.prisma.lead.update({
+      where: { id },
+      data: updateData,
+      include: {
+        asset: { select: { id: true, name: true } },
+        assignedTo: { include: { user: { select: { id: true, name: true } } } },
+      },
+    });
+  }
 
-        // Verify cluster exists if assigning to specific cluster
-        if (assignmentType === "cluster" && clusterId) {
-            const cluster = await this.prisma.cluster.findUnique({
-                where: { id: clusterId },
-            });
+  async delete(id: string) {
+    await this.findById(id);
+    await this.prisma.lead.delete({ where: { id } });
+    return { message: 'Lead deleted successfully', id };
+  }
 
-            if (!cluster) {
-                throw new NotFoundException(`Cluster with ID ${clusterId} not found`);
-            }
-        }
+  async getStats() {
+    const [total, byStatus] = await Promise.all([
+      this.prisma.lead.count(),
+      this.prisma.lead.groupBy({
+        by: ['status'],
+        _count: true,
+      }),
+    ]);
 
-        // Update leads
-        if (assignmentType === "all") {
-            return this.prisma.lead.updateMany({
-                where: {
-                    id: { in: leadIds },
-                },
-                data: {
-                    status: "available",
-                    assignedTo: "All Clusters",
-                    assignedCluster: null,
-                },
-            });
-        } else {
-            const cluster = await this.prisma.cluster.findUnique({
-                where: { id: clusterId },
-            });
-
-            return this.prisma.lead.updateMany({
-                where: {
-                    id: { in: leadIds },
-                },
-                data: {
-                    status: "assigned",
-                    assignedTo: cluster?.name || null,
-                    assignedCluster: clusterId,
-                },
-            });
-        }
-    }
-
-    async getStats() {
-        const [
-            totalLeads,
-            pendingLeads,
-            assignedLeads,
-            availableLeads,
-            convertedLeads,
-            leadsBySource,
-        ] = await Promise.all([
-            this.prisma.lead.count(),
-            this.prisma.lead.count({ where: { status: "pending" } }),
-            this.prisma.lead.count({ where: { status: "assigned" } }),
-            this.prisma.lead.count({ where: { status: "available" } }),
-            this.prisma.lead.count({ where: { status: "converted" } }),
-            this.prisma.lead.groupBy({
-                by: ["leadSource"],
-                _count: true,
-            }),
-        ]);
-
-        const conversionRate = totalLeads > 0
-            ? (convertedLeads / totalLeads) * 100
-            : 0;
-
-        return {
-            totalLeads,
-            pendingLeads,
-            assignedLeads,
-            availableLeads,
-            convertedLeads,
-            conversionRate: conversionRate.toFixed(2),
-            leadsBySource,
-        };
-    }
-
-    async getLeadsByCluster(clusterId: string) {
-        return this.prisma.lead.findMany({
-            where: {
-                assignedCluster: clusterId,
-            },
-            include: {
-                asset: {
-                    select: {
-                        name: true,
-                        location: true,
-                    },
-                },
-            },
-            orderBy: {
-                dateReceived: "desc",
-            },
-        });
-    }
-
-    async convertLead(leadId: string, transactionData: any) {
-        // Update lead status
-        const lead = await this.prisma.lead.update({
-            where: { id: leadId },
-            data: {
-                status: "converted",
-            },
-        });
-
-        // Create transaction
-        // This would typically be called from the transactions service
-        return lead;
-    }
-
-    async bulkImportLeads(leads: any[]) {
-        return this.prisma.lead.createMany({
-            data: leads.map(lead => ({
-                ...lead,
-                status: "pending",
-                dateReceived: new Date(),
-            })),
-            skipDuplicates: true,
-        });
-    }
-
-    async getLeadHistory(leadId: string) {
-        // This would track status changes, assignments, etc.
-        // For now, return basic lead info
-        return this.findById(leadId);
-    }
+    return {
+      total,
+      byStatus: byStatus.map((s: any) => ({ status: s.status, count: s._count })),
+    };
+  }
 }

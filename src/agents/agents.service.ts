@@ -1,302 +1,158 @@
-import { Injectable, NotFoundException, ConflictException } from "@nestjs/common";
-import { PrismaService } from "../prisma/prisma.service";
-import * as bcrypt from "bcrypt";
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
+import { PrismaService } from '../prisma/prisma.service';
+import * as bcrypt from 'bcrypt';
+import { PrismaClient, UserRole } from '@prisma/client';
 
 @Injectable()
 export class AgentsService {
-    constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
-    async findAll() {
-        return this.prisma.agent.findMany({
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-                _count: {
-                    select: {
-                        leadsAsLead: true,
-                        leadsAsCloser: true,
-                    },
-                },
-            },
-            orderBy: {
-                createdAt: "desc",
-            },
-        });
+  // FIX 22: use assignedLeads / leadTransactions / closerTransactions (not leadsAsLead/leadsAsCloser)
+  async findAll() {
+    const agents = await this.prisma.agent.findMany({
+      include: {
+        user: { select: { id: true, email: true, name: true, phone: true, role: true } },
+        cluster: { select: { id: true, name: true } },
+        _count: { select: { leadTransactions: true } },
+      },
+      orderBy: { status: 'asc' },
+    });
+
+    // Map to frontend shape
+    return agents.map(agent => ({
+      id: agent.id,
+      name: agent.user?.name ?? "",
+      email: agent.user?.email ?? "",
+      phone: agent.user?.phone ?? "",
+      cluster: agent.cluster?.name ?? "",
+      clusterId: agent.cluster?.id ?? "",
+      role: agent.user?.role ?? "AGENT",
+      status: agent.status?.toLowerCase() ?? "pending",
+      activeDeals: agent._count.leadTransactions,
+      closedDeals: agent.closedDeals,
+      totalCommission: agent.totalCommission,
+      performance: agent.closedDeals > 0 ? Math.min(100, Math.round((agent.closedDeals / 10) * 100)) : 0, // Example logic
+    }));
+  }
+
+  async findById(id: string) {
+    const agent = await this.prisma.agent.findUnique({
+      where: { id },
+      include: {
+        user: { select: { id: true, email: true, name: true } },
+        cluster: true,
+        assignedLeads: { orderBy: { createdAt: 'desc' }, take: 10 },
+        leadTransactions: { orderBy: { date: 'desc' }, take: 10 },
+        closerTransactions: { orderBy: { date: 'desc' }, take: 10 },
+        commissions: { orderBy: { createdAt: 'desc' }, take: 10 },
+      },
+    });
+
+    if (!agent) throw new NotFoundException(`Agent with ID ${id} not found`);
+    return agent;
+  }
+
+  // FIX 21: only pass fields that exist on Agent model
+  async create(data: { name: string; email: string; phone?: string; cluster?: string; role?: string; status?: string }) {
+    if (!data.name) throw new BadRequestException('Name is required');
+    if (!data.email) throw new BadRequestException('Email is required');
+
+    // Check if user exists
+    let user = await this.prisma.user.findUnique({ where: { email: data.email } });
+
+    if (user) {
+      // Verify not already an agent
+      const existing = await this.prisma.agent.findUnique({ where: { userId: user.id } });
+      if (existing) throw new ConflictException('User is already registered as an agent');
+      // Update user info if needed
+      await this.prisma.user.update({
+        where: { id: user.id },
+        data: {
+          name: data.name,
+          phone: data.phone,
+          role: (data.role ? UserRole[data.role.toUpperCase() as keyof typeof UserRole] : UserRole.AGENT),
+        },
+      });
+    } else {
+      // Create user with default password
+      const hashedPassword = await bcrypt.hash('password123', 10);
+      user = await this.prisma.user.create({
+        data: {
+          email: data.email,
+          password: hashedPassword,
+          name: data.name,
+          phone: data.phone,
+          role: (data.role ? UserRole[data.role.toUpperCase() as keyof typeof UserRole] : UserRole.AGENT),
+        },
+      });
     }
 
-    async findById(id: string) {
-        const agent = await this.prisma.agent.findUnique({
-            where: { id },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: true,
-                leadsAsLead: {
-                    take: 10,
-                    orderBy: { date: "desc" },
-                    include: {
-                        asset: {
-                            select: {
-                                name: true,
-                            },
-                        },
-                    },
-                },
-                leadsAsCloser: {
-                    take: 10,
-                    orderBy: { date: "desc" },
-                    include: {
-                        asset: {
-                            select: {
-                                name: true,
-                            },
-                        },
-                    },
-                },
-            },
-        });
+    return this.prisma.agent.create({
+      data: {
+        userId: user.id,
+        clusterId: data.cluster || null,
+        status: (data.status as any) || 'PENDING',
+        closedDeals: 0,
+        totalCommission: 0,
+      },
+      include: {
+        user: { select: { id: true, email: true, name: true, phone: true, role: true } },
+        cluster: { select: { id: true, name: true } },
+      },
+    });
+  }
 
-        if (!agent) {
-            throw new NotFoundException(`Agent with ID ${id} not found`);
-        }
+  async update(id: string, data: any) {
+    const agent = await this.findById(id);
 
-        return agent;
+    // Update user info if provided
+    if (data.name || data.email || data.phone || data.role) {
+      await this.prisma.user.update({
+        where: { id: agent.userId },
+        data: {
+          ...(data.name ? { name: data.name } : {}),
+          ...(data.email ? { email: data.email } : {}),
+          ...(data.phone ? { phone: data.phone } : {}),
+          ...(data.role ? { role: data.role.toUpperCase() } : {}),
+        },
+      });
     }
 
-    async create(data: {
-        name: string;
-        email: string;
-        phone: string;
-        cluster: string;
-        role: string;
-        status: string;
-    }) {
-        // Check if user with this email exists
-        const existingUser = await this.prisma.user.findUnique({
-            where: { email: data.email },
-        });
+    const updateData: any = {};
+    if (data.cluster !== undefined) updateData.clusterId = data.cluster;
+    if (data.status !== undefined) updateData.status = data.status;
 
-        if (existingUser) {
-            // Check if user is already an agent
-            const existingAgent = await this.prisma.agent.findUnique({
-                where: { userId: existingUser.id },
-            });
+    return this.prisma.agent.update({
+      where: { id },
+      data: updateData,
+      include: {
+        user: { select: { id: true, email: true, name: true, phone: true, role: true } },
+        cluster: { select: { id: true, name: true } },
+      },
+    });
+  }
 
-            if (existingAgent) {
-                throw new ConflictException("User is already registered as an agent");
-            }
-        }
+  async delete(id: string) {
+    await this.findById(id);
+    await this.prisma.agent.delete({ where: { id } });
+    return { message: 'Agent deleted successfully', id };
+  }
 
-        // Create user if doesn't exist
-        let user;
-        if (existingUser) {
-            user = existingUser;
-        } else {
-            const hashedPassword = await bcrypt.hash("password123", 10); // Default password
-            user = await this.prisma.user.create({
-                data: {
-                    email: data.email,
-                    password: hashedPassword,
-                    name: data.name,
-                    role: "SALES",
-                },
-            });
-        }
+  async getStats() {
+    const [total, active, pending] = await Promise.all([
+      this.prisma.agent.count(),
+      this.prisma.agent.count({ where: { status: 'ACTIVE' } }),
+      this.prisma.agent.count({ where: { status: 'PENDING' } }),
+    ]);
 
-        // Create agent profile
-        const agent = await this.prisma.agent.create({
-            data: {
-                userId: user.id,
-                clusterId: data.cluster,
-                role: data.role,
-                status: data.status || "active",
-                activeDeals: 0,
-                closedDeals: 0,
-                totalCommission: 0,
-                performance: 0,
-            },
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
+    const commissionAgg = await this.prisma.agent.aggregate({ _sum: { totalCommission: true, closedDeals: true } });
 
-        return agent;
-    }
-
-    async update(id: string, data: any) {
-        // Check if agent exists
-        const agent = await this.findById(id);
-
-        // Update user info if provided
-        if (data.name || data.email) {
-            await this.prisma.user.update({
-                where: { id: agent.userId },
-                data: {
-                    name: data.name,
-                    email: data.email,
-                },
-            });
-        }
-
-        // Update agent profile
-        const updateData: any = {};
-        if (data.cluster) updateData.clusterId = data.cluster;
-        if (data.role) updateData.role = data.role;
-        if (data.status) updateData.status = data.status;
-
-        return this.prisma.agent.update({
-            where: { id },
-            data: updateData,
-            include: {
-                user: {
-                    select: {
-                        id: true,
-                        email: true,
-                        name: true,
-                    },
-                },
-                cluster: {
-                    select: {
-                        id: true,
-                        name: true,
-                    },
-                },
-            },
-        });
-    }
-
-    async delete(id: string) {
-        // Check if agent exists
-        const agent = await this.findById(id);
-
-        // Check if agent has active deals
-        const activeDealsCount = await this.prisma.transaction.count({
-            where: {
-                OR: [
-                    { leadAgentId: id },
-                    { closerAgentId: id },
-                ],
-                status: "pending",
-            },
-        });
-
-        if (activeDealsCount > 0) {
-            throw new Error(
-                `Cannot delete agent with ${activeDealsCount} active deals. Please reassign or complete deals first.`
-            );
-        }
-
-        // Delete agent profile (user remains)
-        return this.prisma.agent.delete({
-            where: { id },
-        });
-    }
-
-    async getStats() {
-        const [
-            totalAgents,
-            activeAgents,
-            totalDeals,
-            totalCommission,
-        ] = await Promise.all([
-            this.prisma.agent.count(),
-            this.prisma.agent.count({ where: { status: "active" } }),
-            this.prisma.agent.aggregate({
-                _sum: {
-                    activeDeals: true,
-                    closedDeals: true,
-                },
-            }),
-            this.prisma.agent.aggregate({
-                _sum: {
-                    totalCommission: true,
-                },
-            }),
-        ]);
-
-        return {
-            totalAgents,
-            activeAgents,
-            totalActiveDeals: totalDeals._sum.activeDeals || 0,
-            totalClosedDeals: totalDeals._sum.closedDeals || 0,
-            totalCommission: totalCommission._sum.totalCommission || 0,
-        };
-    }
-
-    async updateAgentStats(agentId: string) {
-        const [activeDeals, closedDeals, totalCommission] = await Promise.all([
-            this.prisma.transaction.count({
-                where: {
-                    OR: [
-                        { leadAgentId: agentId },
-                        { closerAgentId: agentId },
-                    ],
-                    status: "pending",
-                },
-            }),
-            this.prisma.transaction.count({
-                where: {
-                    OR: [
-                        { leadAgentId: agentId },
-                        { closerAgentId: agentId },
-                    ],
-                    status: "completed",
-                },
-            }),
-            this.prisma.transaction.aggregate({
-                where: {
-                    OR: [
-                        { leadAgentId: agentId },
-                        { closerAgentId: agentId },
-                    ],
-                    status: "completed",
-                },
-                _sum: {
-                    leadCommission: true,
-                    closerCommission: true,
-                },
-            }),
-        ]);
-
-        const commission =
-            (totalCommission._sum.leadCommission || 0) +
-            (totalCommission._sum.closerCommission || 0);
-
-        return this.prisma.agent.update({
-            where: { id: agentId },
-            data: {
-                activeDeals,
-                closedDeals,
-                totalCommission: commission,
-            },
-        });
-    }
+    return {
+      totalAgents: total,
+      activeAgents: active,
+      pendingAgents: pending,
+      totalClosedDeals: commissionAgg._sum.closedDeals || 0,
+      totalCommission: commissionAgg._sum.totalCommission || 0,
+    };
+  }
 }
