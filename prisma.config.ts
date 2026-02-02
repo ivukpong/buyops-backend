@@ -12,3 +12,4 @@ export default defineConfig({
         url: env('DATABASE_URL'),   // used by prisma migrate / studio / generate
     },
 });
+
