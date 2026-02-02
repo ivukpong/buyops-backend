@@ -4406,16 +4406,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PrismaService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
-const adapter_pg_1 = __webpack_require__(/*! @prisma/adapter-pg */ "@prisma/adapter-pg");
-const pg_1 = __webpack_require__(/*! pg */ "pg");
 let PrismaService = class PrismaService extends client_1.PrismaClient {
     constructor() {
-        const pool = new pg_1.Pool({ connectionString: process.env.DATABASE_URL });
-        const adapter = new adapter_pg_1.PrismaPg(pool);
-        super({ adapter });
-    }
-    async onModuleInit() {
-        await this.$connect();
+        super({
+            log: ['error', 'warn'],
+        });
     }
     async onModuleDestroy() {
         await this.$disconnect();
@@ -6489,16 +6484,6 @@ module.exports = require("@nestjs/schedule");
 
 /***/ }),
 
-/***/ "@prisma/adapter-pg":
-/*!*************************************!*\
-  !*** external "@prisma/adapter-pg" ***!
-  \*************************************/
-/***/ ((module) => {
-
-module.exports = require("@prisma/adapter-pg");
-
-/***/ }),
-
 /***/ "@prisma/client":
 /*!*********************************!*\
   !*** external "@prisma/client" ***!
@@ -6586,16 +6571,6 @@ module.exports = require("nodemailer");
 /***/ ((module) => {
 
 module.exports = require("passport-jwt");
-
-/***/ }),
-
-/***/ "pg":
-/*!*********************!*\
-  !*** external "pg" ***!
-  \*********************/
-/***/ ((module) => {
-
-module.exports = require("pg");
 
 /***/ }),
 
