@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { CommissionPaymentStatus } from '@prisma/client';
 
 export interface TransactionFilter {
     status?: string;
@@ -21,7 +22,7 @@ export class TransactionsService {
       month,
     }).then(transactions =>
       transactions.filter(
-        t => t.commissionPaymentStatus === 'UNPAID' || t.commissionPaymentStatus === 'SENT'
+        t => t.status === 'unpaid' || t.status === 'sent'
       )
     );
   }
@@ -33,7 +34,7 @@ export class TransactionsService {
       month,
     }).then(transactions =>
       transactions.filter(
-        t => t.commissionPaymentStatus === 'PAID'
+        t => t.status === 'paid'
       )
     );
   }
@@ -134,8 +135,8 @@ export class TransactionsService {
         closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : 0,
         totalCommission: data.totalCommission ? parseFloat(data.totalCommission) : 0,
         commission: data.commission ? parseFloat(data.commission) : 0,
-        status: data.status || 'PENDING',
-        commissionPaymentStatus: data.commissionPaymentStatus || 'UNPAID',
+        status: data.status || CommissionPaymentStatus.UNPAID,
+        commissionPaymentStatus: data.commissionPaymentStatus || CommissionPaymentStatus.UNPAID,
         installmentDuration: data.installmentDuration ? parseInt(data.installmentDuration) : null,
       },
       include: {

@@ -9,7 +9,7 @@ export class AssetsService {
     await this.findById(id);
     return this.prisma.asset.update({
       where: { id },
-      data: { status: 'published', publishedAt: new Date() },
+      data: { status: 'published' }, // removed publishedAt
     });
   }
 
@@ -17,7 +17,7 @@ export class AssetsService {
     await this.findById(id);
     return this.prisma.asset.update({
       where: { id },
-      data: { status: 'draft', publishedAt: null },
+      data: { status: 'draft' }, // removed publishedAt
     });
   }
 
@@ -82,11 +82,7 @@ export class AssetsService {
       documents: asset.documents ?? 0,
       description: asset.description,
       leads: asset.leads ?? [],
-      finalPrice: Number(asset.finalPrice) || 0,
       projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
-      rentalYield: asset.rentalYield,
-      capitalAppreciation: asset.capitalAppreciation,
-      totalAnnualReturn: asset.totalAnnualReturn,
     }));
   }
 
@@ -123,12 +119,7 @@ export class AssetsService {
         type: data.type || null,
         status: data.status || 'draft',
         location: data.location || null,
-        referenceCode: data.referenceCode || null,
-        basePrice: data.basePrice ? parseFloat(data.basePrice) : null,
-        markup: data.markup ? parseFloat(data.markup) : null,
-        finalPrice: data.finalPrice ? parseFloat(data.finalPrice) : null,
         description: data.description || null,
-        publishedAt: data.status === 'published' ? new Date() : null,
         totalUnits: data.totalUnits ? parseInt(data.totalUnits) : null,
         availableUnits: data.availableUnits ? parseInt(data.availableUnits) : null,
         projectedRentalIncome: data.projectedRentalIncome ? parseFloat(data.projectedRentalIncome) : null,
@@ -152,17 +143,8 @@ export class AssetsService {
     const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.type !== undefined) updateData.type = data.type;
-    if (data.status !== undefined) {
-      updateData.status = data.status;
-      if (data.status === 'published' && !updateData.publishedAt) {
-        updateData.publishedAt = new Date();
-      }
-    }
+    if (data.status !== undefined) updateData.status = data.status;
     if (data.location !== undefined) updateData.location = data.location;
-    if (data.referenceCode !== undefined) updateData.referenceCode = data.referenceCode;
-    if (data.basePrice !== undefined) updateData.basePrice = parseFloat(data.basePrice);
-    if (data.markup !== undefined) updateData.markup = parseFloat(data.markup);
-    if (data.finalPrice !== undefined) updateData.finalPrice = parseFloat(data.finalPrice);
     if (data.description !== undefined) updateData.description = data.description;
     if (data.companyId !== undefined) updateData.companyId = data.companyId;
     if (data.totalUnits !== undefined) updateData.totalUnits = parseInt(data.totalUnits);

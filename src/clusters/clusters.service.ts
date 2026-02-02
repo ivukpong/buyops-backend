@@ -33,7 +33,7 @@ export class ClustersService {
       const activeAssets = await this.prisma.asset.count({
         where: {
           status: { in: ['published', 'active'] },
-          companyId: cluster.companyId, // or use the correct companyId
+          // Remove companyId: cluster.companyId,
         },
       });
       // Total commission (sum for all agents in cluster)

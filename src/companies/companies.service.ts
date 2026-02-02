@@ -15,7 +15,7 @@ export class CompaniesService {
     // Fetch all companies with their assets and transactions counts
     const companies = await this.prisma.company.findMany({
       include: {
-        assets: { select: { id: true, status: true } },
+        assets: { select: { id: true, name: true, type: true, status: true } },
         _count: { select: { assets: true, transactions: true } },
       },
       orderBy: { createdAt: 'desc' },
@@ -35,7 +35,7 @@ export class CompaniesService {
     const company = await this.prisma.company.findUnique({
       where: { id },
       include: {
-        assets: { select: { id: true, name: true, type: true, status: true, finalPrice: true } },
+        assets: { select: { id: true, name: true, type: true, status: true } },
         transactions: { select: { id: true, totalAmount: true, status: true, date: true }, take: 10, orderBy: { date: 'desc' } },
         _count: { select: { assets: true, transactions: true } },
       },

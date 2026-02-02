@@ -11,7 +11,7 @@ export class SalesService {
     return this.prisma.transaction.findMany({
       where: { buyerId: userId },
       include: {
-        asset: { select: { id: true, name: true, type: true, finalPrice: true } },
+        asset: { select: { id: true, name: true, type: true } },
         leadAgent: { include: { user: { select: { id: true, name: true } } } },
         closerAgent: { include: { user: { select: { id: true, name: true } } } },
         installments: true,

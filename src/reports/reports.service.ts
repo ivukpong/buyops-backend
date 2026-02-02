@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as ExcelJS from 'exceljs';
+import { CommissionPaymentStatus } from '@prisma/client';
 
 @Injectable()
 export class ReportsService {
@@ -369,12 +370,12 @@ export class ReportsService {
     const typeAgg = await this.prisma.asset.groupBy({
       by: ['type'],
       _count: { type: true },
-      _sum: { basePrice: true },
+      // _sum: { basePrice: true }, // REMOVE or replace with a valid field
     });
     const assetTypeBreakdown = typeAgg.map(t => ({
       type: t.type,
       count: t._count.type,
-      totalValue: t._sum.basePrice || 0,
+      // totalValue: t._sum.basePrice || 0, // REMOVE or replace
     }));
 
     return { assetPerformanceData, assetTypeBreakdown };
@@ -501,7 +502,7 @@ export class ReportsService {
         thisMonthTotal += tx.totalCommission || 0;
       }
       totalEarned += (tx.commissionPaymentStatus === 'PAID' ? tx.totalCommission || 0 : 0);
-      pendingTotal += (tx.commissionPaymentStatus === 'PENDING' ? tx.totalCommission || 0 : 0);
+      pendingTotal += (tx.commissionPaymentStatus === CommissionPaymentStatus.SENT ? tx.totalCommission || 0 : 0);
       leadCommissionTotal += tx.leadCommission || 0;
       closerCommissionTotal += tx.closerCommission || 0;
       // Example: team lead bonus logic (customize as needed)

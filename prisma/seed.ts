@@ -135,16 +135,12 @@ async function main() {
   });
 
   // ASSETS
-  const asset1 = await prisma.asset.upsert({
-    where: { name: 'Elara Pearl Duplexes' },
-    update: {},
-    create: {
+  const asset1 = await prisma.asset.create({
+    data: {
       name: 'Elara Pearl Duplexes',
       companyId: elara.id,
       type: 'DUPLEX',
       status: 'published',
-      basePrice: 145_000_000,
-      finalPrice: 145_000_000,
       location: 'Lekki Phase 1',
       bedrooms: 4,
       bathrooms: 4,
@@ -164,16 +160,13 @@ async function main() {
       riskFactors: ['Market', 'Liquidity'],
     },
   });
-  const asset2 = await prisma.asset.upsert({
-    where: { name: 'Primeview Terraces' },
-    update: {},
-    create: {
+
+  const asset2 = await prisma.asset.create({
+    data: {
       name: 'Primeview Terraces',
       companyId: primevest.id,
       type: 'TERRACE',
       status: 'published',
-      basePrice: 120_000_000,
-      finalPrice: 120_000_000,
       location: 'Maitama, Abuja',
       bedrooms: 3,
       bathrooms: 3,

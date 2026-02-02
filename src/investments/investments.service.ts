@@ -10,7 +10,7 @@ export class InvestmentsService {
     return this.prisma.transaction.findMany({
       where: { buyerId: userId },
       include: {
-        asset: { select: { id: true, name: true, type: true, finalPrice: true, location: true } },
+        asset: { select: { id: true, name: true, type: true, location: true } },
         company: { select: { id: true, name: true } },
         installments: { orderBy: { dueDate: 'asc' } },
         installmentPlans: true,

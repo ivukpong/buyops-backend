@@ -53,7 +53,7 @@ export class UsersService {
       where: { buyerId: userId },
       include: {
         asset: {
-          select: { id: true, name: true, type: true, referenceCode: true, finalPrice: true },
+          select: { id: true, name: true, type: true, location: true },
         },
         leadAgent: { include: { user: { select: { id: true, name: true } } } },
         closerAgent: { include: { user: { select: { id: true, name: true } } } },
