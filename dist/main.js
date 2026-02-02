@@ -4456,7 +4456,6 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const reports_service_1 = __webpack_require__(/*! ./reports.service */ "./src/reports/reports.service.ts");
 const express_1 = __webpack_require__(/*! express */ "express");
 const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
-const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
 const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
 let ReportsController = class ReportsController {
     constructor(reportsService) {
@@ -4556,7 +4555,6 @@ __decorate([
 ], ReportsController.prototype, "getSalesReport", null);
 __decorate([
     (0, common_1.Get)('assets'),
-    (0, roles_decorator_1.Roles)('ADMIN', 'MANAGER'),
     __param(0, (0, common_1.Query)('dateRange')),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
