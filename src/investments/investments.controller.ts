@@ -8,15 +8,15 @@ import { RolesGuard } from '../common/roles.guard';
 export class InvestmentsController {
   constructor(private svc: InvestmentsService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('INVESTOR')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles('INVESTOR')
   @Get('me')
   async myInvestments(@Req() req: any) {
     return this.svc.findByUser(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('INVESTOR')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles('INVESTOR')
   @Get('summary')
   async summary(@Req() req: any) {
     return this.svc.getInvestmentSummary(req.user.id);

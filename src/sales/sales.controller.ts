@@ -8,22 +8,22 @@ import { RolesGuard } from '../common/roles.guard';
 export class SalesController {
   constructor(private svc: SalesService) {}
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('INVESTOR', 'USER')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles('INVESTOR', 'USER')
   @Get('me')
   async mySales(@Req() req: any) {
     return this.svc.findByUser(req.user.id);
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles('ADMIN')
   @Get()
   async all() {
     return this.svc.findAll();
   }
 
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles('ADMIN')
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles('ADMIN')
   @Get('summary')
   async summary() {
     return this.svc.getSalesSummary();

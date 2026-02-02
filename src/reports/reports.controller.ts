@@ -34,7 +34,7 @@ export class ReportsController {
     }
 
     @Get('assets')
-@Roles('ADMIN', 'MANAGER')
+// @Roles('ADMIN', 'MANAGER')
 async getAssetPerformance(@Query('dateRange') dateRange?: string) {
     const data = await this.reportsService.getAssetPerformance(dateRange);
     return { success: true, ...data };

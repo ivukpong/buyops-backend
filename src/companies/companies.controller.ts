@@ -18,23 +18,23 @@ import { CreateCompanyDto } from './dto/create-company.dto';
 export class CompaniesController {
     constructor(private companiesService: CompaniesService) { }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")
     @Get()
     async findAll() {
         return this.companiesService.findAll();
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")
     @Get(":id")
     async findOne(@Param("id") id: string) {
         console.log("Fetching company with ID:", id);
         return this.companiesService.findById(id);
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")
     @Post()
     async create(@Body() dto: CreateCompanyDto) {
         try {
@@ -47,15 +47,15 @@ export class CompaniesController {
         }
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateCompanyDto>) {
         return this.companiesService.update(id, dto);
     }
 
-    @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")
     @Delete(":id")
     async remove(@Param("id") id: string) {
         return this.companiesService.delete(id);
