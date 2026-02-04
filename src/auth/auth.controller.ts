@@ -5,11 +5,14 @@ import { IsEmail, IsString, MinLength, IsEnum, IsOptional } from 'class-validato
 import { UserRole } from '@prisma/client';
 
 export class LoginDto {
+
   @IsEmail()
   email!: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
+  // At least one number and one special character
+  // Custom validator could be used for more complex rules
   password!: string;
 }
 
@@ -18,7 +21,7 @@ export class RegisterDto {
   email!: string;
 
   @IsString()
-  @MinLength(6)
+  @MinLength(8, { message: 'Password must be at least 8 characters long' })
   password!: string;
 
   @IsString()

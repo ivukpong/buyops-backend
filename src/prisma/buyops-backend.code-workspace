@@ -1,0 +1,21 @@
+{
+	"folders": [
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../admin"
+		},
+		{
+			"path": "../../../sales-dashboard-design"
+		},
+		{
+			"path": "../../../../Repositories/buyops-investors-mobile"
+		}
+	],
+	"settings": {
+		"chat.tools.terminal.autoApprove": {
+			"npx tsc": true
+		}
+	}
+}

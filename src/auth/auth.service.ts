@@ -21,17 +21,15 @@ export class AuthService {
   // ────────────────────────────────────────────────
 
   async validateUser(email: string, password: string) {
-    console.log('VALIDATE USER:', email);
-    const user = await this.prisma.user.findUnique({ where: { email } });
-   console.log(user)
+    // Normalize email: trim and lowercase
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.prisma.user.findUnique({ where: { email: normalizedEmail } });
     if (!user) return null;
 
     const isValid = await bcrypt.compare(password, user.password);
-    console.log(isValid)
     if (!isValid) return null;
 
     const { password: _, ...result } = user;
-    console.log(result)
     return result;
   }
 
@@ -59,18 +57,26 @@ export class AuthService {
   }
 
   async register(data: { email: string; password: string; name?: string; role?: UserRole }) {
+    // Normalize email: trim and lowercase
+    const normalizedEmail = data.email.trim().toLowerCase();
     const existing = await this.prisma.user.findUnique({
-      where: { email: data.email },
+      where: { email: normalizedEmail },
     });
     if (existing) throw new ConflictException('Email already in use');
+
+    // Enforce strong password: min 8 chars, at least one number and one special char
+    const strongPassword = /^(?=.*[0-9])(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]).{8,}$/;
+    if (!strongPassword.test(data.password)) {
+      throw new ConflictException('Password must be at least 8 characters long and include a number and a special character.');
+    }
 
     const hashed = await bcrypt.hash(data.password, 10);
 
     const user = await this.prisma.user.create({
       data: {
-        email: data.email,
+        email: normalizedEmail,
         password: hashed,
-        name: data.name || data.email.split('@')[0],
+        name: data.name || normalizedEmail.split('@')[0],
         role: data.role || UserRole.USER,
       },
     });
@@ -157,7 +163,8 @@ export class AuthService {
   // ────────────────────────────────────────────────
 
   async forgotPassword(email: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.prisma.user.findUnique({ where: { email: normalizedEmail } });
 
     // Security: don't reveal whether email exists
     if (!user) {
@@ -225,7 +232,8 @@ export class AuthService {
   }
 
   async resendVerificationEmail(email: string) {
-    const user = await this.prisma.user.findUnique({ where: { email } });
+    const normalizedEmail = email.trim().toLowerCase();
+    const user = await this.prisma.user.findUnique({ where: { email: normalizedEmail } });
 
     if (!user) {
       return { message: 'If an account exists, a verification link has been sent.' };
