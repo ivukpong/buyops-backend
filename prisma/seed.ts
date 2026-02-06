@@ -24,6 +24,11 @@ async function main() {
     update: {},
     create: { email: 'admin@buyops.com', password, name: 'Iniobong Admin', role: 'ADMIN' },
   });
+  const teamLeadUser = await prisma.user.upsert({
+    where: { email: 'teamlead1@buyops.com' },
+    update: {},
+    create: { email: 'teamlead1@buyops.com', password, name: 'Ada TeamLead', role: 'AGENT' },
+  });
   const agentUser = await prisma.user.upsert({
     where: { email: 'agent1@buyops.com' },
     update: {},
@@ -54,10 +59,11 @@ async function main() {
       code: 'LAG-SALES',
       status: 'active',
       location: 'Lagos',
-      managerId: admin.id,
+      managerId: teamLeadUser.id,
     },
   });
 
+  // TEAM LEAD PROFILE (if needed)
   // AGENT PROFILE
   const agent = await prisma.agent.upsert({
     where: { userId: agentUser.id },
