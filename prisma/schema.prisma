@@ -332,6 +332,7 @@ model SavedProperty {
 
 enum UserRole {
   ADMIN
+  TEAM_LEAD
   AGENT
   FREELANCER
   INVESTOR
