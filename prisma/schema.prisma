@@ -11,7 +11,8 @@ model User {
   email               String          @unique
   password            String
   name                String
-  phone               String?         // <-- Add this line
+  phone               String?
+  status              UserStatus      @default(ACTIVE)
   createdAt           DateTime        @default(now())
   updatedAt           DateTime        @updatedAt
   agentProfileId      String?         @unique
@@ -26,6 +27,12 @@ model User {
   notifications       Notification[]
   savedProperties     SavedProperty[] @relation("UserSavedProperties")
   transactions        Transaction[]   @relation("UserTransactions")
+}
+
+enum UserStatus {
+  ACTIVE
+  INACTIVE
+  PENDING
 }
 
 model Company {

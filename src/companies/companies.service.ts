@@ -49,6 +49,9 @@ export class CompaniesService {
     try {
       if (!data.name || !data.name.trim()) throw new BadRequestException('Company name is required');
       if (!data.email || !data.email.trim()) throw new BadRequestException('Email is required');
+      if (!data.type || !['developer','realtor','partner','consultant','investor'].includes(data.type)) {
+        throw new BadRequestException('Company type is required and must be one of: developer, realtor, partner, consultant, investor');
+      }
 
       // Email uniqueness check
       const existing = await this.prisma.company.findFirst({ where: { email: data.email.toLowerCase().trim() } });
@@ -57,7 +60,7 @@ export class CompaniesService {
       const company = await this.prisma.company.create({
         data: {
           name: data.name.trim(),
-          type: data.type || null,
+          type: data.type,
           email: data.email.toLowerCase().trim(),
           phone: data.phone?.trim() || null,
           status: data.status || 'active',

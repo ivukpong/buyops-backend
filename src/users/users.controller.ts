@@ -63,6 +63,12 @@ export class CreateUserDto {
   })
   role!: string;
 
+  @IsString()
+  @Matches(/^(ACTIVE|INACTIVE|PENDING)$/i, {
+    message: 'Status must be one of: ACTIVE, INACTIVE, PENDING',
+  })
+  status!: string;
+
   @IsOptional()
   @IsString()
   phone?: string;

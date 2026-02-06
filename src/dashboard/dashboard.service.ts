@@ -48,34 +48,48 @@ export class DashboardService {
     ]);
 
     // KPIs
+    // Calculate percentage change for KPIs
+    function calcChange(current: number, previous: number): string {
+      if (previous === undefined || previous === null) return 'N/A';
+      if (previous === 0) return current > 0 ? 'New' : '0%';
+      const change = ((current - previous) / previous) * 100;
+      return `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
+    }
+
+    // Example: fetch previous period values (replace with real queries)
+    const prevAgents = 0; // TODO: query previous period
+    const prevClusters = 0; // TODO: query previous period
+    const prevRevenue = 0; // TODO: query previous period
+    const prevCommissions = 0; // TODO: query previous period
+
     const kpis = [
       {
         title: "Total Agents",
         value: totalAgents,
         icon: "building",
         trend: "up",
-        change: "2%",
+        change: calcChange(totalAgents, prevAgents),
       },
       {
         title: "Active Clusters",
         value: activeClusters,
         icon: "trendingUp",
         trend: "up",
-        change: "1%",
+        change: calcChange(activeClusters, prevClusters),
       },
       {
         title: "Total Revenue",
         value: `₦${(totalRevenue._sum.totalAmount || 0).toLocaleString()}`,
         icon: "dollarSign",
         trend: "up",
-        change: "5%",
+        change: calcChange(Number(totalRevenue._sum.totalAmount || 0), prevRevenue),
       },
       {
         title: "Total Commissions",
         value: `₦${(totalCommissions._sum.totalCommission || 0).toLocaleString()}`,
         icon: "receipt",
         trend: "up",
-        change: "3%",
+        change: calcChange(Number(totalCommissions._sum.totalCommission || 0), prevCommissions),
       },
     ];
 

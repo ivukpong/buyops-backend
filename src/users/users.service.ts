@@ -136,7 +136,11 @@ export class UsersService {
 
   async createUser(dto: any) {
     // Create new user
-    return this.prisma.user.create({ data: dto });
+    // Ensure status is present and valid
+    if (!dto.status || !['ACTIVE', 'INACTIVE', 'PENDING'].includes(dto.status.toUpperCase())) {
+      throw new Error('User status is required and must be one of: ACTIVE, INACTIVE, PENDING');
+    }
+    return this.prisma.user.create({ data: { ...dto, status: dto.status.toUpperCase() } });
   }
 
   async updateUserRole(id: string, role: string) {

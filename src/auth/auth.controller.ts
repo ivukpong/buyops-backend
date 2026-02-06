@@ -42,6 +42,7 @@ export class AuthController {
 
 
   @Post('login')
+  @HttpCode(200)
   async login(@Body() dto: LoginDto) {
     // First, validate the user and get the full user object:
     const user = await this.authService.validateUser(dto.email, dto.password);
