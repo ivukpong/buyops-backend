@@ -1,5 +1,6 @@
-import { Body, Controller, HttpCode, Post, Req, UnauthorizedException, UseGuards } from '@nestjs/common';
+import { Body, Controller, HttpCode, Post, Req, UnauthorizedException, UseGuards, Get, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { IsEmail, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
 import { UserRole } from '@prisma/client';
@@ -38,7 +39,10 @@ export class RefreshTokenDto {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService
+  ) {}
 
 
   @Post('login')
@@ -62,6 +66,27 @@ export class AuthController {
   @Post('refresh')
   async refreshToken(@Body() dto: RefreshTokenDto) {
     return this.authService.refreshToken(dto.refreshToken);
+  }
+
+  // Get current user profile (GET /auth/me)
+  @UseGuards(JwtAuthGuard)
+  @Get('me')
+  async getProfile(@Req() req: any) {
+    return this.usersService.findById(req.user.id);
+  }
+
+  // Update current user profile (PUT /auth/me)
+  @UseGuards(JwtAuthGuard)
+  @Put('me')
+  async updateProfile(@Req() req: any, @Body() dto: any) {
+    return this.usersService.updateUser(req.user.id, dto);
+  }
+
+  // Change password (POST /auth/change-password)
+  @UseGuards(JwtAuthGuard)
+  @Post('change-password')
+  async changePassword(@Req() req: any, @Body() body: { currentPassword: string; newPassword: string }) {
+    return this.authService.changePassword(req.user.id, body.currentPassword, body.newPassword);
   }
 
   @UseGuards(JwtAuthGuard)
