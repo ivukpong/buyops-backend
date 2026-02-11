@@ -31,6 +31,7 @@ export enum CompanyTypeEnum {
 
 export enum CompanyStatusEnum {
   ACTIVE = 'active',
+  PENDING = 'pending',
   INACTIVE = 'inactive',
   SUSPENDED = 'suspended',
 }

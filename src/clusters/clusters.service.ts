@@ -3,7 +3,35 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class ClustersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
+
+  private normalizeClusterStatus(status?: string): string {
+    const normalized = (status || 'ACTIVE').toString().trim().toUpperCase();
+    if (!['ACTIVE', 'INACTIVE', 'PENDING'].includes(normalized)) {
+      throw new BadRequestException('Cluster status must be one of: ACTIVE, INACTIVE, PENDING');
+    }
+    return normalized.toLowerCase();
+  }
+
+  private async resolveManagerId(teamLead?: string): Promise<string | null> {
+    if (!teamLead) return null;
+
+    // Accept a User ID directly
+    const user = await this.prisma.user.findUnique({
+      where: { id: teamLead },
+      select: { id: true },
+    });
+    if (user) return user.id;
+
+    // Or accept an Agent ID and map to its userId
+    const agent = await this.prisma.agent.findUnique({
+      where: { id: teamLead },
+      select: { userId: true },
+    });
+    if (agent?.userId) return agent.userId;
+
+    throw new BadRequestException('Invalid teamLead: must be a valid User ID or Agent ID');
+  }
 
   async findAll() {
     const clusters = await this.prisma.cluster.findMany({
@@ -81,13 +109,15 @@ export class ClustersService {
 
   async create(data: any) {
     if (!data.name) throw new BadRequestException('Cluster name is required');
+    const managerId = await this.resolveManagerId(data.teamLead);
+    const status = this.normalizeClusterStatus(data.status);
     return this.prisma.cluster.create({
       data: {
         name: data.name,
         code: data.code || null,
-        status: data.status || 'active',
+        status,
         location: data.location || null,
-        managerId: data.teamLead || null, // teamLead is managerId
+        managerId,
       },
       include: {
         manager: { select: { id: true, name: true } },
@@ -100,9 +130,9 @@ export class ClustersService {
     const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name;
     if (data.code !== undefined) updateData.code = data.code;
-    if (data.status !== undefined) updateData.status = data.status;
+    if (data.status !== undefined) updateData.status = this.normalizeClusterStatus(data.status);
     if (data.location !== undefined) updateData.location = data.location;
-    if (data.teamLead !== undefined) updateData.managerId = data.teamLead;
+    if (data.teamLead !== undefined) updateData.managerId = await this.resolveManagerId(data.teamLead);
     return this.prisma.cluster.update({
       where: { id },
       data: updateData,
@@ -127,4 +157,3 @@ export class ClustersService {
     return { totalClusters: total, activeClusters: active, totalAgents: agents, totalFreelancers: freelancers };
   }
 }
-

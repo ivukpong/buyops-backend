@@ -51,7 +51,7 @@ export class DashboardService {
     // Calculate percentage change for KPIs
     function calcChange(current: number, previous: number): string {
       if (previous === undefined || previous === null) return 'N/A';
-      if (previous === 0) return current > 0 ? 'New' : '0%';
+      if (previous === 0) return current > 0 ? '+100.0%' : '0.0%';
       const change = ((current - previous) / previous) * 100;
       return `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
     }

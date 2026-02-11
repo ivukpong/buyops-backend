@@ -11,6 +11,18 @@ import { PrismaService } from '../prisma/prisma.service';
 export class CompaniesService {
   constructor(private prisma: PrismaService) {}
 
+  private normalizeStatus(status?: string): string {
+    const normalized = String(status || 'active').trim().toLowerCase();
+    if (!['active', 'pending', 'inactive', 'suspended'].includes(normalized)) {
+      throw new BadRequestException('Status must be one of: active, pending, inactive, suspended');
+    }
+    return normalized;
+  }
+
+  private normalizeEmail(email: string): string {
+    return email.toLowerCase().trim();
+  }
+
   async findAll() {
     // Fetch all companies with their assets and transactions counts
     const companies = await this.prisma.company.findMany({
@@ -24,7 +36,9 @@ export class CompaniesService {
     // Add activeAssets and totalTransactions to each company
     return companies.map(company => ({
       ...company,
-      activeAssets: company.assets.filter(asset => asset.status === 'AVAILABLE').length,
+      activeAssets: company.assets.filter(asset =>
+        ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())
+      ).length,
       totalTransactions: company._count.transactions,
     }));
   }
@@ -54,16 +68,16 @@ export class CompaniesService {
       }
 
       // Email uniqueness check
-      const existing = await this.prisma.company.findFirst({ where: { email: data.email.toLowerCase().trim() } });
+      const existing = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email) } });
       if (existing) throw new ConflictException('A company with this email already exists');
 
       const company = await this.prisma.company.create({
         data: {
           name: data.name.trim(),
           type: data.type,
-          email: data.email.toLowerCase().trim(),
+          email: this.normalizeEmail(data.email),
           phone: data.phone?.trim() || null,
-          status: data.status || 'active',
+          status: this.normalizeStatus(data.status),
           contactPerson: data.contactPerson?.trim() || null,
           address: data.address?.trim() || null,
           commissionRate: data.commissionRate ? parseFloat(data.commissionRate) : 0,
@@ -72,7 +86,7 @@ export class CompaniesService {
           agreementExpiryDate: data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null,
           registrationNumber: data.registrationNumber?.trim() || null,
           notes: data.notes?.trim() || null,
-          accountName: data.accountName?.trim() || null,
+          accountName: (data.accountName || data.bankAccountName)?.trim() || null,
           bankName: data.bankName?.trim() || null,
           accountNumber: data.accountNumber?.trim() || null,
         },
@@ -97,18 +111,20 @@ export class CompaniesService {
     const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name.trim();
     if (data.type !== undefined) updateData.type = data.type;
-    if (data.email !== undefined) updateData.email = data.email.toLowerCase().trim();
+    if (data.email !== undefined) updateData.email = this.normalizeEmail(data.email);
     if (data.phone !== undefined) updateData.phone = data.phone?.trim();
-    if (data.status !== undefined) updateData.status = data.status;
+    if (data.status !== undefined) updateData.status = this.normalizeStatus(data.status);
     if (data.contactPerson !== undefined) updateData.contactPerson = data.contactPerson?.trim();
     if (data.address !== undefined) updateData.address = data.address?.trim();
     if (data.commissionRate !== undefined) updateData.commissionRate = parseFloat(data.commissionRate);
     if (data.paymentTerms !== undefined) updateData.paymentTerms = data.paymentTerms?.trim();
-    if (data.agreementStartDate !== undefined) updateData.agreementStartDate = new Date(data.agreementStartDate);
-    if (data.agreementExpiryDate !== undefined) updateData.agreementExpiryDate = new Date(data.agreementExpiryDate);
+    if (data.agreementStartDate !== undefined) updateData.agreementStartDate = data.agreementStartDate ? new Date(data.agreementStartDate) : null;
+    if (data.agreementExpiryDate !== undefined) updateData.agreementExpiryDate = data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null;
     if (data.registrationNumber !== undefined) updateData.registrationNumber = data.registrationNumber?.trim();
     if (data.notes !== undefined) updateData.notes = data.notes?.trim();
-    if (data.accountName !== undefined) updateData.accountName = data.accountName?.trim();
+    if (data.accountName !== undefined || data.bankAccountName !== undefined) {
+      updateData.accountName = (data.accountName || data.bankAccountName)?.trim() || null;
+    }
     if (data.bankName !== undefined) updateData.bankName = data.bankName?.trim();
     if (data.accountNumber !== undefined) updateData.accountNumber = data.accountNumber?.trim();
 

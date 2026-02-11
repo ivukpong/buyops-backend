@@ -1,12 +1,13 @@
-import { Body, Controller, HttpCode, Post, Req, UnauthorizedException, UseGuards, Get, Put } from '@nestjs/common';
+import { Body, Controller, HttpCode, HttpStatus, Post, Req, UnauthorizedException, UseGuards, Get, Put } from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { JwtAuthGuard } from './jwt-auth.guard';
 import { IsEmail, IsString, MinLength, IsEnum, IsOptional } from 'class-validator';
+import { Transform } from 'class-transformer';
 import { UserRole } from '@prisma/client';
 
 export class LoginDto {
-
+  @Transform(({ value }) => String(value || '').trim().toLowerCase())
   @IsEmail()
   email!: string;
 
@@ -64,6 +65,7 @@ export class AuthController {
   // FIX 3: refreshToken service method only takes 1 arg (the token string)
   @UseGuards(JwtAuthGuard)
   @Post('refresh')
+  @HttpCode(HttpStatus.OK)
   async refreshToken(@Body() dto: RefreshTokenDto) {
     return this.authService.refreshToken(dto.refreshToken);
   }

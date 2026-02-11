@@ -1,24 +1,21 @@
 {
-	"folders": [
-		{
-			"path": "../.."
-		},
-		{
-			"path": "../../../admin"
-		},
-		{
-			"path": "../../../sales-dashboard-design"
-		},
-		{
-			"path": "../../../../Repositories/buyops-investors-mobile"
-		},
-		{
-			"path": "../../../Sales Dashboard Design"
-		}
-	],
-	"settings": {
-		"chat.tools.terminal.autoApprove": {
-			"npx tsc": true
-		}
-	}
+  "folders": [
+    {
+      "path": "../.."
+    },
+    {
+      "path": "../../../admin"
+    },
+    {
+      "path": "../../../sales-dashboard-design"
+    },
+    {
+      "path": "../../../../Repositories/buyops-investors-mobile"
+    }
+  ],
+  "settings": {
+    "chat.tools.terminal.autoApprove": {
+      "npx tsc": true
+    }
+  }
 }

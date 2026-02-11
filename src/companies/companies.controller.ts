@@ -29,7 +29,6 @@ export class CompaniesController {
     @Roles("ADMIN")
     @Get(":id")
     async findOne(@Param("id") id: string) {
-        console.log("Fetching company with ID:", id);
         return this.companiesService.findById(id);
     }
 
@@ -37,25 +36,18 @@ export class CompaniesController {
     @Roles("ADMIN")
     @Post()
     async create(@Body() dto: CreateCompanyDto) {
-        try {
-            return await this.companiesService.create(dto);
-        } catch (err) {
-            if (err.name === 'ValidationError' || err.status === 400) {
-                throw err;
-            }
-            throw new Error('Invalid company data: ' + (err.message || err));
-        }
+        return this.companiesService.create(dto);
     }
 
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles("ADMIN")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("ADMIN")
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateCompanyDto>) {
         return this.companiesService.update(id, dto);
     }
 
-    // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles("ADMIN")
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    @Roles("ADMIN")
     @Delete(":id")
     async remove(@Param("id") id: string) {
         return this.companiesService.delete(id);
