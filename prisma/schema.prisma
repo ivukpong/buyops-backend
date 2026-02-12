@@ -20,6 +20,14 @@ model User {
   lastLogin           DateTime?
   refreshToken        String?
   role                UserRole
+  timezone            String?         @default("Africa/Lagos")
+  dateFormat          String?         @default("DD/MM/YYYY")
+  currency            String?         @default("NGN")
+  emailNotifications  Boolean?        @default(true)
+  pushNotifications   Boolean?        @default(true)
+  transactionAlerts   Boolean?        @default(true)
+  weeklyReports       Boolean?        @default(false)
+  agentUpdates        Boolean?        @default(true)
   agentProfile        Agent?          @relation("AgentProfile")
   managedClusters     Cluster[]
   freelancerProfile   Freelancer?     @relation("FreelancerProfile")

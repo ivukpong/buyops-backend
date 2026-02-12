@@ -4,7 +4,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class FreelancersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // FIX 24: orderBy createdAt now valid (field added to schema)
   async findAll() {
@@ -73,7 +73,7 @@ export class FreelancersService {
       data: {
         userId: user.id,
         clusterId: data.cluster || null,
-        status: (data.status as any) || 'PENDING',
+        status: data.status ? (data.status.toUpperCase() as any) : 'PENDING',
         registeredBy: data.registeredBy || null,
         registrarName: data.registrarName || null,
         registrarType: data.registrarType || null,
@@ -103,7 +103,7 @@ export class FreelancersService {
 
     const updateData: any = {};
     if (data.cluster) updateData.clusterId = data.cluster;
-    if (data.status) updateData.status = data.status;
+    if (data.status) updateData.status = data.status.toUpperCase();
     if (data.registeredBy !== undefined) updateData.registeredBy = data.registeredBy;
     if (data.registrarName !== undefined) updateData.registrarName = data.registrarName;
     if (data.registrarType !== undefined) updateData.registrarType = data.registrarType;

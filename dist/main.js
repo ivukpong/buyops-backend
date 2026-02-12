@@ -26,8 +26,37 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AgentsController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const agents_service_1 = __webpack_require__(/*! ./agents.service */ "./src/agents/agents.service.ts");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 class CreateAgentDto {
 }
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "cluster", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "status", void 0);
 let AgentsController = class AgentsController {
     constructor(agentsService) {
         this.agentsService = agentsService;
@@ -75,7 +104,7 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateAgentDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], AgentsController.prototype, "create", null);
 __decorate([
@@ -270,7 +299,7 @@ let AgentsService = class AgentsService {
             data: {
                 userId: user.id,
                 clusterId: data.cluster || null,
-                status: data.status || 'PENDING',
+                status: data.status ? data.status.toUpperCase() : 'PENDING',
                 closedDeals: 0,
                 totalCommission: 0,
             },
@@ -297,7 +326,7 @@ let AgentsService = class AgentsService {
         if (data.cluster !== undefined)
             updateData.clusterId = data.cluster;
         if (data.status !== undefined)
-            updateData.status = data.status;
+            updateData.status = data.status.toUpperCase();
         return this.prisma.agent.update({
             where: { id },
             data: updateData,
@@ -674,39 +703,76 @@ let AssetsService = class AssetsService {
             },
             orderBy: { createdAt: 'desc' },
         });
-        return assets.map(asset => ({
-            id: asset.id,
-            title: asset.title ?? asset.name,
-            type: asset.type,
-            price: asset.price,
-            priceRange: asset.priceRange,
-            commission: asset.commission,
-            commissionRate: asset.commissionRate,
-            location: asset.location,
-            status: asset.status,
-            projectStatus: asset.projectStatus,
-            area: asset.area,
-            units: asset.units,
-            bedrooms: asset.bedrooms,
-            bathrooms: asset.bathrooms,
-            parking: asset.parking,
-            furnished: asset.furnished,
-            facilities: asset.facilities ?? [],
-            ownershipOptions: asset.ownershipOptions ?? [],
-            fractionCost: asset.fractionCost,
-            fundingStatus: asset.fundingStatus,
-            rentalYield: asset.rentalYield,
-            capitalAppreciation: asset.capitalAppreciation,
-            totalReturns: asset.totalReturns,
-            riskLevel: asset.riskLevel,
-            constructionStage: asset.constructionStage,
-            images: asset.images ?? 0,
-            virtualTours: asset.virtualTours ?? 0,
-            documents: asset.documents ?? 0,
-            description: asset.description,
-            leads: asset.leads ?? [],
-            projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
-        }));
+        return assets.map(asset => {
+            const finalPrice = asset.price
+                ? parseFloat(asset.price)
+                : asset.fractionCost
+                    ? parseFloat(asset.fractionCost)
+                    : 0;
+            const rentalYield = asset.rentalYield
+                ? parseFloat(asset.rentalYield)
+                : asset.rentalYieldMax
+                    ? asset.rentalYieldMax
+                    : 0;
+            const capAppreciation = asset.capitalAppreciation
+                ? parseFloat(asset.capitalAppreciation)
+                : asset.capitalAppreciationMax
+                    ? asset.capitalAppreciationMax
+                    : 0;
+            const totalAnnualReturn = rentalYield + capAppreciation;
+            return {
+                id: asset.id,
+                name: asset.name,
+                title: asset.title ?? asset.name,
+                type: asset.type,
+                status: asset.status,
+                projectStatus: asset.projectStatus,
+                location: asset.location,
+                description: asset.description,
+                companyId: asset.companyId,
+                company: asset.company,
+                units: asset.units,
+                totalUnits: asset.totalUnits,
+                availableUnits: asset.availableUnits,
+                bedrooms: asset.bedrooms,
+                bathrooms: asset.bathrooms,
+                area: asset.area,
+                parking: asset.parking,
+                furnished: asset.furnished,
+                facilities: asset.facilities ?? [],
+                ownershipOptions: asset.ownershipOptions ?? [],
+                price: asset.price,
+                priceRange: asset.priceRange,
+                fractionCost: asset.fractionCost,
+                fundingStatus: asset.fundingStatus,
+                finalPrice,
+                commission: asset.commission,
+                commissionRate: asset.commissionRate,
+                projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
+                rentalYield: asset.rentalYield,
+                rentalYieldMin: asset.rentalYieldMin,
+                rentalYieldMax: asset.rentalYieldMax,
+                capitalAppreciation: asset.capitalAppreciation,
+                capitalAppreciationMin: asset.capitalAppreciationMin,
+                capitalAppreciationMax: asset.capitalAppreciationMax,
+                totalReturns: asset.totalReturns,
+                totalReturnsMin: asset.totalReturnsMin,
+                totalReturnsMax: asset.totalReturnsMax,
+                totalAnnualReturn,
+                riskLevel: asset.riskLevel,
+                riskFactors: asset.riskFactors ?? [],
+                constructionStage: asset.constructionStage,
+                virtualTours: asset.virtualTours ?? 0,
+                images: asset.images,
+                documents: asset.documents,
+                leads: asset.leads ?? [],
+                transactions: asset.transactions ?? [],
+                installmentPlans: asset.installmentPlans ?? [],
+                _count: asset._count,
+                createdAt: asset.createdAt,
+                updatedAt: asset.updatedAt,
+            };
+        });
     }
     async findById(id) {
         const asset = await this.prisma.asset.findUnique({
@@ -723,7 +789,28 @@ let AssetsService = class AssetsService {
         });
         if (!asset)
             throw new common_1.NotFoundException(`Asset with ID ${id} not found`);
-        return asset;
+        const finalPrice = asset.price
+            ? parseFloat(asset.price)
+            : asset.fractionCost
+                ? parseFloat(asset.fractionCost)
+                : 0;
+        const rentalYield = asset.rentalYield
+            ? parseFloat(asset.rentalYield)
+            : asset.rentalYieldMax
+                ? asset.rentalYieldMax
+                : 0;
+        const capAppreciation = asset.capitalAppreciation
+            ? parseFloat(asset.capitalAppreciation)
+            : asset.capitalAppreciationMax
+                ? asset.capitalAppreciationMax
+                : 0;
+        const totalAnnualReturn = rentalYield + capAppreciation;
+        return {
+            ...asset,
+            finalPrice,
+            totalAnnualReturn,
+            projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
+        };
     }
     async create(data) {
         if (!data.name)
@@ -733,59 +820,155 @@ let AssetsService = class AssetsService {
         const company = await this.prisma.company.findUnique({ where: { id: data.companyId } });
         if (!company)
             throw new common_1.NotFoundException('Company not found');
-        return this.prisma.asset.create({
+        const newAsset = await this.prisma.asset.create({
             data: {
                 name: data.name,
                 companyId: data.companyId,
+                title: data.title || data.name,
                 type: data.type || null,
                 status: data.status || 'draft',
+                projectStatus: data.projectStatus || null,
                 location: data.location || null,
                 description: data.description || null,
+                units: data.units ? parseInt(data.units) : null,
                 totalUnits: data.totalUnits ? parseInt(data.totalUnits) : null,
                 availableUnits: data.availableUnits ? parseInt(data.availableUnits) : null,
+                bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
+                bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
+                area: data.area ? parseFloat(data.area) : null,
+                parking: data.parking || null,
+                furnished: data.furnished || null,
+                facilities: data.facilities || data.sharedFacilities || [],
+                ownershipOptions: data.ownershipOptions || [],
+                price: data.price || null,
+                priceRange: data.priceRange || null,
+                fractionCost: data.fractionCost || data.costPerFraction || null,
+                fundingStatus: data.fundingStatus ? parseInt(data.fundingStatus) : null,
+                commission: data.commission || null,
+                commissionRate: data.commissionRate || null,
                 projectedRentalIncome: data.projectedRentalIncome ? parseFloat(data.projectedRentalIncome) : null,
+                rentalYield: data.rentalYield || null,
                 rentalYieldMin: data.rentalYieldMin ? parseFloat(data.rentalYieldMin) : null,
                 rentalYieldMax: data.rentalYieldMax ? parseFloat(data.rentalYieldMax) : null,
                 capitalAppreciation: data.capitalAppreciation ? parseFloat(data.capitalAppreciation) : null,
                 capitalAppreciationMin: data.capitalAppreciationMin ? parseFloat(data.capitalAppreciationMin) : null,
                 capitalAppreciationMax: data.capitalAppreciationMax ? parseFloat(data.capitalAppreciationMax) : null,
+                totalReturns: data.totalReturns || null,
                 totalReturnsMin: data.totalReturnsMin ? parseFloat(data.totalReturnsMin) : null,
                 totalReturnsMax: data.totalReturnsMax ? parseFloat(data.totalReturnsMax) : null,
                 riskLevel: data.riskLevel || null,
                 riskFactors: data.riskFactors || [],
+                constructionStage: data.constructionStage || data.constructionProgress || null,
+                virtualTours: data.virtualTours ? parseInt(data.virtualTours) : null,
             },
-            include: { company: { select: { id: true, name: true } } },
         });
+        return this.findById(newAsset.id);
     }
     async update(id, data) {
         await this.findById(id);
         const updateData = {};
         if (data.name !== undefined)
             updateData.name = data.name;
+        if (data.title !== undefined)
+            updateData.title = data.title;
         if (data.type !== undefined)
             updateData.type = data.type;
         if (data.status !== undefined)
             updateData.status = data.status;
+        if (data.projectStatus !== undefined)
+            updateData.projectStatus = data.projectStatus;
         if (data.location !== undefined)
             updateData.location = data.location;
         if (data.description !== undefined)
             updateData.description = data.description;
         if (data.companyId !== undefined)
             updateData.companyId = data.companyId;
+        if (data.units !== undefined)
+            updateData.units = parseInt(data.units);
         if (data.totalUnits !== undefined)
             updateData.totalUnits = parseInt(data.totalUnits);
         if (data.availableUnits !== undefined)
             updateData.availableUnits = parseInt(data.availableUnits);
+        if (data.bedrooms !== undefined)
+            updateData.bedrooms = parseInt(data.bedrooms);
+        if (data.bathrooms !== undefined)
+            updateData.bathrooms = parseInt(data.bathrooms);
+        if (data.area !== undefined)
+            updateData.area = parseFloat(data.area);
+        if (data.parking !== undefined)
+            updateData.parking = data.parking;
+        if (data.furnished !== undefined)
+            updateData.furnished = data.furnished;
+        if (data.facilities !== undefined)
+            updateData.facilities = data.facilities;
+        if (data.sharedFacilities !== undefined)
+            updateData.facilities = data.sharedFacilities;
+        if (data.ownershipOptions !== undefined)
+            updateData.ownershipOptions = data.ownershipOptions;
+        if (data.price !== undefined)
+            updateData.price = data.price;
+        if (data.priceRange !== undefined)
+            updateData.priceRange = data.priceRange;
+        if (data.fractionCost !== undefined)
+            updateData.fractionCost = data.fractionCost;
+        if (data.costPerFraction !== undefined)
+            updateData.fractionCost = data.costPerFraction;
+        if (data.fundingStatus !== undefined)
+            updateData.fundingStatus = parseInt(data.fundingStatus);
+        if (data.commission !== undefined)
+            updateData.commission = data.commission;
+        if (data.commissionRate !== undefined)
+            updateData.commissionRate = data.commissionRate;
+        if (data.projectedRentalIncome !== undefined)
+            updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
+        if (data.rentalYield !== undefined)
+            updateData.rentalYield = data.rentalYield;
+        if (data.rentalYieldMin !== undefined)
+            updateData.rentalYieldMin = parseFloat(data.rentalYieldMin);
+        if (data.rentalYieldMax !== undefined)
+            updateData.rentalYieldMax = parseFloat(data.rentalYieldMax);
+        if (data.capitalAppreciation !== undefined)
+            updateData.capitalAppreciation = parseFloat(data.capitalAppreciation);
+        if (data.capitalAppreciationMin !== undefined)
+            updateData.capitalAppreciationMin = parseFloat(data.capitalAppreciationMin);
+        if (data.capitalAppreciationMax !== undefined)
+            updateData.capitalAppreciationMax = parseFloat(data.capitalAppreciationMax);
+        if (data.totalReturns !== undefined)
+            updateData.totalReturns = data.totalReturns;
+        if (data.totalReturnsMin !== undefined)
+            updateData.totalReturnsMin = parseFloat(data.totalReturnsMin);
+        if (data.totalReturnsMax !== undefined)
+            updateData.totalReturnsMax = parseFloat(data.totalReturnsMax);
         if (data.riskLevel !== undefined)
             updateData.riskLevel = data.riskLevel;
-        return this.prisma.asset.update({
+        if (data.riskFactors !== undefined)
+            updateData.riskFactors = data.riskFactors;
+        if (data.constructionStage !== undefined)
+            updateData.constructionStage = data.constructionStage;
+        if (data.constructionProgress !== undefined)
+            updateData.constructionStage = data.constructionProgress;
+        if (data.virtualTours !== undefined)
+            updateData.virtualTours = parseInt(data.virtualTours);
+        await this.prisma.asset.update({
             where: { id },
             data: updateData,
-            include: { company: { select: { id: true, name: true } } },
         });
+        return this.findById(id);
     }
     async delete(id) {
         await this.findById(id);
+        const savedByCount = await this.prisma.savedProperty.count({ where: { assetId: id } });
+        if (savedByCount > 0) {
+            throw new common_1.BadRequestException(`Cannot delete asset. It is saved by ${savedByCount} user(s). Please ask them to unsave it first.`);
+        }
+        const leadsCount = await this.prisma.lead.count({ where: { assetInterest: id } });
+        if (leadsCount > 0) {
+            throw new common_1.BadRequestException(`Cannot delete asset. It has ${leadsCount} associated lead(s).`);
+        }
+        const transactionsCount = await this.prisma.transaction.count({ where: { assetId: id } });
+        if (transactionsCount > 0) {
+            throw new common_1.BadRequestException(`Cannot delete asset. It has ${transactionsCount} associated transaction(s).`);
+        }
         await this.prisma.asset.delete({ where: { id } });
         return { message: 'Asset deleted successfully', id };
     }
@@ -1457,7 +1640,7 @@ __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateClusterDto]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], ClustersController.prototype, "create", null);
 __decorate([
@@ -2655,8 +2838,47 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.FreelancersController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const freelancers_service_1 = __webpack_require__(/*! ./freelancers.service */ "./src/freelancers/freelancers.service.ts");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 class CreateFreelancerDto {
 }
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "registeredBy", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "registrarName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "registrarType", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "cluster", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "status", void 0);
 let FreelancersController = class FreelancersController {
     constructor(freelancersService) {
         this.freelancersService = freelancersService;
@@ -2886,7 +3108,7 @@ let FreelancersService = class FreelancersService {
             data: {
                 userId: user.id,
                 clusterId: data.cluster || null,
-                status: data.status || 'PENDING',
+                status: data.status ? data.status.toUpperCase() : 'PENDING',
                 registeredBy: data.registeredBy || null,
                 registrarName: data.registrarName || null,
                 registrarType: data.registrarType || null,
@@ -2915,7 +3137,7 @@ let FreelancersService = class FreelancersService {
         if (data.cluster)
             updateData.clusterId = data.cluster;
         if (data.status)
-            updateData.status = data.status;
+            updateData.status = data.status.toUpperCase();
         if (data.registeredBy !== undefined)
             updateData.registeredBy = data.registeredBy;
         if (data.registrarName !== undefined)
@@ -5946,8 +6168,13 @@ function formatDeal(tx) {
     return {
         id: tx.id,
         leadName: tx.buyer?.name ?? tx.leadAgent?.user?.name ?? "",
+        buyer: tx.buyer?.name ?? "",
+        leadAgent: tx.leadAgent?.user?.name ?? "",
+        closerAgent: tx.closerAgent?.user?.name ?? "",
+        company: tx.company?.name ?? "",
         asset: tx.asset?.name ?? "",
         propertyValue: tx.totalAmount ? `₦${tx.totalAmount.toLocaleString()}` : "",
+        amount: tx.totalAmount ?? 0,
         commission: tx.commission,
         totalCommission: tx.totalCommission ? `₦${tx.totalCommission.toLocaleString()}` : "",
         leadCommission: tx.leadCommission ? `₦${tx.leadCommission.toLocaleString()}` : "",
@@ -5958,6 +6185,8 @@ function formatDeal(tx) {
         status: tx.commissionPaymentStatus?.toLowerCase() ?? "unpaid",
         eligibility: tx.commissionPaymentStatus === "PAID" ? "Eligible" : "Not Eligible",
         payoutDate: tx.updatedAt?.toISOString().split("T")[0],
+        date: tx.date?.toISOString().split("T")[0] ?? tx.updatedAt?.toISOString().split("T")[0],
+        paymentType: tx.paymentType === "installment" ? "installment" : "full",
         paymentPlan: tx.paymentType === "installment"
             ? {
                 type: "installment",
@@ -6030,6 +6259,46 @@ __decorate([
     (0, class_validator_1.IsString)(),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "timezone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "dateFormat", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "currency", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "emailNotifications", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "pushNotifications", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "transactionAlerts", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "weeklyReports", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "agentUpdates", void 0);
 class UpdatePasswordDto {
 }
 exports.UpdatePasswordDto = UpdatePasswordDto;
@@ -6531,7 +6800,32 @@ let UsersService = class UsersService {
         };
     }
     async updateUser(id, dto) {
-        return this.prisma.user.update({ where: { id }, data: dto });
+        const updateData = {};
+        if (dto.name !== undefined)
+            updateData.name = dto.name;
+        if (dto.email !== undefined)
+            updateData.email = dto.email;
+        if (dto.phone !== undefined)
+            updateData.phone = dto.phone;
+        if (dto.role !== undefined)
+            updateData.role = dto.role;
+        if (dto.timezone !== undefined)
+            updateData.timezone = dto.timezone;
+        if (dto.dateFormat !== undefined)
+            updateData.dateFormat = dto.dateFormat;
+        if (dto.currency !== undefined)
+            updateData.currency = dto.currency;
+        if (dto.emailNotifications !== undefined)
+            updateData.emailNotifications = dto.emailNotifications;
+        if (dto.pushNotifications !== undefined)
+            updateData.pushNotifications = dto.pushNotifications;
+        if (dto.transactionAlerts !== undefined)
+            updateData.transactionAlerts = dto.transactionAlerts;
+        if (dto.weeklyReports !== undefined)
+            updateData.weeklyReports = dto.weeklyReports;
+        if (dto.agentUpdates !== undefined)
+            updateData.agentUpdates = dto.agentUpdates;
+        return this.prisma.user.update({ where: { id }, data: updateData });
     }
     async findByEmail(email) {
         return this.prisma.user.findUnique({ where: { email } });

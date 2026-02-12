@@ -12,14 +12,30 @@ import { AgentsService } from "./agents.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
+import { IsString, IsEmail, IsOptional } from "class-validator";
 
 
 class CreateAgentDto {
+    @IsString()
     name!: string;
+
+    @IsEmail()
     email!: string;
+
+    @IsOptional()
+    @IsString()
     phone?: string;
+
+    @IsOptional()
+    @IsString()
     cluster?: string;
+
+    @IsOptional()
+    @IsString()
     role?: string;
+
+    @IsOptional()
+    @IsString()
     status?: string;
 }
 
@@ -51,7 +67,7 @@ export class AgentsController {
     // @UseGuards(JwtAuthGuard, RolesGuard)
     // @Roles("ADMIN")
     @Post()
-    async create(@Body() dto: CreateAgentDto) {
+    async create(@Body() dto) {
         return this.agentsService.create(dto);
     }
 

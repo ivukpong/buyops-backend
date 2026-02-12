@@ -49,7 +49,7 @@ export class ClustersController {
     @UseGuards(JwtAuthGuard, RolesGuard)
     @Roles("ADMIN")
     @Post()
-    async create(@Body() dto: CreateClusterDto) {
+    async create(@Body() dto) {
         return this.clustersService.create(dto);
     }
 

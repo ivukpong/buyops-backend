@@ -3,15 +3,15 @@ import { PrismaService } from '../prisma/prisma.service';
 import { CommissionPaymentStatus } from '@prisma/client';
 
 export interface TransactionFilter {
-    status?: string;
-    agentId?: string;
-    companyId?: string;
-    month?: string; // Add this line
+  status?: string;
+  agentId?: string;
+  companyId?: string;
+  month?: string; // Add this line
 }
 
 @Injectable()
 export class TransactionsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // Update or create a filter type/interface
 
@@ -200,8 +200,13 @@ function formatDeal(tx: any) {
   return {
     id: tx.id,
     leadName: tx.buyer?.name ?? tx.leadAgent?.user?.name ?? "",
+    buyer: tx.buyer?.name ?? "",
+    leadAgent: tx.leadAgent?.user?.name ?? "",
+    closerAgent: tx.closerAgent?.user?.name ?? "",
+    company: tx.company?.name ?? "",
     asset: tx.asset?.name ?? "",
     propertyValue: tx.totalAmount ? `₦${tx.totalAmount.toLocaleString()}` : "",
+    amount: tx.totalAmount ?? 0,
     commission: tx.commission,
     totalCommission: tx.totalCommission ? `₦${tx.totalCommission.toLocaleString()}` : "",
     leadCommission: tx.leadCommission ? `₦${tx.leadCommission.toLocaleString()}` : "",
@@ -212,11 +217,13 @@ function formatDeal(tx: any) {
     status: tx.commissionPaymentStatus?.toLowerCase() ?? "unpaid",
     eligibility: tx.commissionPaymentStatus === "PAID" ? "Eligible" : "Not Eligible",
     payoutDate: tx.updatedAt?.toISOString().split("T")[0],
+    date: tx.date?.toISOString().split("T")[0] ?? tx.updatedAt?.toISOString().split("T")[0],
+    paymentType: tx.paymentType === "installment" ? "installment" : "full",
     paymentPlan: tx.paymentType === "installment"
       ? {
-          type: "installment",
-          numberOfInstallments: tx.installments?.length ?? 0,
-        }
+        type: "installment",
+        numberOfInstallments: tx.installments?.length ?? 0,
+      }
       : null,
     commissionBreakdown: (tx.installments ?? []).map((inst, idx) => ({
       installmentId: inst.id,

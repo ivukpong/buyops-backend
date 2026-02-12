@@ -5,7 +5,7 @@ import { PrismaClient, UserRole } from '@prisma/client';
 
 @Injectable()
 export class AgentsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // FIX 22: use assignedLeads / leadTransactions / closerTransactions (not leadsAsLead/leadsAsCloser)
   async findAll() {
@@ -91,7 +91,7 @@ export class AgentsService {
       data: {
         userId: user.id,
         clusterId: data.cluster || null,
-        status: (data.status as any) || 'PENDING',
+        status: data.status ? (data.status.toUpperCase() as any) : 'PENDING',
         closedDeals: 0,
         totalCommission: 0,
       },
@@ -120,7 +120,7 @@ export class AgentsService {
 
     const updateData: any = {};
     if (data.cluster !== undefined) updateData.clusterId = data.cluster;
-    if (data.status !== undefined) updateData.status = data.status;
+    if (data.status !== undefined) updateData.status = data.status.toUpperCase();
 
     return this.prisma.agent.update({
       where: { id },

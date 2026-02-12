@@ -4,7 +4,7 @@ import { UserRole } from '@prisma/client';
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findAll({ role, status, search }: { role?: string; status?: string; search?: string } = {}) {
     // Only filter by role if it's a valid UserRole
@@ -117,7 +117,21 @@ export class UsersService {
 
   async updateUser(id: string, dto: any) {
     // Update user profile
-    return this.prisma.user.update({ where: { id }, data: dto });
+    const updateData: any = {};
+    if (dto.name !== undefined) updateData.name = dto.name;
+    if (dto.email !== undefined) updateData.email = dto.email;
+    if (dto.phone !== undefined) updateData.phone = dto.phone;
+    if (dto.role !== undefined) updateData.role = dto.role;
+    if (dto.timezone !== undefined) updateData.timezone = dto.timezone;
+    if (dto.dateFormat !== undefined) updateData.dateFormat = dto.dateFormat;
+    if (dto.currency !== undefined) updateData.currency = dto.currency;
+    if (dto.emailNotifications !== undefined) updateData.emailNotifications = dto.emailNotifications;
+    if (dto.pushNotifications !== undefined) updateData.pushNotifications = dto.pushNotifications;
+    if (dto.transactionAlerts !== undefined) updateData.transactionAlerts = dto.transactionAlerts;
+    if (dto.weeklyReports !== undefined) updateData.weeklyReports = dto.weeklyReports;
+    if (dto.agentUpdates !== undefined) updateData.agentUpdates = dto.agentUpdates;
+
+    return this.prisma.user.update({ where: { id }, data: updateData });
   }
 
   async findByEmail(email: string) {

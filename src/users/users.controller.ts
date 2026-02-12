@@ -16,7 +16,7 @@ import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { UsersService } from "./users.service";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
-import { IsEmail, IsOptional, IsString, MinLength, Matches } from "class-validator";
+import { IsEmail, IsOptional, IsString, MinLength, Matches, IsBoolean } from "class-validator";
 
 // DTOs
 export class UpdateUserDto {
@@ -35,6 +35,38 @@ export class UpdateUserDto {
   @IsOptional()
   @IsString()
   role?: string;
+
+  @IsOptional()
+  @IsString()
+  timezone?: string;
+
+  @IsOptional()
+  @IsString()
+  dateFormat?: string;
+
+  @IsOptional()
+  @IsString()
+  currency?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  emailNotifications?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  pushNotifications?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  transactionAlerts?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  weeklyReports?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  agentUpdates?: boolean;
 }
 
 export class UpdatePasswordDto {
