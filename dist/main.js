@@ -1933,6 +1933,26 @@ let CompaniesService = class CompaniesService {
     normalizeEmail(email) {
         return email.toLowerCase().trim();
     }
+    async enrichCompanyData(company) {
+        let activeAssets;
+        if (company.assets && Array.isArray(company.assets)) {
+            activeAssets = company.assets.filter((asset) => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length;
+        }
+        else {
+            const assets = await this.prisma.asset.findMany({
+                where: { companyId: company.id },
+                select: { status: true }
+            });
+            activeAssets = assets.filter(asset => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length;
+        }
+        const totalTransactions = company._count?.transactions ||
+            await this.prisma.transaction.count({ where: { companyId: company.id } });
+        return {
+            ...company,
+            activeAssets,
+            totalTransactions
+        };
+    }
     async findAll() {
         const companies = await this.prisma.company.findMany({
             include: {
@@ -1960,7 +1980,7 @@ let CompaniesService = class CompaniesService {
         });
         if (!company)
             throw new common_1.NotFoundException(`Company with ID ${id} not found`);
-        return company;
+        return this.enrichCompanyData(company);
     }
     async create(data) {
         try {
@@ -1993,9 +2013,12 @@ let CompaniesService = class CompaniesService {
                     bankName: data.bankName?.trim() || null,
                     accountNumber: data.accountNumber?.trim() || null,
                 },
-                include: { _count: { select: { assets: true, transactions: true } } },
+                include: {
+                    assets: { select: { id: true, name: true, type: true, status: true } },
+                    _count: { select: { assets: true, transactions: true } }
+                },
             });
-            return company;
+            return this.enrichCompanyData(company);
         }
         catch (error) {
             if (error.code === 'P2002') {
@@ -2009,7 +2032,11 @@ let CompaniesService = class CompaniesService {
         }
     }
     async update(id, data) {
-        await this.findById(id);
+        if (!id || id.trim() === '')
+            throw new common_1.BadRequestException('Company ID is required');
+        const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+        if (!exists)
+            throw new common_1.NotFoundException(`Company with ID ${id} not found`);
         const updateData = {};
         if (data.name !== undefined)
             updateData.name = data.name.trim();
@@ -2044,14 +2071,22 @@ let CompaniesService = class CompaniesService {
             updateData.bankName = data.bankName?.trim();
         if (data.accountNumber !== undefined)
             updateData.accountNumber = data.accountNumber?.trim();
-        return this.prisma.company.update({
+        const company = await this.prisma.company.update({
             where: { id },
             data: updateData,
-            include: { _count: { select: { assets: true, transactions: true } } },
+            include: {
+                assets: { select: { id: true, name: true, type: true, status: true } },
+                _count: { select: { assets: true, transactions: true } }
+            },
         });
+        return this.enrichCompanyData(company);
     }
     async delete(id) {
-        await this.findById(id);
+        if (!id || id.trim() === '')
+            throw new common_1.BadRequestException('Company ID is required');
+        const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+        if (!exists)
+            throw new common_1.NotFoundException(`Company with ID ${id} not found`);
         const activeAssets = await this.prisma.asset.count({ where: { companyId: id, status: 'published' } });
         if (activeAssets > 0)
             throw new common_1.BadRequestException(`Cannot delete company with ${activeAssets} active assets.`);

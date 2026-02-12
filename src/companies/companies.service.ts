@@ -9,7 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   private normalizeStatus(status?: string): string {
     const normalized = String(status || 'active').trim().toLowerCase();
@@ -21,6 +21,35 @@ export class CompaniesService {
 
   private normalizeEmail(email: string): string {
     return email.toLowerCase().trim();
+  }
+
+  // Helper method to add computed fields (activeAssets and totalTransactions)
+  private async enrichCompanyData(company: any) {
+    // If assets are already included in the company object, use them
+    let activeAssets: number;
+    if (company.assets && Array.isArray(company.assets)) {
+      activeAssets = company.assets.filter((asset: any) =>
+        ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())
+      ).length;
+    } else {
+      // Otherwise, fetch and count
+      const assets = await this.prisma.asset.findMany({
+        where: { companyId: company.id },
+        select: { status: true }
+      });
+      activeAssets = assets.filter(asset =>
+        ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())
+      ).length;
+    }
+
+    const totalTransactions = company._count?.transactions ||
+      await this.prisma.transaction.count({ where: { companyId: company.id } });
+
+    return {
+      ...company,
+      activeAssets,
+      totalTransactions
+    };
   }
 
   async findAll() {
@@ -56,14 +85,16 @@ export class CompaniesService {
     });
 
     if (!company) throw new NotFoundException(`Company with ID ${id} not found`);
-    return company;
+
+    // Return company with computed activeAssets and totalTransactions
+    return this.enrichCompanyData(company);
   }
 
   async create(data: any) {
     try {
       if (!data.name || !data.name.trim()) throw new BadRequestException('Company name is required');
       if (!data.email || !data.email.trim()) throw new BadRequestException('Email is required');
-      if (!data.type || !['developer','realtor','partner','consultant','investor'].includes(data.type)) {
+      if (!data.type || !['developer', 'realtor', 'partner', 'consultant', 'investor'].includes(data.type)) {
         throw new BadRequestException('Company type is required and must be one of: developer, realtor, partner, consultant, investor');
       }
 
@@ -71,6 +102,7 @@ export class CompaniesService {
       const existing = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email) } });
       if (existing) throw new ConflictException('A company with this email already exists');
 
+      // Note: activeAssets and totalTransactions are computed fields and are NOT saved to the database
       const company = await this.prisma.company.create({
         data: {
           name: data.name.trim(),
@@ -90,10 +122,14 @@ export class CompaniesService {
           bankName: data.bankName?.trim() || null,
           accountNumber: data.accountNumber?.trim() || null,
         },
-        include: { _count: { select: { assets: true, transactions: true } } },
+        include: {
+          assets: { select: { id: true, name: true, type: true, status: true } },
+          _count: { select: { assets: true, transactions: true } }
+        },
       });
 
-      return company;
+      // Return company with computed activeAssets and totalTransactions
+      return this.enrichCompanyData(company);
     } catch (error) {
       if (error.code === 'P2002') {
         const field = error.meta?.target?.[0] || 'field';
@@ -106,8 +142,13 @@ export class CompaniesService {
   }
 
   async update(id: string, data: any) {
-    await this.findById(id);
+    // Validate company exists
+    if (!id || id.trim() === '') throw new BadRequestException('Company ID is required');
 
+    const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+    if (!exists) throw new NotFoundException(`Company with ID ${id} not found`);
+
+    // Note: activeAssets and totalTransactions are computed fields and should NOT be saved to the database
     const updateData: any = {};
     if (data.name !== undefined) updateData.name = data.name.trim();
     if (data.type !== undefined) updateData.type = data.type;
@@ -128,15 +169,25 @@ export class CompaniesService {
     if (data.bankName !== undefined) updateData.bankName = data.bankName?.trim();
     if (data.accountNumber !== undefined) updateData.accountNumber = data.accountNumber?.trim();
 
-    return this.prisma.company.update({
+    const company = await this.prisma.company.update({
       where: { id },
       data: updateData,
-      include: { _count: { select: { assets: true, transactions: true } } },
+      include: {
+        assets: { select: { id: true, name: true, type: true, status: true } },
+        _count: { select: { assets: true, transactions: true } }
+      },
     });
+
+    // Return company with computed activeAssets and totalTransactions
+    return this.enrichCompanyData(company);
   }
 
   async delete(id: string) {
-    await this.findById(id);
+    // Validate company exists
+    if (!id || id.trim() === '') throw new BadRequestException('Company ID is required');
+
+    const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+    if (!exists) throw new NotFoundException(`Company with ID ${id} not found`);
 
     const activeAssets = await this.prisma.asset.count({ where: { companyId: id, status: 'published' } });
     if (activeAssets > 0) throw new BadRequestException(`Cannot delete company with ${activeAssets} active assets.`);
