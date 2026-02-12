@@ -9,12 +9,12 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class CompaniesService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   private normalizeStatus(status?: string): string {
     const normalized = String(status || 'active').trim().toLowerCase();
-    if (!['ACTIVE', 'PENDING', 'INACTIVE', 'SUSPENDED'].includes(normalized)) {
-      throw new BadRequestException('Status must be one of: ACTIVE, INACTIVE, PENDING, SUSPENDED');
+    if (!['active', 'pending', 'inactive', 'suspended'].includes(normalized)) {
+      throw new BadRequestException('Status must be one of: active, pending, inactive, suspended');
     }
     return normalized;
   }
@@ -63,7 +63,7 @@ export class CompaniesService {
     try {
       if (!data.name || !data.name.trim()) throw new BadRequestException('Company name is required');
       if (!data.email || !data.email.trim()) throw new BadRequestException('Email is required');
-      if (!data.type || !['developer', 'realtor', 'partner', 'consultant', 'investor'].includes(data.type)) {
+      if (!data.type || !['developer','realtor','partner','consultant','investor'].includes(data.type)) {
         throw new BadRequestException('Company type is required and must be one of: developer, realtor, partner, consultant, investor');
       }
 

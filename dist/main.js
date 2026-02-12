@@ -1925,8 +1925,8 @@ let CompaniesService = class CompaniesService {
     }
     normalizeStatus(status) {
         const normalized = String(status || 'active').trim().toLowerCase();
-        if (!['ACTIVE', 'PENDING', 'INACTIVE', 'SUSPENDED'].includes(normalized)) {
-            throw new common_1.BadRequestException('Status must be one of: ACTIVE, INACTIVE, PENDING, SUSPENDED');
+        if (!['active', 'pending', 'inactive', 'suspended'].includes(normalized)) {
+            throw new common_1.BadRequestException('Status must be one of: active, pending, inactive, suspended');
         }
         return normalized;
     }
