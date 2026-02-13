@@ -12,9 +12,9 @@ export class NotificationService {
     private prisma: PrismaService,
     private smsService: SmsService,
     private emailService: EmailService,
-  ) {}
+  ) { }
 
-    // Notifies user(s) that an installment is due soon
+  // Notifies user(s) that an installment is due soon
   async notifyInstallmentDue(installmentId: string) {
     // TODO: Implement actual notification logic
     // For now, just log or return a stub
@@ -200,7 +200,7 @@ export class NotificationService {
         return { success: false, message: 'Template not found' };
       }
 
-      const subject = typeof template.subject === 'function' 
+      const subject = typeof template.subject === 'function'
         ? template.subject(options.data)
         : template.subject;
       const html = typeof template.body === 'function'
