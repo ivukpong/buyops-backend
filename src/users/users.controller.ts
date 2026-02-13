@@ -90,8 +90,8 @@ export class CreateUserDto {
   name!: string;
 
   @IsString()
-  @Matches(/^(ADMIN|INVESTOR|SALES)$/i, {
-    message: 'Role must be one of: ADMIN, INVESTOR, SALES',
+  @Matches(/^(ADMIN|TEAM_LEAD|AGENT|FREELANCER|INVESTOR|USER)$/i, {
+    message: 'Role must be one of: ADMIN, TEAM_LEAD, AGENT, FREELANCER, INVESTOR, USER',
   })
   role!: string;
 

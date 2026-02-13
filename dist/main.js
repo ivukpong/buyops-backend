@@ -6520,8 +6520,8 @@ __decorate([
 ], CreateUserDto.prototype, "name", void 0);
 __decorate([
     (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^(ADMIN|INVESTOR|SALES)$/i, {
-        message: 'Role must be one of: ADMIN, INVESTOR, SALES',
+    (0, class_validator_1.Matches)(/^(ADMIN|TEAM_LEAD|AGENT|FREELANCER|INVESTOR|USER)$/i, {
+        message: 'Role must be one of: ADMIN, TEAM_LEAD, AGENT, FREELANCER, INVESTOR, USER',
     }),
     __metadata("design:type", String)
 ], CreateUserDto.prototype, "role", void 0);
