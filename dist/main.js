@@ -1717,7 +1717,6 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const clusters_service_1 = __webpack_require__(/*! ./clusters.service */ "./src/clusters/clusters.service.ts");
 const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
 const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
-const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
 class CreateClusterDto {
 }
 let ClustersController = class ClustersController {
@@ -1746,7 +1745,6 @@ let ClustersController = class ClustersController {
 exports.ClustersController = ClustersController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -1754,7 +1752,6 @@ __decorate([
 ], ClustersController.prototype, "findAll", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("stats"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -1762,7 +1759,6 @@ __decorate([
 ], ClustersController.prototype, "getStats", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
@@ -1771,7 +1767,6 @@ __decorate([
 ], ClustersController.prototype, "findOne", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -1780,7 +1775,6 @@ __decorate([
 ], ClustersController.prototype, "create", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Put)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
@@ -1790,7 +1784,6 @@ __decorate([
 ], ClustersController.prototype, "update", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
@@ -2187,7 +2180,6 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const companies_service_1 = __webpack_require__(/*! ./companies.service */ "./src/companies/companies.service.ts");
 const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
 const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
-const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
 const create_company_dto_1 = __webpack_require__(/*! ./dto/create-company.dto */ "./src/companies/dto/create-company.dto.ts");
 let CompaniesController = class CompaniesController {
     constructor(companiesService) {
@@ -2212,7 +2204,6 @@ let CompaniesController = class CompaniesController {
 exports.CompaniesController = CompaniesController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -2220,7 +2211,6 @@ __decorate([
 ], CompaniesController.prototype, "findAll", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
@@ -2229,7 +2219,6 @@ __decorate([
 ], CompaniesController.prototype, "findOne", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -2238,7 +2227,6 @@ __decorate([
 ], CompaniesController.prototype, "create", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Put)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
@@ -2248,7 +2236,6 @@ __decorate([
 ], CompaniesController.prototype, "update", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
@@ -6021,7 +6008,6 @@ const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "
 const transactions_service_1 = __webpack_require__(/*! ./transactions.service */ "./src/transactions/transactions.service.ts");
 const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
 const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
-const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
 class CreateTransactionDto {
 }
 class SendCommissionsDto {
@@ -6061,7 +6047,6 @@ let TransactionsController = class TransactionsController {
 exports.TransactionsController = TransactionsController;
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)("month")),
     __metadata("design:type", Function),
@@ -6070,7 +6055,6 @@ __decorate([
 ], TransactionsController.prototype, "findAll", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("stats"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -6078,7 +6062,6 @@ __decorate([
 ], TransactionsController.prototype, "getStats", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("commissions/unpaid"),
     __param(0, (0, common_1.Query)("month")),
     __metadata("design:type", Function),
@@ -6087,7 +6070,6 @@ __decorate([
 ], TransactionsController.prototype, "getUnpaidCommissions", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("commissions/paid"),
     __param(0, (0, common_1.Query)("month")),
     __metadata("design:type", Function),
@@ -6096,7 +6078,6 @@ __decorate([
 ], TransactionsController.prototype, "getPaidCommissions", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
@@ -6105,7 +6086,6 @@ __decorate([
 ], TransactionsController.prototype, "findOne", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -6114,7 +6094,6 @@ __decorate([
 ], TransactionsController.prototype, "create", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)("commissions/send"),
     __param(0, (0, common_1.Body)()),
     __metadata("design:type", Function),
@@ -6123,7 +6102,6 @@ __decorate([
 ], TransactionsController.prototype, "sendCommissions", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)("commissions/payment-proof"),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
     __param(0, (0, common_1.UploadedFile)()),
@@ -6133,7 +6111,6 @@ __decorate([
 ], TransactionsController.prototype, "uploadPaymentProof", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Put)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
@@ -6450,7 +6427,6 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
 const users_service_1 = __webpack_require__(/*! ./users.service */ "./src/users/users.service.ts");
 const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
-const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 class UpdateUserDto {
 }
@@ -6662,7 +6638,6 @@ let UsersController = class UsersController {
 };
 exports.UsersController = UsersController;
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)(),
     __param(0, (0, common_1.Query)("role")),
     __param(1, (0, common_1.Query)("status")),
@@ -6695,7 +6670,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "findOne", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("email/:email"),
     __param(0, (0, common_1.Param)("email")),
     __metadata("design:type", Function),
@@ -6736,7 +6710,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUserLeads", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)(),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     __param(0, (0, common_1.Body)()),
@@ -6754,7 +6727,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "update", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Put)(":id/role"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)("role")),
@@ -6763,7 +6735,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updateRole", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Put)(":id/password"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
@@ -6772,7 +6743,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "updatePassword", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)(":id/deactivate"),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)("id")),
@@ -6781,7 +6751,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "deactivate", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)(":id/reactivate"),
     (0, common_1.HttpCode)(common_1.HttpStatus.OK),
     __param(0, (0, common_1.Param)("id")),
@@ -6790,7 +6759,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "reactivate", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Delete)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __metadata("design:type", Function),
@@ -6798,7 +6766,6 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "remove", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("by-role/:role"),
     __param(0, (0, common_1.Param)("role")),
     __metadata("design:type", Function),
@@ -6814,21 +6781,18 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUserDashboard", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("agents/all"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getAllAgents", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("investors/all"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getAllInvestors", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("search/query"),
     __param(0, (0, common_1.Query)("q")),
     __param(1, (0, common_1.Query)("role")),
@@ -6837,14 +6801,12 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "searchUsers", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Get)("count/by-role"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], UsersController.prototype, "getUserCountByRole", null);
 __decorate([
-    (0, roles_decorator_1.Roles)("ADMIN"),
     (0, common_1.Post)("bulk-create"),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     __param(0, (0, common_1.Body)("users")),

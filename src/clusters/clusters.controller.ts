@@ -26,42 +26,42 @@ export class ClustersController {
     constructor(private clustersService: ClustersService) { }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @Roles("ADMIN")
     @Get()
     async findAll() {
         return this.clustersService.findAll();
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @Roles("ADMIN")
     @Get("stats")
     async getStats() {
         return this.clustersService.getStats();
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @Roles("ADMIN")
     @Get(":id")
     async findOne(@Param("id") id: string) {
         return this.clustersService.findById(id);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @Roles("ADMIN")
     @Post()
     async create(@Body() dto) {
         return this.clustersService.create(dto);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @Roles("ADMIN")
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateClusterDto>) {
         return this.clustersService.update(id, dto);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
+    // @Roles("ADMIN")
     @Delete(":id")
     async remove(@Param("id") id: string) {
         return this.clustersService.delete(id);

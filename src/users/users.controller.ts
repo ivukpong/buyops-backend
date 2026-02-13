@@ -116,7 +116,7 @@ export class UsersController {
    * GET /users
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Get()
   async findAll(
     @Query("role") role?: string,
@@ -165,7 +165,7 @@ export class UsersController {
    * GET /users/email/:email
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Get("email/:email")
   async findByEmail(@Param("email") email: string) {
     return this.usersService.findByEmail(email);
@@ -233,7 +233,7 @@ export class UsersController {
    * POST /users
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Post()
   @HttpCode(HttpStatus.CREATED)
   async create(@Body() dto: CreateUserDto) {
@@ -268,7 +268,7 @@ export class UsersController {
    * PUT /users/:id/role
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Put(":id/role")
   async updateRole(
     @Param("id") id: string,
@@ -282,7 +282,7 @@ export class UsersController {
    * PUT /users/:id/password
    * Admin only (for resetting user passwords)
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Put(":id/password")
   async updatePassword(
     @Param("id") id: string,
@@ -296,7 +296,7 @@ export class UsersController {
    * POST /users/:id/deactivate
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Post(":id/deactivate")
   @HttpCode(HttpStatus.OK)
   async deactivate(@Param("id") id: string) {
@@ -308,7 +308,7 @@ export class UsersController {
    * POST /users/:id/reactivate
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Post(":id/reactivate")
   @HttpCode(HttpStatus.OK)
   async reactivate(@Param("id") id: string) {
@@ -320,7 +320,7 @@ export class UsersController {
    * DELETE /users/:id
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Delete(":id")
   async remove(@Param("id") id: string) {
     return this.usersService.deleteUser(id);
@@ -331,7 +331,7 @@ export class UsersController {
    * GET /users/by-role/:role
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Get("by-role/:role")
   async getUsersByRole(@Param("role") role: string) {
     return this.usersService.getUsersByRole(role);
@@ -355,7 +355,7 @@ export class UsersController {
    * GET /users/agents/all
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Get("agents/all")
   async getAllAgents() {
     return this.usersService.getAllAgents();
@@ -366,7 +366,7 @@ export class UsersController {
    * GET /users/investors/all
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Get("investors/all")
   async getAllInvestors() {
     return this.usersService.getAllInvestors();
@@ -377,7 +377,7 @@ export class UsersController {
    * GET /users/search/query
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Get("search/query")
   async searchUsers(
     @Query("q") query: string,
@@ -391,7 +391,7 @@ export class UsersController {
    * GET /users/count/by-role
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Get("count/by-role")
   async getUserCountByRole() {
     return this.usersService.getUserCountByRole();
@@ -402,7 +402,7 @@ export class UsersController {
    * POST /users/bulk-create
    * Admin only
    */
-  @Roles("ADMIN")
+  // @Roles("ADMIN")
   @Post("bulk-create")
   @HttpCode(HttpStatus.CREATED)
   async bulkCreate(@Body("users") users: CreateUserDto[]) {
