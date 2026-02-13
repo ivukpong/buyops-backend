@@ -1,14 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { SmsService } from './sms.service';
+import { EmailService } from './email.service';
 import { getSmsTemplate } from './sms-templates';
 import { getInAppTemplate } from './in-app-templates';
+import { EmailTemplates } from './email-templates';
 
 @Injectable()
 export class NotificationService {
   constructor(
     private prisma: PrismaService,
     private smsService: SmsService,
+    private emailService: EmailService,
   ) {}
 
     // Notifies user(s) that an installment is due soon
@@ -181,6 +184,74 @@ export class NotificationService {
   getEmailTemplate(type: string, data: any): string {
     const subject = type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
     return `<h2>${subject}</h2><p>${data.message || getSmsTemplate(type, data)}</p>`;
+  }
+
+  // Send actual email using EmailService and EmailTemplates
+  async sendEmail(options: {
+    to: string;
+    templateType: string;
+    data: any;
+    recipient?: { name: string; email: string };
+  }) {
+    try {
+      const template = (EmailTemplates as any)[options.templateType];
+      if (!template) {
+        console.warn(`Email template not found: ${options.templateType}`);
+        return { success: false, message: 'Template not found' };
+      }
+
+      const subject = typeof template.subject === 'function' 
+        ? template.subject(options.data)
+        : template.subject;
+      const html = typeof template.body === 'function'
+        ? template.body(options.data, options.recipient || { name: 'User', email: options.to })
+        : template.body;
+
+      await this.emailService.sendEmail({
+        to: options.to,
+        subject,
+        html,
+      });
+
+      console.log(`Email sent to ${options.to} for template ${options.templateType}`);
+      return { success: true, message: 'Email sent' };
+    } catch (error) {
+      console.error(`Failed to send email to ${options.to}:`, error);
+      return { success: false, message: 'Email sending failed' };
+    }
+  }
+
+  // Send password reset email
+  async sendPasswordResetEmail(user: { id: string; name: string; email: string }, resetToken: string) {
+    const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+    return this.sendEmail({
+      to: user.email,
+      templateType: 'PASSWORD_RESET',
+      data: { resetLink },
+      recipient: { name: user.name, email: user.email },
+    });
+  }
+
+  // Send agent invitation email
+  async sendAgentInvitationEmail(user: { name: string; email: string }, tempPassword: string) {
+    const loginLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`;
+    return this.sendEmail({
+      to: user.email,
+      templateType: 'AGENT_INVITATION',
+      data: { tempPassword, loginLink },
+      recipient: { name: user.name, email: user.email },
+    });
+  }
+
+  // Send email verification email
+  async sendEmailVerificationEmail(user: { name: string; email: string }, verificationToken: string) {
+    const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
+    return this.sendEmail({
+      to: user.email,
+      templateType: 'EMAIL_VERIFICATION',
+      data: { verificationLink },
+      recipient: { name: user.name, email: user.email },
+    });
   }
 
   getSmsTemplate(type: string, data: any): string {

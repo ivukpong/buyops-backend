@@ -6,6 +6,7 @@ import {
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from '../notification/notification.service';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
 
@@ -14,6 +15,7 @@ export class AuthService {
   constructor(
     private prisma: PrismaService,
     private jwtService: JwtService,
+    private notificationService: NotificationService,
   ) { }
 
   // ────────────────────────────────────────────────
@@ -176,14 +178,11 @@ export class AuthService {
       { expiresIn: '1h' },
     );
 
-    // TODO: in production → send email with link
-    // For development/testing:
-    console.log(`Reset password token for ${email}: ${resetToken}`);
+    // Send password reset email
+    await this.notificationService.sendPasswordResetEmail(user, resetToken);
 
     return {
       message: 'If an account exists, a reset link has been sent.',
-      // Only return token in dev – remove in production!
-      // resetToken,
     };
   }
 
@@ -244,12 +243,11 @@ export class AuthService {
       { expiresIn: '24h' },
     );
 
-    // TODO: in production → send email
-    console.log(`Verification token for ${email}: ${verificationToken}`);
+    // Send verification email
+    await this.notificationService.sendEmailVerificationEmail(user, verificationToken);
 
     return {
       message: 'If an account exists, a verification link has been sent.',
-      // verificationToken,  // remove in production
     };
   }
 

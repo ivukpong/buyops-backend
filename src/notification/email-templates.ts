@@ -268,4 +268,55 @@ export const EmailTemplates = {
       </div>
     `,
   },
+
+  // ════════════════════════════════════════════════════════════════════════
+  // A14. AGENT INVITATION
+  // ════════════════════════════════════════════════════════════════════════
+  AGENT_INVITATION: {
+    subject: () => 'Welcome to BuyOps - Agent Invitation',
+    body: (data: any, recipient: any) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Welcome to BuyOps!</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>You have been invited to join BuyOps as a Sales Agent.</p>
+        <p><strong>Login Credentials:</strong><br/>
+           <strong>Email:</strong> ${recipient.email}<br/>
+           <strong>Temporary Password:</strong> ${data.tempPassword}</p>
+        <p>Please use the credentials above to log in to your account. We recommend changing your password immediately upon first login for security purposes.</p>
+        <p>
+          <a href="${data.loginLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Log In to BuyOps
+          </a>
+        </p>
+        <p>If you have any questions or need assistance, please contact our support team.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+  },
+
+  // ════════════════════════════════════════════════════════════════════════
+  // A15. EMAIL VERIFICATION
+  // ════════════════════════════════════════════════════════════════════════
+  EMAIL_VERIFICATION: {
+    subject: () => 'Verify Your BuyOps Email Address',
+    body: (data: any, recipient: any) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Verify Your Email Address</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>Thank you for registering with BuyOps. Please verify your email address by clicking the link below:</p>
+        <p>
+          <a href="${data.verificationLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Verify Email
+          </a>
+        </p>
+        <p>This verification link will expire in 24 hours.</p>
+        <p>If you did not create this account, please ignore this email.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+  },
 };

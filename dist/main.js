@@ -1405,18 +1405,20 @@ var __importStar = (this && this.__importStar) || (function () {
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a, _b;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
 const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 let AuthService = class AuthService {
-    constructor(prisma, jwtService) {
+    constructor(prisma, jwtService, notificationService) {
         this.prisma = prisma;
         this.jwtService = jwtService;
+        this.notificationService = notificationService;
     }
     async validateUser(email, password) {
         const normalizedEmail = email.trim().toLowerCase();
@@ -1539,7 +1541,7 @@ let AuthService = class AuthService {
             return { message: 'If an account exists, a reset link has been sent.' };
         }
         const resetToken = this.jwtService.sign({ sub: user.id, email: user.email }, { expiresIn: '1h' });
-        console.log(`Reset password token for ${email}: ${resetToken}`);
+        await this.notificationService.sendPasswordResetEmail(user, resetToken);
         return {
             message: 'If an account exists, a reset link has been sent.',
         };
@@ -1584,7 +1586,7 @@ let AuthService = class AuthService {
             return { message: 'If an account exists, a verification link has been sent.' };
         }
         const verificationToken = this.jwtService.sign({ sub: user.id, email: user.email }, { expiresIn: '24h' });
-        console.log(`Verification token for ${email}: ${verificationToken}`);
+        await this.notificationService.sendEmailVerificationEmail(user, verificationToken);
         return {
             message: 'If an account exists, a verification link has been sent.',
         };
@@ -1596,7 +1598,7 @@ let AuthService = class AuthService {
 exports.AuthService = AuthService;
 exports.AuthService = AuthService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _b : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof jwt_1.JwtService !== "undefined" && jwt_1.JwtService) === "function" ? _b : Object, typeof (_c = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _c : Object])
 ], AuthService);
 
 
@@ -4417,6 +4419,274 @@ exports.CronService = CronService = __decorate([
 
 /***/ }),
 
+/***/ "./src/notification/email-templates.ts":
+/*!*********************************************!*\
+  !*** ./src/notification/email-templates.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EmailTemplates = void 0;
+exports.EmailTemplates = {
+    PASSWORD_RESET: {
+        subject: () => 'Reset Your BuyOps Password',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Reset Your BuyOps Password</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>You requested a password reset for your BuyOps account.</p>
+        <p>Click the link below to create a new password:</p>
+        <p>
+          <a href="${data.resetLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Reset Password
+          </a>
+        </p>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>For security reasons, this link will expire shortly.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    NEW_DEVICE_LOGIN: {
+        subject: () => 'New Login Detected on Your BuyOps Account',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Login Detected</h2>
+        <p>We noticed a successful login to your BuyOps account from a new device.</p>
+        <p><strong>Device:</strong> ${data.device || 'Unknown'}<br/>
+           <strong>Location:</strong> ${data.location || 'Unknown'}<br/>
+           <strong>Time:</strong> ${data.timestamp || new Date().toLocaleString()}</p>
+        <p>If this was you, no action is required.</p>
+        <p>If you do not recognise this activity, please reset your password immediately or contact support.</p>
+        <p>Your security matters to us.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    ASSET_PUBLISHED: {
+        subject: (data) => 'Asset Successfully Published',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Asset Successfully Published</h2>
+        <p>This is to confirm that a new asset has been published on BuyOps.</p>
+        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
+           <strong>Company:</strong> ${data.companyName}</p>
+        <p>The asset is now available according to its visibility and distribution settings.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    ASSET_UPDATED: {
+        subject: () => 'Asset Information Updated',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Asset Information Updated</h2>
+        <p>An asset on BuyOps has been updated.</p>
+        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
+           <strong>Updated Fields:</strong> ${data.updatedFields}</p>
+        <p>Please review the changes to ensure accuracy and alignment with current terms.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    NEW_LEAD_FROM_INVESTOR: {
+        subject: () => 'New Lead Assigned to You',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Lead Assigned to You</h2>
+        <p>A new lead has been onboarded and assigned to you.</p>
+        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
+           <strong>Asset Interest:</strong> ${data.assetName}<br/>
+           <strong>Budget:</strong> ₦${(data.budget || 0).toLocaleString()}</p>
+        <p>Please follow up promptly to progress the opportunity.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    LEAD_ASSIGNED_TO_CLUSTER: {
+        subject: () => 'Lead Assigned to Your Cluster',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Lead Assigned to Your Cluster</h2>
+        <p>A lead has been assigned to your cluster.</p>
+        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
+           <strong>Assigned Cluster:</strong> ${data.clusterName}</p>
+        <p>Kindly coordinate follow-up with your team.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    LEAD_AVAILABLE_TO_ALL: {
+        subject: () => 'New Lead Available',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Lead Available</h2>
+        <p>A new lead has been made available to all clusters.</p>
+        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
+           <strong>Asset Interest:</strong> ${data.assetName}</p>
+        <p>Agents may engage based on availability and fit.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    DEAL_CREATED: {
+        subject: () => 'New Deal Created',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Deal Created</h2>
+        <p>A new deal has been created on BuyOps.</p>
+        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
+           <strong>Agent:</strong> ${data.agentName}<br/>
+           <strong>Asset:</strong> ${data.assetName}</p>
+        <p>This notification is for administrative oversight.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    DEAL_PAYMENT_READY: {
+        subject: () => 'Deal Ready for Payment Processing',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Deal Ready for Payment Processing</h2>
+        <p>A deal has been marked as Payment Ready.</p>
+        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
+           <strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Payment Type:</strong> ${data.paymentType}</p>
+        <p>Please proceed with payment verification and processing.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    DEAL_CLOSED: {
+        subject: () => 'Deal Successfully Closed',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Deal Successfully Closed</h2>
+        <p>A deal has been successfully closed.</p>
+        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
+           <strong>Asset:</strong> ${data.assetName}<br/>
+           <strong>Commission Status:</strong> ${data.commissionStatus}</p>
+        <p>This transaction will now reflect in reporting and commissions.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    INSTALLMENT_DUE: {
+        subject: () => 'Upcoming Installment Payment Due',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Upcoming Installment Payment Due</h2>
+        <p>This is a reminder that an installment payment is due.</p>
+        <p><strong>Amount Due:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
+        <p>Please ensure payment is completed on or before the due date to avoid penalties.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    INSTALLMENT_OVERDUE: {
+        subject: () => 'Overdue Installment Payment',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Overdue Installment Payment</h2>
+        <p>Your installment payment is now overdue.</p>
+        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Original Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
+        <p style="color: #e53e3e;">Please make payment as soon as possible or contact support if you need assistance.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    PAYMENT_RECEIVED: {
+        subject: () => 'Payment Received Confirmation',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Payment Received Confirmation</h2>
+        <p>We confirm receipt of your recent payment.</p>
+        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Transaction Reference:</strong> ${data.reference}</p>
+        <p>Thank you for your payment.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    INSTALLMENT_COMPLETED: {
+        subject: () => 'Installment Plan Completed',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Installment Plan Completed</h2>
+        <p>Congratulations! Your installment payment plan has been fully completed.</p>
+        <p><strong>Asset:</strong> ${data.assetName}<br/>
+           <strong>Total Paid:</strong> ₦${(data.totalPaid || 0).toLocaleString()}</p>
+        <p>Thank you for completing your investment journey with BuyOps.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    AGENT_INVITATION: {
+        subject: () => 'Welcome to BuyOps - Agent Invitation',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Welcome to BuyOps!</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>You have been invited to join BuyOps as a Sales Agent.</p>
+        <p><strong>Login Credentials:</strong><br/>
+           <strong>Email:</strong> ${recipient.email}<br/>
+           <strong>Temporary Password:</strong> ${data.tempPassword}</p>
+        <p>Please use the credentials above to log in to your account. We recommend changing your password immediately upon first login for security purposes.</p>
+        <p>
+          <a href="${data.loginLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Log In to BuyOps
+          </a>
+        </p>
+        <p>If you have any questions or need assistance, please contact our support team.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    EMAIL_VERIFICATION: {
+        subject: () => 'Verify Your BuyOps Email Address',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Verify Your Email Address</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>Thank you for registering with BuyOps. Please verify your email address by clicking the link below:</p>
+        <p>
+          <a href="${data.verificationLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Verify Email
+          </a>
+        </p>
+        <p>This verification link will expire in 24 hours.</p>
+        <p>If you did not create this account, please ignore this email.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+};
+
+
+/***/ }),
+
 /***/ "./src/notification/email.service.ts":
 /*!*******************************************!*\
   !*** ./src/notification/email.service.ts ***!
@@ -4683,18 +4953,21 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a, _b;
+var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NotificationService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const sms_service_1 = __webpack_require__(/*! ./sms.service */ "./src/notification/sms.service.ts");
+const email_service_1 = __webpack_require__(/*! ./email.service */ "./src/notification/email.service.ts");
 const sms_templates_1 = __webpack_require__(/*! ./sms-templates */ "./src/notification/sms-templates.ts");
 const in_app_templates_1 = __webpack_require__(/*! ./in-app-templates */ "./src/notification/in-app-templates.ts");
+const email_templates_1 = __webpack_require__(/*! ./email-templates */ "./src/notification/email-templates.ts");
 let NotificationService = class NotificationService {
-    constructor(prisma, smsService) {
+    constructor(prisma, smsService, emailService) {
         this.prisma = prisma;
         this.smsService = smsService;
+        this.emailService = emailService;
     }
     async notifyInstallmentDue(installmentId) {
         console.log(`Installment ${installmentId} is due soon.`);
@@ -4841,6 +5114,59 @@ let NotificationService = class NotificationService {
         const subject = type.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
         return `<h2>${subject}</h2><p>${data.message || (0, sms_templates_1.getSmsTemplate)(type, data)}</p>`;
     }
+    async sendEmail(options) {
+        try {
+            const template = email_templates_1.EmailTemplates[options.templateType];
+            if (!template) {
+                console.warn(`Email template not found: ${options.templateType}`);
+                return { success: false, message: 'Template not found' };
+            }
+            const subject = typeof template.subject === 'function'
+                ? template.subject(options.data)
+                : template.subject;
+            const html = typeof template.body === 'function'
+                ? template.body(options.data, options.recipient || { name: 'User', email: options.to })
+                : template.body;
+            await this.emailService.sendEmail({
+                to: options.to,
+                subject,
+                html,
+            });
+            console.log(`Email sent to ${options.to} for template ${options.templateType}`);
+            return { success: true, message: 'Email sent' };
+        }
+        catch (error) {
+            console.error(`Failed to send email to ${options.to}:`, error);
+            return { success: false, message: 'Email sending failed' };
+        }
+    }
+    async sendPasswordResetEmail(user, resetToken) {
+        const resetLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/reset-password?token=${resetToken}`;
+        return this.sendEmail({
+            to: user.email,
+            templateType: 'PASSWORD_RESET',
+            data: { resetLink },
+            recipient: { name: user.name, email: user.email },
+        });
+    }
+    async sendAgentInvitationEmail(user, tempPassword) {
+        const loginLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/login`;
+        return this.sendEmail({
+            to: user.email,
+            templateType: 'AGENT_INVITATION',
+            data: { tempPassword, loginLink },
+            recipient: { name: user.name, email: user.email },
+        });
+    }
+    async sendEmailVerificationEmail(user, verificationToken) {
+        const verificationLink = `${process.env.FRONTEND_URL || 'http://localhost:5173'}/verify-email?token=${verificationToken}`;
+        return this.sendEmail({
+            to: user.email,
+            templateType: 'EMAIL_VERIFICATION',
+            data: { verificationLink },
+            recipient: { name: user.name, email: user.email },
+        });
+    }
     getSmsTemplate(type, data) {
         return (0, sms_templates_1.getSmsTemplate)(type, data);
     }
@@ -4851,7 +5177,7 @@ let NotificationService = class NotificationService {
 exports.NotificationService = NotificationService;
 exports.NotificationService = NotificationService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof sms_service_1.SmsService !== "undefined" && sms_service_1.SmsService) === "function" ? _b : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof sms_service_1.SmsService !== "undefined" && sms_service_1.SmsService) === "function" ? _b : Object, typeof (_c = typeof email_service_1.EmailService !== "undefined" && email_service_1.EmailService) === "function" ? _c : Object])
 ], NotificationService);
 
 
