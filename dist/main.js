@@ -6491,6 +6491,71 @@ __decorate([
     (0, class_validator_1.IsBoolean)(),
     __metadata("design:type", Boolean)
 ], UpdateUserDto.prototype, "agentUpdates", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "gender", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "dateOfBirth", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "homeAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "nin", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "stateOfOrigin", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "dateOfRecruitment", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinFullName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinPhoneNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinRelationship", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "bankName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "accountNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "beneficiaryName", void 0);
 class UpdatePasswordDto {
 }
 exports.UpdatePasswordDto = UpdatePasswordDto;
@@ -7073,6 +7138,32 @@ let UsersService = class UsersService {
             updateData.weeklyReports = dto.weeklyReports;
         if (dto.agentUpdates !== undefined)
             updateData.agentUpdates = dto.agentUpdates;
+        if (dto.gender !== undefined)
+            updateData.gender = dto.gender;
+        if (dto.dateOfBirth !== undefined)
+            updateData.dateOfBirth = dto.dateOfBirth ? new Date(dto.dateOfBirth) : null;
+        if (dto.homeAddress !== undefined)
+            updateData.homeAddress = dto.homeAddress;
+        if (dto.nin !== undefined)
+            updateData.nin = dto.nin;
+        if (dto.stateOfOrigin !== undefined)
+            updateData.stateOfOrigin = dto.stateOfOrigin;
+        if (dto.dateOfRecruitment !== undefined)
+            updateData.dateOfRecruitment = dto.dateOfRecruitment ? new Date(dto.dateOfRecruitment) : null;
+        if (dto.kinFullName !== undefined)
+            updateData.kinFullName = dto.kinFullName;
+        if (dto.kinPhoneNumber !== undefined)
+            updateData.kinPhoneNumber = dto.kinPhoneNumber;
+        if (dto.kinRelationship !== undefined)
+            updateData.kinRelationship = dto.kinRelationship;
+        if (dto.kinAddress !== undefined)
+            updateData.kinAddress = dto.kinAddress;
+        if (dto.bankName !== undefined)
+            updateData.bankName = dto.bankName;
+        if (dto.accountNumber !== undefined)
+            updateData.accountNumber = dto.accountNumber;
+        if (dto.beneficiaryName !== undefined)
+            updateData.beneficiaryName = dto.beneficiaryName;
         return this.prisma.user.update({ where: { id }, data: updateData });
     }
     async findByEmail(email) {

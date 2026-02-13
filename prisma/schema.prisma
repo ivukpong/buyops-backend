@@ -28,6 +28,20 @@ model User {
   transactionAlerts   Boolean?        @default(true)
   weeklyReports       Boolean?        @default(false)
   agentUpdates        Boolean?        @default(true)
+  // Extended profile fields
+  gender              String?
+  dateOfBirth         DateTime?
+  homeAddress         String?
+  nin                 String?
+  stateOfOrigin       String?
+  dateOfRecruitment   DateTime?
+  kinFullName         String?
+  kinPhoneNumber      String?
+  kinRelationship     String?
+  kinAddress          String?
+  bankName            String?
+  accountNumber       String?
+  beneficiaryName     String?
   agentProfile        Agent?          @relation("AgentProfile")
   managedClusters     Cluster[]
   freelancerProfile   Freelancer?     @relation("FreelancerProfile")

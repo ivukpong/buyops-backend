@@ -200,6 +200,20 @@ export class UsersService {
     if (dto.transactionAlerts !== undefined) updateData.transactionAlerts = dto.transactionAlerts;
     if (dto.weeklyReports !== undefined) updateData.weeklyReports = dto.weeklyReports;
     if (dto.agentUpdates !== undefined) updateData.agentUpdates = dto.agentUpdates;
+    // Extended profile fields
+    if (dto.gender !== undefined) updateData.gender = dto.gender;
+    if (dto.dateOfBirth !== undefined) updateData.dateOfBirth = dto.dateOfBirth ? new Date(dto.dateOfBirth) : null;
+    if (dto.homeAddress !== undefined) updateData.homeAddress = dto.homeAddress;
+    if (dto.nin !== undefined) updateData.nin = dto.nin;
+    if (dto.stateOfOrigin !== undefined) updateData.stateOfOrigin = dto.stateOfOrigin;
+    if (dto.dateOfRecruitment !== undefined) updateData.dateOfRecruitment = dto.dateOfRecruitment ? new Date(dto.dateOfRecruitment) : null;
+    if (dto.kinFullName !== undefined) updateData.kinFullName = dto.kinFullName;
+    if (dto.kinPhoneNumber !== undefined) updateData.kinPhoneNumber = dto.kinPhoneNumber;
+    if (dto.kinRelationship !== undefined) updateData.kinRelationship = dto.kinRelationship;
+    if (dto.kinAddress !== undefined) updateData.kinAddress = dto.kinAddress;
+    if (dto.bankName !== undefined) updateData.bankName = dto.bankName;
+    if (dto.accountNumber !== undefined) updateData.accountNumber = dto.accountNumber;
+    if (dto.beneficiaryName !== undefined) updateData.beneficiaryName = dto.beneficiaryName;
 
     return this.prisma.user.update({ where: { id }, data: updateData });
   }

@@ -67,6 +67,59 @@ export class UpdateUserDto {
   @IsOptional()
   @IsBoolean()
   agentUpdates?: boolean;
+
+  // Extended profile fields
+  @IsOptional()
+  @IsString()
+  gender?: string;
+
+  @IsOptional()
+  @IsString()
+  dateOfBirth?: string;
+
+  @IsOptional()
+  @IsString()
+  homeAddress?: string;
+
+  @IsOptional()
+  @IsString()
+  nin?: string;
+
+  @IsOptional()
+  @IsString()
+  stateOfOrigin?: string;
+
+  @IsOptional()
+  @IsString()
+  dateOfRecruitment?: string;
+
+  @IsOptional()
+  @IsString()
+  kinFullName?: string;
+
+  @IsOptional()
+  @IsString()
+  kinPhoneNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  kinRelationship?: string;
+
+  @IsOptional()
+  @IsString()
+  kinAddress?: string;
+
+  @IsOptional()
+  @IsString()
+  bankName?: string;
+
+  @IsOptional()
+  @IsString()
+  accountNumber?: string;
+
+  @IsOptional()
+  @IsString()
+  beneficiaryName?: string;
 }
 
 export class UpdatePasswordDto {
