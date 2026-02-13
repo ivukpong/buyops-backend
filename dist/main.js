@@ -4069,8 +4069,9 @@ let LeadsController = class LeadsController {
     async findOne(id) {
         return this.leadsService.findById(id);
     }
-    async create(dto, user) {
-        return this.leadsService.create(dto, user.id);
+    async create(dto, req) {
+        const createdById = req?.user?.id;
+        return this.leadsService.create(dto, createdById);
     }
     async assignLeads(dto) {
         return this.leadsService.assignLeads(dto);
@@ -4104,7 +4105,7 @@ __decorate([
 __decorate([
     (0, common_1.Post)(),
     __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Param)('user')),
+    __param(1, (0, common_1.Req)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [CreateLeadDto, Object]),
     __metadata("design:returntype", Promise)

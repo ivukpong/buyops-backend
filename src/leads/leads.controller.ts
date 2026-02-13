@@ -6,7 +6,8 @@ import {
     Post,
     Put,
     Query,
-    UseGuards
+    UseGuards,
+    Req
 } from "@nestjs/common";
 import { LeadsService } from "./leads.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
@@ -64,10 +65,9 @@ export class LeadsController {
     // @UseGuards(JwtAuthGuard, RolesGuard)
     // @Roles("ADMIN", "SALES")
     @Post()
-    async create(@Body() dto: CreateLeadDto, @Param('user') user: any) {
-        // Assuming you have access to the user object from the request (e.g., via a custom decorator or request object)
-        // Replace 'user.id' with the correct way to get the current user's id in your app
-        return this.leadsService.create(dto, user.id);
+    async create(@Body() dto: CreateLeadDto, @Req() req: any) {
+        const createdById = req?.user?.id;
+        return this.leadsService.create(dto, createdById);
     }
 
     // @UseGuards(JwtAuthGuard, RolesGuard)
