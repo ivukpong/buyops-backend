@@ -10,9 +10,16 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  UseInterceptors,
+  UploadedFile,
+  UploadedFiles,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import { AssetsService } from './assets.service';
+import { imageFileFilter, documentFileFilter } from '../common/upload.config';
 
 // ══════════════════════════════════════════════════════════════════════════
 // ASSETS CONTROLLER - Complete API Endpoints
@@ -22,7 +29,7 @@ import { AssetsService } from './assets.service';
 @Controller('assets')
 @UseGuards(AuthGuard('jwt'))
 export class AssetsController {
-  constructor(private assetsService: AssetsService) {}
+  constructor(private assetsService: AssetsService) { }
 
   // ═══ BASIC CRUD ═══
 
@@ -69,6 +76,29 @@ export class AssetsController {
 
   // ═══ IMAGE MANAGEMENT ═══
 
+  @Post(':id/images/upload')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(
+    FilesInterceptor('images', 10, {
+      storage: diskStorage({
+        destination: './uploads/images',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          callback(null, `image-${uniqueSuffix}${ext}`);
+        },
+      }),
+      fileFilter: imageFileFilter,
+      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+    })
+  )
+  async uploadImages(
+    @Param('id') id: string,
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
+    return this.assetsService.uploadImages(id, files);
+  }
+
   @Post(':id/images')
   @HttpCode(HttpStatus.CREATED)
   async addImage(
@@ -88,6 +118,29 @@ export class AssetsController {
   }
 
   // ═══ DOCUMENT MANAGEMENT ═══
+
+  @Post(':id/documents/upload')
+  @HttpCode(HttpStatus.CREATED)
+  @UseInterceptors(
+    FilesInterceptor('documents', 10, {
+      storage: diskStorage({
+        destination: './uploads/documents',
+        filename: (req, file, callback) => {
+          const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+          const ext = extname(file.originalname);
+          callback(null, `doc-${uniqueSuffix}${ext}`);
+        },
+      }),
+      fileFilter: documentFileFilter,
+      limits: { fileSize: 10 * 1024 * 1024 }, // 10MB
+    })
+  )
+  async uploadDocuments(
+    @Param('id') id: string,
+    @UploadedFiles() files: Express.Multer.File[]
+  ) {
+    return this.assetsService.uploadDocuments(id, files);
+  }
 
   @Post(':id/documents')
   @HttpCode(HttpStatus.CREATED)

@@ -72,15 +72,17 @@ model Asset {
   id                String   @id @default(uuid())
   name              String
   title             String?
+  referenceCode     String?
   type              String?
   status            String?
   projectStatus     String?
   location          String?
+  address           String?
   units             Int?
   parking           String?
   furnished         String?
-  facilities        String[] @default([]) // <-- Add this line
-  ownershipOptions  String[] @default([]) // <-- Add this line
+  facilities        String[] @default([])
+  ownershipOptions  String[] @default([])
   fractionCost      String?
   fundingStatus     Int?
   price             String?
@@ -94,11 +96,32 @@ model Asset {
   description       String?
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
+  // Basic Details
+  landSize              Float?
+  builtSize             Float?
+  constructionStart     DateTime?
+  constructionEnd       DateTime?
+  propertyCategory      String?
+  unitConfiguration     String?
+  facilityManagement    Boolean?
+  // Investment Structure
+  ownershipType         String?
+  fractionTotal         Int?
+  // Pricing
+  markup                String?
+  paymentOptions        String[] @default([])
+  installmentPeriods    String[] @default([])
+  downPaymentAmount     String?
+  offPlanDiscount       Float?
+  stageBasedDiscount    Float?
   // Units
   totalUnits            Int?
   availableUnits        Int?
   // Returns
   projectedRentalIncome Float?
+  rentalFrequency       String?
+  operatingCost         Float?
+  firstPayoutDate       DateTime?
   rentalYieldMin        Float?
   rentalYieldMax        Float?
   capitalAppreciation   Float?
@@ -106,20 +129,27 @@ model Asset {
   capitalAppreciationMax Float?
   totalReturnsMin       Float?
   totalReturnsMax       Float?
-  // Risk
+  // Risk & Management
   riskLevel             String?
-  riskFactors           String[] // Use @db.Text[] for Postgres if needed
-  companyId         String?  // <-- Add this line
-  company           Company? @relation(fields: [companyId], references: [id])
+  riskFactors           String[]
+  offPlanSecurity       String?
+  exitLiquidity         String?
+  managementMode        String?
+  // Commission
+  leadCommission        Float?
+  closerCommission      Float?
+  // Physical Details
+  bedrooms         Int?
+  bathrooms        Int?
+  area             Float?
+  companyId        String?
+  company          Company? @relation(fields: [companyId], references: [id])
   installmentPlans InstallmentPlan[]
   leads            Lead[]
   savedBy          SavedProperty[]   @relation("AssetSavedProperties")
   transactions     Transaction[]
   images           AssetImage[]
   documents        AssetDocument[]
-  bedrooms         Int?
-  bathrooms        Int?
-  area             Float?
 }
 
 model AssetImage {

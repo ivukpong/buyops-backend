@@ -12,12 +12,82 @@ export class UsersService {
     if (role && Object.values(UserRole).includes(role as UserRole)) {
       where.role = role as UserRole;
     }
+    if (status) {
+      where.status = status;
+    }
     if (search) {
       where.name = { contains: search, mode: 'insensitive' };
     }
     return this.prisma.user.findMany({
       where,
-      select: { id: true, email: true, name: true, role: true, createdAt: true },
+      select: {
+        id: true,
+        email: true,
+        name: true,
+        role: true,
+        status: true,
+        phone: true,
+        createdAt: true,
+        agentProfile: {
+          select: {
+            id: true,
+            closedDeals: true,
+            totalCommission: true,
+            status: true,
+            cluster: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        freelancerProfile: {
+          select: {
+            id: true,
+            activeDeals: true,
+            closedDeals: true,
+            totalCommission: true,
+            registrarName: true,
+            registrarType: true,
+            status: true,
+            cluster: {
+              select: {
+                id: true,
+                name: true,
+              },
+            },
+          },
+        },
+        managedClusters: {
+          select: {
+            id: true,
+            name: true,
+            code: true,
+            status: true,
+            location: true,
+          },
+        },
+        transactions: {
+          select: {
+            id: true,
+            totalAmount: true,
+            status: true,
+            date: true,
+            asset: {
+              select: {
+                id: true,
+                name: true,
+                type: true,
+                location: true,
+              },
+            },
+          },
+          orderBy: { date: 'desc' },
+          take: 5,
+        },
+      },
+      orderBy: { createdAt: 'desc' },
     });
   }
 

@@ -3,7 +3,7 @@ import { PrismaService } from '../prisma/prisma.service';
 
 @Injectable()
 export class DashboardService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   // FIX 28: use totalAmount (not amount); remove cluster.status filter (now exists in schema)
   async getOverview() {
@@ -27,11 +27,11 @@ export class DashboardService {
         _sum: { totalCommission: true },
       }),
       this.prisma.asset.count({ where: { status: 'published' } }),
-      // Asset distribution by type
+      // Asset distribution by type (all assets, not just published)
       this.prisma.asset.groupBy({
         by: ['type'],
         _count: { type: true },
-        where: { status: 'published' },
+        where: { type: { not: null } },
       }),
       // Sales volume and revenue by month (last 12 months)
       this.prisma.$queryRawUnsafe(`

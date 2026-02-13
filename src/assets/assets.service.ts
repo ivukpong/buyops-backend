@@ -40,7 +40,7 @@ export class AssetsService {
     const assets = await this.prisma.asset.findMany({
       where,
       include: {
-        company: { select: { id: true, name: true } },
+        company: true,
         images: { orderBy: { order: 'asc' } },
         documents: true,
         leads: { orderBy: { createdAt: 'desc' }, take: 10 },
@@ -75,63 +75,16 @@ export class AssetsService {
       const totalAnnualReturn = rentalYield + capAppreciation;
 
       return {
-        id: asset.id,
-        name: asset.name,
-        title: asset.title ?? asset.name,
-        type: asset.type,
-        status: asset.status,
-        projectStatus: asset.projectStatus,
-        location: asset.location,
-        description: asset.description,
-        companyId: asset.companyId,
-        company: asset.company,
-        // Unit details
-        units: asset.units,
-        totalUnits: asset.totalUnits,
-        availableUnits: asset.availableUnits,
-        bedrooms: asset.bedrooms,
-        bathrooms: asset.bathrooms,
-        area: asset.area,
-        parking: asset.parking,
-        furnished: asset.furnished,
+        ...asset,
         facilities: asset.facilities ?? [],
         ownershipOptions: asset.ownershipOptions ?? [],
-        // Pricing
-        price: asset.price,
-        priceRange: asset.priceRange,
-        fractionCost: asset.fractionCost,
-        fundingStatus: asset.fundingStatus,
-        finalPrice, // Computed field
-        // Commission
-        commission: asset.commission,
-        commissionRate: asset.commissionRate,
-        // Returns
-        projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
-        rentalYield: asset.rentalYield,
-        rentalYieldMin: asset.rentalYieldMin,
-        rentalYieldMax: asset.rentalYieldMax,
-        capitalAppreciation: asset.capitalAppreciation,
-        capitalAppreciationMin: asset.capitalAppreciationMin,
-        capitalAppreciationMax: asset.capitalAppreciationMax,
-        totalReturns: asset.totalReturns,
-        totalReturnsMin: asset.totalReturnsMin,
-        totalReturnsMax: asset.totalReturnsMax,
-        totalAnnualReturn, // Computed field
-        // Risk & Construction
-        riskLevel: asset.riskLevel,
+        paymentOptions: asset.paymentOptions ?? [],
+        installmentPeriods: asset.installmentPeriods ?? [],
         riskFactors: asset.riskFactors ?? [],
-        constructionStage: asset.constructionStage,
-        // Media
+        finalPrice,
+        totalAnnualReturn,
+        projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
         virtualTours: asset.virtualTours ?? 0,
-        images: asset.images,
-        documents: asset.documents,
-        // Relations
-        leads: asset.leads ?? [],
-        transactions: asset.transactions ?? [],
-        installmentPlans: asset.installmentPlans ?? [],
-        _count: asset._count,
-        createdAt: asset.createdAt,
-        updatedAt: asset.updatedAt,
       };
     });
   }
@@ -176,9 +129,15 @@ export class AssetsService {
 
     return {
       ...asset,
+      facilities: asset.facilities ?? [],
+      ownershipOptions: asset.ownershipOptions ?? [],
+      paymentOptions: asset.paymentOptions ?? [],
+      installmentPeriods: asset.installmentPeriods ?? [],
+      riskFactors: asset.riskFactors ?? [],
       finalPrice,
       totalAnnualReturn,
       projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
+      virtualTours: asset.virtualTours ?? 0,
     };
   }
 
@@ -193,13 +152,23 @@ export class AssetsService {
     const newAsset = await this.prisma.asset.create({
       data: {
         name: data.name,
-        companyId: data.companyId,
+        company: { connect: { id: data.companyId } },
         title: data.title || data.name,
+        referenceCode: data.referenceCode || null,
         type: data.type || null,
         status: data.status || 'draft',
         projectStatus: data.projectStatus || null,
         location: data.location || null,
+        address: data.address || null,
         description: data.description || null,
+        // Basic Details
+        landSize: data.landSize ? parseFloat(data.landSize) : null,
+        builtSize: data.builtSize ? parseFloat(data.builtSize) : null,
+        constructionStart: data.constructionStart ? new Date(data.constructionStart) : null,
+        constructionEnd: data.constructionEnd ? new Date(data.constructionEnd) : null,
+        propertyCategory: data.propertyCategory || null,
+        unitConfiguration: data.unitConfiguration || null,
+        facilityManagement: data.facilityManagement ?? null,
         // Unit details
         units: data.units ? parseInt(data.units) : null,
         totalUnits: data.totalUnits ? parseInt(data.totalUnits) : null,
@@ -211,16 +180,30 @@ export class AssetsService {
         furnished: data.furnished || null,
         facilities: data.facilities || data.sharedFacilities || [],
         ownershipOptions: data.ownershipOptions || [],
+        // Investment Structure
+        ownershipType: data.ownershipType || null,
+        fractionTotal: data.fractionTotal ? parseInt(data.fractionTotal) : null,
         // Pricing
         price: data.price || null,
         priceRange: data.priceRange || null,
+        markup: data.markup || null,
         fractionCost: data.fractionCost || data.costPerFraction || null,
         fundingStatus: data.fundingStatus ? parseInt(data.fundingStatus) : null,
+        paymentOptions: data.paymentOptions || [],
+        installmentPeriods: data.installmentPeriods || [],
+        downPaymentAmount: data.downPaymentAmount || null,
+        offPlanDiscount: data.offPlanDiscount ? parseFloat(data.offPlanDiscount) : null,
+        stageBasedDiscount: data.stageBasedDiscount ? parseFloat(data.stageBasedDiscount) : null,
         // Commission
         commission: data.commission || null,
         commissionRate: data.commissionRate || null,
+        leadCommission: data.leadCommission ? parseFloat(data.leadCommission) : null,
+        closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : null,
         // Returns
         projectedRentalIncome: data.projectedRentalIncome ? parseFloat(data.projectedRentalIncome) : null,
+        rentalFrequency: data.rentalFrequency || null,
+        operatingCost: data.operatingCost ? parseFloat(data.operatingCost) : null,
+        firstPayoutDate: data.firstPayoutDate ? new Date(data.firstPayoutDate) : null,
         rentalYield: data.rentalYield || null,
         rentalYieldMin: data.rentalYieldMin ? parseFloat(data.rentalYieldMin) : null,
         rentalYieldMax: data.rentalYieldMax ? parseFloat(data.rentalYieldMax) : null,
@@ -230,10 +213,13 @@ export class AssetsService {
         totalReturns: data.totalReturns || null,
         totalReturnsMin: data.totalReturnsMin ? parseFloat(data.totalReturnsMin) : null,
         totalReturnsMax: data.totalReturnsMax ? parseFloat(data.totalReturnsMax) : null,
-        // Risk & Construction
+        // Risk & Management
         riskLevel: data.riskLevel || null,
         riskFactors: data.riskFactors || [],
         constructionStage: data.constructionStage || data.constructionProgress || null,
+        offPlanSecurity: data.offPlanSecurity || null,
+        exitLiquidity: data.exitLiquidity || null,
+        managementMode: data.managementMode || null,
         // Media
         virtualTours: data.virtualTours ? parseInt(data.virtualTours) : null,
       },
@@ -250,12 +236,22 @@ export class AssetsService {
     // Basic info
     if (data.name !== undefined) updateData.name = data.name;
     if (data.title !== undefined) updateData.title = data.title;
+    if (data.referenceCode !== undefined) updateData.referenceCode = data.referenceCode;
     if (data.type !== undefined) updateData.type = data.type;
     if (data.status !== undefined) updateData.status = data.status;
     if (data.projectStatus !== undefined) updateData.projectStatus = data.projectStatus;
     if (data.location !== undefined) updateData.location = data.location;
+    if (data.address !== undefined) updateData.address = data.address;
     if (data.description !== undefined) updateData.description = data.description;
     if (data.companyId !== undefined) updateData.companyId = data.companyId;
+    // Basic Details
+    if (data.landSize !== undefined) updateData.landSize = parseFloat(data.landSize);
+    if (data.builtSize !== undefined) updateData.builtSize = parseFloat(data.builtSize);
+    if (data.constructionStart !== undefined) updateData.constructionStart = new Date(data.constructionStart);
+    if (data.constructionEnd !== undefined) updateData.constructionEnd = new Date(data.constructionEnd);
+    if (data.propertyCategory !== undefined) updateData.propertyCategory = data.propertyCategory;
+    if (data.unitConfiguration !== undefined) updateData.unitConfiguration = data.unitConfiguration;
+    if (data.facilityManagement !== undefined) updateData.facilityManagement = data.facilityManagement;
     // Unit details
     if (data.units !== undefined) updateData.units = parseInt(data.units);
     if (data.totalUnits !== undefined) updateData.totalUnits = parseInt(data.totalUnits);
@@ -268,17 +264,31 @@ export class AssetsService {
     if (data.facilities !== undefined) updateData.facilities = data.facilities;
     if (data.sharedFacilities !== undefined) updateData.facilities = data.sharedFacilities;
     if (data.ownershipOptions !== undefined) updateData.ownershipOptions = data.ownershipOptions;
+    // Investment Structure
+    if (data.ownershipType !== undefined) updateData.ownershipType = data.ownershipType;
+    if (data.fractionTotal !== undefined) updateData.fractionTotal = parseInt(data.fractionTotal);
     // Pricing
     if (data.price !== undefined) updateData.price = data.price;
     if (data.priceRange !== undefined) updateData.priceRange = data.priceRange;
+    if (data.markup !== undefined) updateData.markup = data.markup;
     if (data.fractionCost !== undefined) updateData.fractionCost = data.fractionCost;
     if (data.costPerFraction !== undefined) updateData.fractionCost = data.costPerFraction;
     if (data.fundingStatus !== undefined) updateData.fundingStatus = parseInt(data.fundingStatus);
+    if (data.paymentOptions !== undefined) updateData.paymentOptions = data.paymentOptions;
+    if (data.installmentPeriods !== undefined) updateData.installmentPeriods = data.installmentPeriods;
+    if (data.downPaymentAmount !== undefined) updateData.downPaymentAmount = data.downPaymentAmount;
+    if (data.offPlanDiscount !== undefined) updateData.offPlanDiscount = parseFloat(data.offPlanDiscount);
+    if (data.stageBasedDiscount !== undefined) updateData.stageBasedDiscount = parseFloat(data.stageBasedDiscount);
     // Commission
     if (data.commission !== undefined) updateData.commission = data.commission;
     if (data.commissionRate !== undefined) updateData.commissionRate = data.commissionRate;
+    if (data.leadCommission !== undefined) updateData.leadCommission = parseFloat(data.leadCommission);
+    if (data.closerCommission !== undefined) updateData.closerCommission = parseFloat(data.closerCommission);
     // Returns
     if (data.projectedRentalIncome !== undefined) updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
+    if (data.rentalFrequency !== undefined) updateData.rentalFrequency = data.rentalFrequency;
+    if (data.operatingCost !== undefined) updateData.operatingCost = parseFloat(data.operatingCost);
+    if (data.firstPayoutDate !== undefined) updateData.firstPayoutDate = new Date(data.firstPayoutDate);
     if (data.rentalYield !== undefined) updateData.rentalYield = data.rentalYield;
     if (data.rentalYieldMin !== undefined) updateData.rentalYieldMin = parseFloat(data.rentalYieldMin);
     if (data.rentalYieldMax !== undefined) updateData.rentalYieldMax = parseFloat(data.rentalYieldMax);
@@ -288,11 +298,14 @@ export class AssetsService {
     if (data.totalReturns !== undefined) updateData.totalReturns = data.totalReturns;
     if (data.totalReturnsMin !== undefined) updateData.totalReturnsMin = parseFloat(data.totalReturnsMin);
     if (data.totalReturnsMax !== undefined) updateData.totalReturnsMax = parseFloat(data.totalReturnsMax);
-    // Risk & Construction
+    // Risk & Management
     if (data.riskLevel !== undefined) updateData.riskLevel = data.riskLevel;
     if (data.riskFactors !== undefined) updateData.riskFactors = data.riskFactors;
     if (data.constructionStage !== undefined) updateData.constructionStage = data.constructionStage;
     if (data.constructionProgress !== undefined) updateData.constructionStage = data.constructionProgress;
+    if (data.offPlanSecurity !== undefined) updateData.offPlanSecurity = data.offPlanSecurity;
+    if (data.exitLiquidity !== undefined) updateData.exitLiquidity = data.exitLiquidity;
+    if (data.managementMode !== undefined) updateData.managementMode = data.managementMode;
     // Media
     if (data.virtualTours !== undefined) updateData.virtualTours = parseInt(data.virtualTours);
 
@@ -365,5 +378,55 @@ export class AssetsService {
 
   async removeDocument(docId: string) {
     return this.prisma.assetDocument.delete({ where: { id: docId } });
+  }
+
+  async uploadImages(assetId: string, files: Express.Multer.File[]) {
+    await this.findById(assetId);
+
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    const images = [];
+
+    for (const file of files) {
+      const url = `${baseUrl}/uploads/images/${file.filename}`;
+      const image = await this.prisma.assetImage.create({
+        data: {
+          assetId,
+          url,
+          caption: file.originalname,
+          order: 0,
+        },
+      });
+      images.push(image);
+    }
+
+    return {
+      message: `${images.length} image(s) uploaded successfully`,
+      images,
+    };
+  }
+
+  async uploadDocuments(assetId: string, files: Express.Multer.File[]) {
+    await this.findById(assetId);
+
+    const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+    const documents = [];
+
+    for (const file of files) {
+      const url = `${baseUrl}/uploads/documents/${file.filename}`;
+      const document = await this.prisma.assetDocument.create({
+        data: {
+          assetId,
+          url,
+          title: file.originalname,
+          type: file.mimetype,
+        },
+      });
+      documents.push(document);
+    }
+
+    return {
+      message: `${documents.length} document(s) uploaded successfully`,
+      documents,
+    };
   }
 }

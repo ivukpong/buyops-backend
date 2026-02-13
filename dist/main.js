@@ -462,7 +462,11 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AssetsController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
+const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
+const multer_1 = __webpack_require__(/*! multer */ "multer");
+const path_1 = __webpack_require__(/*! path */ "path");
 const assets_service_1 = __webpack_require__(/*! ./assets.service */ "./src/assets/assets.service.ts");
+const upload_config_1 = __webpack_require__(/*! ../common/upload.config */ "./src/common/upload.config.ts");
 let AssetsController = class AssetsController {
     constructor(assetsService) {
         this.assetsService = assetsService;
@@ -488,11 +492,17 @@ let AssetsController = class AssetsController {
     async unpublish(id) {
         return this.assetsService.unpublish(id);
     }
+    async uploadImages(id, files) {
+        return this.assetsService.uploadImages(id, files);
+    }
     async addImage(id, imageData) {
         return this.assetsService.addImage(id, imageData);
     }
     async deleteImage(id, imageId) {
         return this.assetsService.deleteImage(id, imageId);
+    }
+    async uploadDocuments(id, files) {
+        return this.assetsService.uploadDocuments(id, files);
     }
     async addDocument(id, documentData) {
         return this.assetsService.addDocument(id, documentData);
@@ -557,6 +567,27 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], AssetsController.prototype, "unpublish", null);
 __decorate([
+    (0, common_1.Post)(':id/images/upload'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('images', 10, {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads/images',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = (0, path_1.extname)(file.originalname);
+                callback(null, `image-${uniqueSuffix}${ext}`);
+            },
+        }),
+        fileFilter: upload_config_1.imageFileFilter,
+        limits: { fileSize: 10 * 1024 * 1024 },
+    })),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.UploadedFiles)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "uploadImages", null);
+__decorate([
     (0, common_1.Post)(':id/images'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
     __param(0, (0, common_1.Param)('id')),
@@ -574,6 +605,27 @@ __decorate([
     __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], AssetsController.prototype, "deleteImage", null);
+__decorate([
+    (0, common_1.Post)(':id/documents/upload'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('documents', 10, {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads/documents',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = (0, path_1.extname)(file.originalname);
+                callback(null, `doc-${uniqueSuffix}${ext}`);
+            },
+        }),
+        fileFilter: upload_config_1.documentFileFilter,
+        limits: { fileSize: 10 * 1024 * 1024 },
+    })),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.UploadedFiles)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "uploadDocuments", null);
 __decorate([
     (0, common_1.Post)(':id/documents'),
     (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
@@ -693,7 +745,7 @@ let AssetsService = class AssetsService {
         const assets = await this.prisma.asset.findMany({
             where,
             include: {
-                company: { select: { id: true, name: true } },
+                company: true,
                 images: { orderBy: { order: 'asc' } },
                 documents: true,
                 leads: { orderBy: { createdAt: 'desc' }, take: 10 },
@@ -721,56 +773,16 @@ let AssetsService = class AssetsService {
                     : 0;
             const totalAnnualReturn = rentalYield + capAppreciation;
             return {
-                id: asset.id,
-                name: asset.name,
-                title: asset.title ?? asset.name,
-                type: asset.type,
-                status: asset.status,
-                projectStatus: asset.projectStatus,
-                location: asset.location,
-                description: asset.description,
-                companyId: asset.companyId,
-                company: asset.company,
-                units: asset.units,
-                totalUnits: asset.totalUnits,
-                availableUnits: asset.availableUnits,
-                bedrooms: asset.bedrooms,
-                bathrooms: asset.bathrooms,
-                area: asset.area,
-                parking: asset.parking,
-                furnished: asset.furnished,
+                ...asset,
                 facilities: asset.facilities ?? [],
                 ownershipOptions: asset.ownershipOptions ?? [],
-                price: asset.price,
-                priceRange: asset.priceRange,
-                fractionCost: asset.fractionCost,
-                fundingStatus: asset.fundingStatus,
-                finalPrice,
-                commission: asset.commission,
-                commissionRate: asset.commissionRate,
-                projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
-                rentalYield: asset.rentalYield,
-                rentalYieldMin: asset.rentalYieldMin,
-                rentalYieldMax: asset.rentalYieldMax,
-                capitalAppreciation: asset.capitalAppreciation,
-                capitalAppreciationMin: asset.capitalAppreciationMin,
-                capitalAppreciationMax: asset.capitalAppreciationMax,
-                totalReturns: asset.totalReturns,
-                totalReturnsMin: asset.totalReturnsMin,
-                totalReturnsMax: asset.totalReturnsMax,
-                totalAnnualReturn,
-                riskLevel: asset.riskLevel,
+                paymentOptions: asset.paymentOptions ?? [],
+                installmentPeriods: asset.installmentPeriods ?? [],
                 riskFactors: asset.riskFactors ?? [],
-                constructionStage: asset.constructionStage,
+                finalPrice,
+                totalAnnualReturn,
+                projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
                 virtualTours: asset.virtualTours ?? 0,
-                images: asset.images,
-                documents: asset.documents,
-                leads: asset.leads ?? [],
-                transactions: asset.transactions ?? [],
-                installmentPlans: asset.installmentPlans ?? [],
-                _count: asset._count,
-                createdAt: asset.createdAt,
-                updatedAt: asset.updatedAt,
             };
         });
     }
@@ -807,9 +819,15 @@ let AssetsService = class AssetsService {
         const totalAnnualReturn = rentalYield + capAppreciation;
         return {
             ...asset,
+            facilities: asset.facilities ?? [],
+            ownershipOptions: asset.ownershipOptions ?? [],
+            paymentOptions: asset.paymentOptions ?? [],
+            installmentPeriods: asset.installmentPeriods ?? [],
+            riskFactors: asset.riskFactors ?? [],
             finalPrice,
             totalAnnualReturn,
             projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
+            virtualTours: asset.virtualTours ?? 0,
         };
     }
     async create(data) {
@@ -823,13 +841,22 @@ let AssetsService = class AssetsService {
         const newAsset = await this.prisma.asset.create({
             data: {
                 name: data.name,
-                companyId: data.companyId,
+                company: { connect: { id: data.companyId } },
                 title: data.title || data.name,
+                referenceCode: data.referenceCode || null,
                 type: data.type || null,
                 status: data.status || 'draft',
                 projectStatus: data.projectStatus || null,
                 location: data.location || null,
+                address: data.address || null,
                 description: data.description || null,
+                landSize: data.landSize ? parseFloat(data.landSize) : null,
+                builtSize: data.builtSize ? parseFloat(data.builtSize) : null,
+                constructionStart: data.constructionStart ? new Date(data.constructionStart) : null,
+                constructionEnd: data.constructionEnd ? new Date(data.constructionEnd) : null,
+                propertyCategory: data.propertyCategory || null,
+                unitConfiguration: data.unitConfiguration || null,
+                facilityManagement: data.facilityManagement ?? null,
                 units: data.units ? parseInt(data.units) : null,
                 totalUnits: data.totalUnits ? parseInt(data.totalUnits) : null,
                 availableUnits: data.availableUnits ? parseInt(data.availableUnits) : null,
@@ -840,13 +867,26 @@ let AssetsService = class AssetsService {
                 furnished: data.furnished || null,
                 facilities: data.facilities || data.sharedFacilities || [],
                 ownershipOptions: data.ownershipOptions || [],
+                ownershipType: data.ownershipType || null,
+                fractionTotal: data.fractionTotal ? parseInt(data.fractionTotal) : null,
                 price: data.price || null,
                 priceRange: data.priceRange || null,
+                markup: data.markup || null,
                 fractionCost: data.fractionCost || data.costPerFraction || null,
                 fundingStatus: data.fundingStatus ? parseInt(data.fundingStatus) : null,
+                paymentOptions: data.paymentOptions || [],
+                installmentPeriods: data.installmentPeriods || [],
+                downPaymentAmount: data.downPaymentAmount || null,
+                offPlanDiscount: data.offPlanDiscount ? parseFloat(data.offPlanDiscount) : null,
+                stageBasedDiscount: data.stageBasedDiscount ? parseFloat(data.stageBasedDiscount) : null,
                 commission: data.commission || null,
                 commissionRate: data.commissionRate || null,
+                leadCommission: data.leadCommission ? parseFloat(data.leadCommission) : null,
+                closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : null,
                 projectedRentalIncome: data.projectedRentalIncome ? parseFloat(data.projectedRentalIncome) : null,
+                rentalFrequency: data.rentalFrequency || null,
+                operatingCost: data.operatingCost ? parseFloat(data.operatingCost) : null,
+                firstPayoutDate: data.firstPayoutDate ? new Date(data.firstPayoutDate) : null,
                 rentalYield: data.rentalYield || null,
                 rentalYieldMin: data.rentalYieldMin ? parseFloat(data.rentalYieldMin) : null,
                 rentalYieldMax: data.rentalYieldMax ? parseFloat(data.rentalYieldMax) : null,
@@ -859,6 +899,9 @@ let AssetsService = class AssetsService {
                 riskLevel: data.riskLevel || null,
                 riskFactors: data.riskFactors || [],
                 constructionStage: data.constructionStage || data.constructionProgress || null,
+                offPlanSecurity: data.offPlanSecurity || null,
+                exitLiquidity: data.exitLiquidity || null,
+                managementMode: data.managementMode || null,
                 virtualTours: data.virtualTours ? parseInt(data.virtualTours) : null,
             },
         });
@@ -871,6 +914,8 @@ let AssetsService = class AssetsService {
             updateData.name = data.name;
         if (data.title !== undefined)
             updateData.title = data.title;
+        if (data.referenceCode !== undefined)
+            updateData.referenceCode = data.referenceCode;
         if (data.type !== undefined)
             updateData.type = data.type;
         if (data.status !== undefined)
@@ -879,10 +924,26 @@ let AssetsService = class AssetsService {
             updateData.projectStatus = data.projectStatus;
         if (data.location !== undefined)
             updateData.location = data.location;
+        if (data.address !== undefined)
+            updateData.address = data.address;
         if (data.description !== undefined)
             updateData.description = data.description;
         if (data.companyId !== undefined)
             updateData.companyId = data.companyId;
+        if (data.landSize !== undefined)
+            updateData.landSize = parseFloat(data.landSize);
+        if (data.builtSize !== undefined)
+            updateData.builtSize = parseFloat(data.builtSize);
+        if (data.constructionStart !== undefined)
+            updateData.constructionStart = new Date(data.constructionStart);
+        if (data.constructionEnd !== undefined)
+            updateData.constructionEnd = new Date(data.constructionEnd);
+        if (data.propertyCategory !== undefined)
+            updateData.propertyCategory = data.propertyCategory;
+        if (data.unitConfiguration !== undefined)
+            updateData.unitConfiguration = data.unitConfiguration;
+        if (data.facilityManagement !== undefined)
+            updateData.facilityManagement = data.facilityManagement;
         if (data.units !== undefined)
             updateData.units = parseInt(data.units);
         if (data.totalUnits !== undefined)
@@ -905,22 +966,48 @@ let AssetsService = class AssetsService {
             updateData.facilities = data.sharedFacilities;
         if (data.ownershipOptions !== undefined)
             updateData.ownershipOptions = data.ownershipOptions;
+        if (data.ownershipType !== undefined)
+            updateData.ownershipType = data.ownershipType;
+        if (data.fractionTotal !== undefined)
+            updateData.fractionTotal = parseInt(data.fractionTotal);
         if (data.price !== undefined)
             updateData.price = data.price;
         if (data.priceRange !== undefined)
             updateData.priceRange = data.priceRange;
+        if (data.markup !== undefined)
+            updateData.markup = data.markup;
         if (data.fractionCost !== undefined)
             updateData.fractionCost = data.fractionCost;
         if (data.costPerFraction !== undefined)
             updateData.fractionCost = data.costPerFraction;
         if (data.fundingStatus !== undefined)
             updateData.fundingStatus = parseInt(data.fundingStatus);
+        if (data.paymentOptions !== undefined)
+            updateData.paymentOptions = data.paymentOptions;
+        if (data.installmentPeriods !== undefined)
+            updateData.installmentPeriods = data.installmentPeriods;
+        if (data.downPaymentAmount !== undefined)
+            updateData.downPaymentAmount = data.downPaymentAmount;
+        if (data.offPlanDiscount !== undefined)
+            updateData.offPlanDiscount = parseFloat(data.offPlanDiscount);
+        if (data.stageBasedDiscount !== undefined)
+            updateData.stageBasedDiscount = parseFloat(data.stageBasedDiscount);
         if (data.commission !== undefined)
             updateData.commission = data.commission;
         if (data.commissionRate !== undefined)
             updateData.commissionRate = data.commissionRate;
+        if (data.leadCommission !== undefined)
+            updateData.leadCommission = parseFloat(data.leadCommission);
+        if (data.closerCommission !== undefined)
+            updateData.closerCommission = parseFloat(data.closerCommission);
         if (data.projectedRentalIncome !== undefined)
             updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
+        if (data.rentalFrequency !== undefined)
+            updateData.rentalFrequency = data.rentalFrequency;
+        if (data.operatingCost !== undefined)
+            updateData.operatingCost = parseFloat(data.operatingCost);
+        if (data.firstPayoutDate !== undefined)
+            updateData.firstPayoutDate = new Date(data.firstPayoutDate);
         if (data.rentalYield !== undefined)
             updateData.rentalYield = data.rentalYield;
         if (data.rentalYieldMin !== undefined)
@@ -947,6 +1034,12 @@ let AssetsService = class AssetsService {
             updateData.constructionStage = data.constructionStage;
         if (data.constructionProgress !== undefined)
             updateData.constructionStage = data.constructionProgress;
+        if (data.offPlanSecurity !== undefined)
+            updateData.offPlanSecurity = data.offPlanSecurity;
+        if (data.exitLiquidity !== undefined)
+            updateData.exitLiquidity = data.exitLiquidity;
+        if (data.managementMode !== undefined)
+            updateData.managementMode = data.managementMode;
         if (data.virtualTours !== undefined)
             updateData.virtualTours = parseInt(data.virtualTours);
         await this.prisma.asset.update({
@@ -999,6 +1092,48 @@ let AssetsService = class AssetsService {
     }
     async removeDocument(docId) {
         return this.prisma.assetDocument.delete({ where: { id: docId } });
+    }
+    async uploadImages(assetId, files) {
+        await this.findById(assetId);
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const images = [];
+        for (const file of files) {
+            const url = `${baseUrl}/uploads/images/${file.filename}`;
+            const image = await this.prisma.assetImage.create({
+                data: {
+                    assetId,
+                    url,
+                    caption: file.originalname,
+                    order: 0,
+                },
+            });
+            images.push(image);
+        }
+        return {
+            message: `${images.length} image(s) uploaded successfully`,
+            images,
+        };
+    }
+    async uploadDocuments(assetId, files) {
+        await this.findById(assetId);
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const documents = [];
+        for (const file of files) {
+            const url = `${baseUrl}/uploads/documents/${file.filename}`;
+            const document = await this.prisma.assetDocument.create({
+                data: {
+                    assetId,
+                    url,
+                    title: file.originalname,
+                    type: file.mimetype,
+                },
+            });
+            documents.push(document);
+        }
+        return {
+            message: `${documents.length} document(s) uploaded successfully`,
+            documents,
+        };
     }
 };
 exports.AssetsService = AssetsService;
@@ -1773,11 +1908,17 @@ let ClustersService = class ClustersService {
             const teamLead = cluster.manager?.name ?? "";
             const agents = cluster._count.agents;
             const agentIds = cluster.agents.map(a => a.id);
-            const activeAssets = await this.prisma.asset.count({
+            const transactions = await this.prisma.transaction.findMany({
                 where: {
-                    status: { in: ['published', 'active'] },
+                    OR: [
+                        { leadAgentId: { in: agentIds } },
+                        { closerAgentId: { in: agentIds } },
+                    ],
                 },
+                select: { assetId: true },
+                distinct: ['assetId'],
             });
+            const activeAssets = transactions.length;
             const totalCommission = await this.prisma.agent.aggregate({
                 where: { clusterId: cluster.id },
                 _sum: { totalCommission: true },
@@ -1786,6 +1927,7 @@ let ClustersService = class ClustersService {
                 id: cluster.id,
                 name: cluster.name,
                 teamLead,
+                managerId: cluster.managerId,
                 agents,
                 activeAssets,
                 totalCommission: totalCommission._sum.totalCommission || 0,
@@ -1941,6 +2083,80 @@ exports.RolesGuard = RolesGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof core_1.Reflector !== "undefined" && core_1.Reflector) === "function" ? _a : Object])
 ], RolesGuard);
+
+
+/***/ }),
+
+/***/ "./src/common/upload.config.ts":
+/*!*************************************!*\
+  !*** ./src/common/upload.config.ts ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.documentFileFilter = exports.imageFileFilter = exports.multerConfig = void 0;
+const multer_1 = __webpack_require__(/*! multer */ "multer");
+const path_1 = __webpack_require__(/*! path */ "path");
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+exports.multerConfig = {
+    storage: (0, multer_1.diskStorage)({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const ext = (0, path_1.extname)(file.originalname);
+            const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+            callback(null, filename);
+        },
+    }),
+    fileFilter: (req, file, callback) => {
+        const allowedMimes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+        ];
+        if (allowedMimes.includes(file.mimetype)) {
+            callback(null, true);
+        }
+        else {
+            callback(new common_1.BadRequestException(`Invalid file type. Allowed types: ${allowedMimes.join(', ')}`), false);
+        }
+    },
+    limits: {
+        fileSize: 10 * 1024 * 1024,
+    },
+};
+const imageFileFilter = (req, file, callback) => {
+    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimes.includes(file.mimetype)) {
+        callback(null, true);
+    }
+    else {
+        callback(new common_1.BadRequestException('Only image files are allowed (jpg, jpeg, png, gif, webp)'), false);
+    }
+};
+exports.imageFileFilter = imageFileFilter;
+const documentFileFilter = (req, file, callback) => {
+    const allowedMimes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+    ];
+    if (allowedMimes.includes(file.mimetype)) {
+        callback(null, true);
+    }
+    else {
+        callback(new common_1.BadRequestException('Only document files are allowed (pdf, doc, docx, txt)'), false);
+    }
+};
+exports.documentFileFilter = documentFileFilter;
 
 
 /***/ }),
@@ -2718,7 +2934,7 @@ let DashboardService = class DashboardService {
             this.prisma.asset.groupBy({
                 by: ['type'],
                 _count: { type: true },
-                where: { status: 'published' },
+                where: { type: { not: null } },
             }),
             this.prisma.$queryRawUnsafe(`
         SELECT 
@@ -6710,12 +6926,82 @@ let UsersService = class UsersService {
         if (role && Object.values(client_1.UserRole).includes(role)) {
             where.role = role;
         }
+        if (status) {
+            where.status = status;
+        }
         if (search) {
             where.name = { contains: search, mode: 'insensitive' };
         }
         return this.prisma.user.findMany({
             where,
-            select: { id: true, email: true, name: true, role: true, createdAt: true },
+            select: {
+                id: true,
+                email: true,
+                name: true,
+                role: true,
+                status: true,
+                phone: true,
+                createdAt: true,
+                agentProfile: {
+                    select: {
+                        id: true,
+                        closedDeals: true,
+                        totalCommission: true,
+                        status: true,
+                        cluster: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                freelancerProfile: {
+                    select: {
+                        id: true,
+                        activeDeals: true,
+                        closedDeals: true,
+                        totalCommission: true,
+                        registrarName: true,
+                        registrarType: true,
+                        status: true,
+                        cluster: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                managedClusters: {
+                    select: {
+                        id: true,
+                        name: true,
+                        code: true,
+                        status: true,
+                        location: true,
+                    },
+                },
+                transactions: {
+                    select: {
+                        id: true,
+                        totalAmount: true,
+                        status: true,
+                        date: true,
+                        asset: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                                location: true,
+                            },
+                        },
+                    },
+                    orderBy: { date: 'desc' },
+                    take: 5,
+                },
+            },
+            orderBy: { createdAt: 'desc' },
         });
     }
     async findById(id) {
@@ -7056,6 +7342,16 @@ module.exports = require("express");
 
 /***/ }),
 
+/***/ "multer":
+/*!*************************!*\
+  !*** external "multer" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("multer");
+
+/***/ }),
+
 /***/ "nodemailer":
 /*!*****************************!*\
   !*** external "nodemailer" ***!
@@ -7093,6 +7389,16 @@ module.exports = require("pg");
 /***/ ((module) => {
 
 module.exports = require("twilio");
+
+/***/ }),
+
+/***/ "path":
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+/***/ ((module) => {
+
+module.exports = require("path");
 
 /***/ })
 
@@ -7135,9 +7441,13 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 __webpack_require__(/*! dotenv/config */ "dotenv/config");
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
+const path_1 = __webpack_require__(/*! path */ "path");
 const app_module_1 = __webpack_require__(/*! ./app.module */ "./src/app.module.ts");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
+    app.useStaticAssets((0, path_1.join)(__dirname, '..', 'uploads'), {
+        prefix: '/uploads/',
+    });
     const frontendOrigins = process.env.FRONTEND_ORIGINS
         ? process.env.FRONTEND_ORIGINS.split(",").map((o) => o.trim())
         : ["http://localhost:5173"];

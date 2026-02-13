@@ -56,14 +56,23 @@ export class ClustersService {
       const teamLead = cluster.manager?.name ?? "";
       // Agents count
       const agents = cluster._count.agents;
-      // Active assets (sum of assets for all agents in cluster)
+      // Active assets - count unique assets from transactions where agents from this cluster are involved
       const agentIds = cluster.agents.map(a => a.id);
-      const activeAssets = await this.prisma.asset.count({
+
+      // Get unique asset IDs from transactions where cluster agents are lead or closer
+      const transactions = await this.prisma.transaction.findMany({
         where: {
-          status: { in: ['published', 'active'] },
-          // Remove companyId: cluster.companyId,
+          OR: [
+            { leadAgentId: { in: agentIds } },
+            { closerAgentId: { in: agentIds } },
+          ],
         },
+        select: { assetId: true },
+        distinct: ['assetId'],
       });
+
+      const activeAssets = transactions.length;
+
       // Total commission (sum for all agents in cluster)
       const totalCommission = await this.prisma.agent.aggregate({
         where: { clusterId: cluster.id },
@@ -74,6 +83,7 @@ export class ClustersService {
         id: cluster.id,
         name: cluster.name,
         teamLead,
+        managerId: cluster.managerId,
         agents,
         activeAssets,
         totalCommission: totalCommission._sum.totalCommission || 0,
