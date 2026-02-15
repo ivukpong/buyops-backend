@@ -5,12 +5,14 @@ import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from './jwt.strategy';
 import { PrismaModule } from '../prisma/prisma.module';
+import { NotificationModule } from '../notification/notification.module';
 import { UsersService } from 'src/users/users.service';
 
 @Module({
   imports: [
     PrismaModule,
     PassportModule,
+    NotificationModule,
     JwtModule.register({
       // Important: use real secret from .env in production!
       secret: process.env.JWT_SECRET || 'buyops26',
