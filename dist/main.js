@@ -5436,12 +5436,10 @@ let ReportsController = class ReportsController {
         };
     }
     async getCommissionReports(dateRange) {
-        const trends = await this.reportsService.getCommissionTrends(dateRange);
-        const agents = await this.reportsService.getTopAgents(dateRange);
+        const report = await this.reportsService.getCommissionReports(dateRange);
         return {
             success: true,
-            commissionTrends: trends,
-            topAgents: agents,
+            ...report,
             message: 'Commission report fetched successfully'
         };
     }

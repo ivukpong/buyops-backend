@@ -34,11 +34,11 @@ export class ReportsController {
     }
 
     @Get('assets')
-// @Roles('ADMIN', 'MANAGER')
-async getAssetPerformance(@Query('dateRange') dateRange?: string) {
-    const data = await this.reportsService.getAssetPerformance(dateRange);
-    return { success: true, ...data };
-}
+    // @Roles('ADMIN', 'MANAGER')
+    async getAssetPerformance(@Query('dateRange') dateRange?: string) {
+        const data = await this.reportsService.getAssetPerformance(dateRange);
+        return { success: true, ...data };
+    }
     @Get('agents')
     async getAgentPerformance(@Query('dateRange') dateRange?: string) {
         const report = await this.reportsService.getAgentPerformance(dateRange);
@@ -90,12 +90,10 @@ async getAssetPerformance(@Query('dateRange') dateRange?: string) {
 
     @Get('commissions')
     async getCommissionReports(@Query('dateRange') dateRange?: string) {
-        const trends = await this.reportsService.getCommissionTrends(dateRange);
-        const agents = await this.reportsService.getTopAgents(dateRange);
+        const report = await this.reportsService.getCommissionReports(dateRange);
         return {
             success: true,
-            commissionTrends: trends,
-            topAgents: agents,
+            ...report,
             message: 'Commission report fetched successfully'
         };
     }
@@ -108,10 +106,10 @@ async getAssetPerformance(@Query('dateRange') dateRange?: string) {
             success: true,
             conversionMetrics: metrics,
             clusterPerformance: clusters.data.map(c => ({
-              cluster: c.name,
-              target: 100, // Example, replace with real target
-              achieved: c.closedDeals,
-              performance: ((c.closedDeals / 100) * 100).toFixed(0), // Example
+                cluster: c.name,
+                target: 100, // Example, replace with real target
+                achieved: c.closedDeals,
+                performance: ((c.closedDeals / 100) * 100).toFixed(0), // Example
             })),
             message: 'Performance report fetched successfully'
         };
