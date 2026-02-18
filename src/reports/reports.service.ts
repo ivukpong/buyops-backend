@@ -5,7 +5,7 @@ import { CommissionPaymentStatus } from '@prisma/client';
 
 @Injectable()
 export class ReportsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   private getDateFilter(dateRange?: string): any {
     const where: any = {};
@@ -83,6 +83,17 @@ export class ReportsService {
     const avgDealSize = totalCount > 0 ? totalRevenue / totalCount : 0;
     const prevAvg = prevCount > 0 ? prevRevenue / prevCount : 0;
 
+    // Calculate conversion rate: total completed transactions / total leads
+    const totalLeads = await this.prisma.lead.count({ where: dateFilter });
+    const conversionRate = totalLeads > 0 ? ((totalCount / totalLeads) * 100).toFixed(1) : 0;
+
+    // Calculate previous conversion for change calculation
+    const prevLeads = prevFilter ? await this.prisma.lead.count({ where: prevFilter }) : 0;
+    const prevConversionRate = prevLeads > 0 ? (prevCount / prevLeads) * 100 : 0;
+    const conversionChange = prevConversionRate > 0
+      ? ((parseFloat(conversionRate as string) - prevConversionRate) / prevConversionRate) * 100
+      : 0;
+
     return {
       summary: {
         totalRevenue,
@@ -91,6 +102,8 @@ export class ReportsService {
         revenueChange: prevRevenue > 0 ? ((totalRevenue - prevRevenue) / prevRevenue) * 100 : 0,
         transactionChange: prevCount > 0 ? ((totalCount - prevCount) / prevCount) * 100 : 0,
         avgDealSizeChange: prevAvg > 0 ? ((avgDealSize - prevAvg) / prevAvg) * 100 : 0,
+        conversionRate,
+        conversionChange,
       },
       salesByMonth: this.processSalesByMonth(transactions),
       topAssets: (await this.getTopAssetsBySales(dateFilter)).slice(0, 10),
@@ -335,7 +348,7 @@ export class ReportsService {
     ws.eachRow((row, i) => {
       if (i > 4) {
         const val = row.getCell(1).value;
-        if (typeof val === 'string' && ['SUMMARY','SALES BY MONTH','TOP PERFORMING ASSETS','AGENT PERFORMANCE','CLUSTER PERFORMANCE'].includes(val)) {
+        if (typeof val === 'string' && ['SUMMARY', 'SALES BY MONTH', 'TOP PERFORMING ASSETS', 'AGENT PERFORMANCE', 'CLUSTER PERFORMANCE'].includes(val)) {
           row.font = { bold: true, size: 12 };
           row.fill = { type: 'pattern', pattern: 'solid', fgColor: { argb: 'FFE0E0E0' } };
         }
@@ -366,16 +379,28 @@ export class ReportsService {
       color: colors[i % colors.length],
     }));
 
-    // Type breakdown
+    // Type breakdown - need to calculate total value by fetching assets
     const typeAgg = await this.prisma.asset.groupBy({
       by: ['type'],
       _count: { type: true },
-      // _sum: { basePrice: true }, // REMOVE or replace with a valid field
     });
+
+    // Fetch all assets to calculate total value per type
+    const assets = await this.prisma.asset.findMany({
+      select: { type: true, price: true },
+    });
+
+    const typeValueMap: Record<string, number> = {};
+    assets.forEach(asset => {
+      const type = asset.type || 'Unknown';
+      const price = parseFloat(asset.price || '0');
+      typeValueMap[type] = (typeValueMap[type] || 0) + price;
+    });
+
     const assetTypeBreakdown = typeAgg.map(t => ({
       type: t.type,
       count: t._count.type,
-      // totalValue: t._sum.basePrice || 0, // REMOVE or replace
+      totalValue: typeValueMap[t.type || ''] || 0,
     }));
 
     return { assetPerformanceData, assetTypeBreakdown };
@@ -449,7 +474,7 @@ export class ReportsService {
       name: a.user?.name ?? '',
       deals: (a.leadTransactions?.length ?? 0) + (a.closerTransactions?.length ?? 0),
       commission: (a.leadTransactions?.reduce((s, tx) => s + (tx.leadCommission || 0), 0) ?? 0) +
-                (a.closerTransactions?.reduce((s, tx) => s + (tx.closerCommission || 0), 0) ?? 0),
+        (a.closerTransactions?.reduce((s, tx) => s + (tx.closerCommission || 0), 0) ?? 0),
       conversion: 'N/A', // Add conversion logic if available
     }));
   }
