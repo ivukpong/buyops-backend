@@ -1,0 +1,22 @@
+╔═══════════════════════════════════════════════════════════╗
+║         COMPREHENSIVE NOTIFICATION SYSTEM TEST            ║
+╚═══════════════════════════════════════════════════════════╝
+
+📧 All notifications will be sent to: ivukpong@gmail.com
+📱 All SMS will be sent to: +2348107758678
+
+
+🔐 Authenticating as admin...
+✅ Authentication successful
+
+👤 Creating test user with target email/phone...
+✅ Test user already exists: 9e550967-ab7f-47f4-a1ca-ed743e3fb1e5
+
+🏢 Creating test asset...
+✅ Using existing company: 0b50d081-67eb-4ba9-b97e-596a147c4b81
+✅ Test asset created: a3d4175d-8f0f-44ae-9023-279d82572644
+
+📢 TEST 1: ASSET_PUBLISHED notification
+✅ Asset published - notifications should be sent
+
+📝 TEST 2: ASSET_UPDATED notification

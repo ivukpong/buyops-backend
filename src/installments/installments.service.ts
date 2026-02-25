@@ -1,9 +1,13 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class InstallmentsService {
-    constructor(private prisma: PrismaService) { }
+    constructor(
+        private prisma: PrismaService,
+        private notificationService: NotificationService,
+    ) { }
 
     async findAll(filters?: { status?: string }) {
         const where: any = {};
@@ -168,6 +172,15 @@ export class InstallmentsService {
                 nextDueDate: nextInstallment?.dueDate || null,
                 status: isCompleted ? "COMPLETED" : "ACTIVE",
             },
+        });
+
+        await this.notificationService.notifyInstallmentPaymentRecorded({
+            planId,
+            installmentId,
+            paidAmount: data.amount,
+            paymentMethod: data.paymentMethod,
+            buyerName: plan.buyerName,
+            assetName: plan.asset?.name,
         });
 
         return updatedInstallment;

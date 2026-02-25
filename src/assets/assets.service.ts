@@ -1,16 +1,23 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class AssetsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: NotificationService,
+  ) { }
 
   async publish(id: string) {
     await this.findById(id);
-    return this.prisma.asset.update({
+    const published = await this.prisma.asset.update({
       where: { id },
       data: { status: 'published' }, // removed publishedAt
     });
+
+    await this.notificationService.notifyAssetPublished(id);
+    return published;
   }
 
   async unpublish(id: string) {
@@ -230,7 +237,7 @@ export class AssetsService {
   }
 
   async update(id: string, data: any) {
-    await this.findById(id); // throws if not found
+    const existingAsset = await this.findById(id); // throws if not found
 
     const updateData: any = {};
     // Basic info
@@ -313,6 +320,11 @@ export class AssetsService {
       where: { id },
       data: updateData,
     });
+
+    const changedFields = Object.keys(updateData);
+    if (changedFields.length) {
+      await this.notificationService.notifyAssetUpdated(existingAsset.id, changedFields);
+    }
 
     // Return enriched asset with computed fields
     return this.findById(id);

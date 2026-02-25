@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CommissionPaymentStatus } from '@prisma/client';
+import { NotificationService } from '../notification/notification.service';
 
 export interface TransactionFilter {
   status?: string;
@@ -11,7 +12,10 @@ export interface TransactionFilter {
 
 @Injectable()
 export class TransactionsService {
-  constructor(private prisma: PrismaService) { }
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: NotificationService,
+  ) { }
 
   // Update or create a filter type/interface
 
@@ -45,16 +49,28 @@ export class TransactionsService {
       where: { id: { in: transactionIds } },
       data: { commissionPaymentStatus: 'SENT' },
     });
+
+    await this.notificationService.notifyCommissionSent(transactionIds);
+
     return { message: 'Commissions marked as sent', transactionIds };
   }
 
   // Upload payment proof for a transaction
   async uploadPaymentProof(file: Express.Multer.File) {
+    const sentTransactions = await this.prisma.transaction.findMany({
+      where: { commissionPaymentStatus: 'SENT' },
+      select: { id: true },
+    });
+    const transactionIds = sentTransactions.map((tx) => tx.id);
+
     // Mark all 'sent' commissions as 'PAID'
     await this.prisma.transaction.updateMany({
       where: { commissionPaymentStatus: 'SENT' },
       data: { commissionPaymentStatus: 'PAID' },
     });
+
+    await this.notificationService.notifyCommissionsPaid(transactionIds, file?.originalname);
+
     // Optionally, store file info in DB
     return { message: 'Payment proof uploaded and commissions marked as paid', fileName: file?.originalname };
   }
@@ -122,7 +138,7 @@ export class TransactionsService {
     const buyer = await this.prisma.user.findUnique({ where: { id: data.buyerId } });
     if (!buyer) throw new NotFoundException('Buyer not found');
 
-    return this.prisma.transaction.create({
+    const transaction = await this.prisma.transaction.create({
       data: {
         assetId: data.assetId,
         buyerId: data.buyerId,
@@ -145,6 +161,20 @@ export class TransactionsService {
         company: { select: { id: true, name: true } },
       },
     });
+
+    await this.notificationService.notifyDealCreated(transaction.id);
+
+    if ((transaction.paymentType || '').toLowerCase() === 'installment') {
+      await this.notificationService.notifyDealPaymentReady(transaction.id);
+    }
+
+    await this.notificationService.notifyAdminAndSales({
+      title: 'New Deal Created',
+      message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
+      type: 'INFO',
+    });
+
+    return transaction;
   }
 
   async update(id: string, data: any) {
@@ -159,7 +189,7 @@ export class TransactionsService {
     if (data.paymentType !== undefined) updateData.paymentType = data.paymentType;
     if (data.companyId !== undefined) updateData.companyId = data.companyId;
 
-    return this.prisma.transaction.update({
+    const updated = await this.prisma.transaction.update({
       where: { id },
       data: updateData,
       include: {
@@ -167,6 +197,25 @@ export class TransactionsService {
         company: { select: { id: true, name: true } },
       },
     });
+
+    if (data.commissionPaymentStatus === 'SENT') {
+      await this.notificationService.notifyCommissionSent([id]);
+    }
+
+    if (data.commissionPaymentStatus === 'PAID') {
+      await this.notificationService.notifyCommissionsPaid([id]);
+    }
+
+    if (data.status === 'COMPLETED') {
+      await this.notificationService.notifyDealClosed(id);
+      await this.notificationService.notifyAdminAndSales({
+        title: 'Deal Completed',
+        message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
+        type: 'SUCCESS',
+      });
+    }
+
+    return updated;
   }
 
   async delete(id: string) {

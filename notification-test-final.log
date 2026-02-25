@@ -1,0 +1,79 @@
+╔═══════════════════════════════════════════════════════════╗
+║         COMPREHENSIVE NOTIFICATION SYSTEM TEST            ║
+╚═══════════════════════════════════════════════════════════╝
+
+📧 All notifications will be sent to: ivukpong@gmail.com
+📱 All SMS will be sent to: +2348107758678
+
+
+🔐 Authenticating as admin...
+✅ Authentication successful
+
+👤 Creating test user with target email/phone...
+✅ Test user already exists: 9e550967-ab7f-47f4-a1ca-ed743e3fb1e5
+
+🏢 Creating test asset...
+✅ Using existing company: 0b50d081-67eb-4ba9-b97e-596a147c4b81
+✅ Test asset created: 4ec6971f-24f6-417a-8d9b-823d4108ae80
+
+📢 TEST 1: ASSET_PUBLISHED notification
+✅ Asset published - notifications should be sent
+
+📝 TEST 2: ASSET_UPDATED notification
+✅ Asset updated - notifications should be sent
+
+📋 TEST 3: NEW_LEAD_FROM_INVESTOR notification
+❌ Failed: {
+  message: 'Lead name is required',
+  error: 'Bad Request',
+  statusCode: 400
+}
+
+📣 TEST 5: LEAD_AVAILABLE_TO_ALL notification
+❌ Failed: {
+  message: 'Lead name is required',
+  error: 'Bad Request',
+  statusCode: 400
+}
+
+💼 TEST 6: DEAL_CREATED notification
+❌ Failed: {
+  message: 'Asset ID is required',
+  error: 'Bad Request',
+  statusCode: 400
+}
+
+📅 TEST 10-13: Installment notifications
+❌ Installment test setup failed: { statusCode: 500, message: 'Internal server error' }
+
+💵 TEST 14-15: Commission notifications
+⚠️  No pending commission transactions found
+
+
+═══════════════════════════════════════════════════════════
+📊 NOTIFICATION TEST SUMMARY
+═══════════════════════════════════════════════════════════
+📧 Target Email: ivukpong@gmail.com
+📱 Target Phone: +2348107758678
+───────────────────────────────────────────────────────────
+
+✅ Passed: 2
+❌ Failed: 5
+📝 Total: 7
+
+Detailed Results:
+✅ 1. ASSET_PUBLISHED
+✅ 2. ASSET_UPDATED
+❌ 3. NEW_LEAD_FROM_INVESTOR - Request failed with status code 400
+❌ 4. LEAD_AVAILABLE_TO_ALL - Request failed with status code 400
+❌ 5. DEAL_CREATED - Request failed with status code 400
+❌ 6. COMMISSION_SENT - No pending commissions
+❌ 7. COMMISSION_PAID - No pending commissions
+
+───────────────────────────────────────────────────────────
+📬 Action Required:
+1. Check email inbox: ivukpong@gmail.com
+2. Check SMS on phone: +2348107758678
+3. Check database notifications table for in-app notifications
+═══════════════════════════════════════════════════════════
+

@@ -400,6 +400,7 @@ const dashboard_module_1 = __webpack_require__(/*! ./dashboard/dashboard.module 
 const reports_module_1 = __webpack_require__(/*! ./reports/reports.module */ "./src/reports/reports.module.ts");
 const freelancers_module_1 = __webpack_require__(/*! ./freelancers/freelancers.module */ "./src/freelancers/freelancers.module.ts");
 const prisma_module_1 = __webpack_require__(/*! ./prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const payments_module_1 = __webpack_require__(/*! ./payments/payments.module */ "./src/payments/payments.module.ts");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -431,6 +432,7 @@ exports.AppModule = AppModule = __decorate([
             dashboard_module_1.DashboardModule,
             reports_module_1.ReportsModule,
             freelancers_module_1.FreelancersModule,
+            payments_module_1.PaymentsModule,
         ],
     })
 ], AppModule);
@@ -672,12 +674,13 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const assets_controller_1 = __webpack_require__(/*! ./assets.controller */ "./src/assets/assets.controller.ts");
 const assets_service_1 = __webpack_require__(/*! ./assets.service */ "./src/assets/assets.service.ts");
 const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
 let AssetsModule = class AssetsModule {
 };
 exports.AssetsModule = AssetsModule;
 exports.AssetsModule = AssetsModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
+        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
         controllers: [assets_controller_1.AssetsController],
         providers: [assets_service_1.AssetsService],
         exports: [assets_service_1.AssetsService],
@@ -703,21 +706,25 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AssetsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
 let AssetsService = class AssetsService {
-    constructor(prisma) {
+    constructor(prisma, notificationService) {
         this.prisma = prisma;
+        this.notificationService = notificationService;
     }
     async publish(id) {
         await this.findById(id);
-        return this.prisma.asset.update({
+        const published = await this.prisma.asset.update({
             where: { id },
             data: { status: 'published' },
         });
+        await this.notificationService.notifyAssetPublished(id);
+        return published;
     }
     async unpublish(id) {
         await this.findById(id);
@@ -908,7 +915,7 @@ let AssetsService = class AssetsService {
         return this.findById(newAsset.id);
     }
     async update(id, data) {
-        await this.findById(id);
+        const existingAsset = await this.findById(id);
         const updateData = {};
         if (data.name !== undefined)
             updateData.name = data.name;
@@ -1046,6 +1053,10 @@ let AssetsService = class AssetsService {
             where: { id },
             data: updateData,
         });
+        const changedFields = Object.keys(updateData);
+        if (changedFields.length) {
+            await this.notificationService.notifyAssetUpdated(existingAsset.id, changedFields);
+        }
         return this.findById(id);
     }
     async delete(id) {
@@ -1139,7 +1150,7 @@ let AssetsService = class AssetsService {
 exports.AssetsService = AssetsService;
 exports.AssetsService = AssetsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
 ], AssetsService);
 
 
@@ -3550,12 +3561,13 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const installments_controller_1 = __webpack_require__(/*! ./installments.controller */ "./src/installments/installments.controller.ts");
 const installments_service_1 = __webpack_require__(/*! ./installments.service */ "./src/installments/installments.service.ts");
 const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
 let InstallmentsModule = class InstallmentsModule {
 };
 exports.InstallmentsModule = InstallmentsModule;
 exports.InstallmentsModule = InstallmentsModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
+        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
         controllers: [installments_controller_1.InstallmentsController],
         providers: [installments_service_1.InstallmentsService],
         exports: [installments_service_1.InstallmentsService],
@@ -3581,14 +3593,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.InstallmentsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
 let InstallmentsService = class InstallmentsService {
-    constructor(prisma) {
+    constructor(prisma, notificationService) {
         this.prisma = prisma;
+        this.notificationService = notificationService;
     }
     async findAll(filters) {
         const where = {};
@@ -3732,6 +3746,14 @@ let InstallmentsService = class InstallmentsService {
                 status: isCompleted ? "COMPLETED" : "ACTIVE",
             },
         });
+        await this.notificationService.notifyInstallmentPaymentRecorded({
+            planId,
+            installmentId,
+            paidAmount: data.amount,
+            paymentMethod: data.paymentMethod,
+            buyerName: plan.buyerName,
+            assetName: plan.asset?.name,
+        });
         return updatedInstallment;
     }
     async sendPaymentReminder(data) {
@@ -3853,7 +3875,7 @@ let InstallmentsService = class InstallmentsService {
 exports.InstallmentsService = InstallmentsService;
 exports.InstallmentsService = InstallmentsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
 ], InstallmentsService);
 
 
@@ -4156,12 +4178,13 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const leads_controller_1 = __webpack_require__(/*! ./leads.controller */ "./src/leads/leads.controller.ts");
 const leads_service_1 = __webpack_require__(/*! ./leads.service */ "./src/leads/leads.service.ts");
 const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
 let LeadsModule = class LeadsModule {
 };
 exports.LeadsModule = LeadsModule;
 exports.LeadsModule = LeadsModule = __decorate([
     (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
+        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
         controllers: [leads_controller_1.LeadsController],
         providers: [leads_service_1.LeadsService],
         exports: [leads_service_1.LeadsService],
@@ -4187,14 +4210,16 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LeadsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
 let LeadsService = class LeadsService {
-    constructor(prisma) {
+    constructor(prisma, notificationService) {
         this.prisma = prisma;
+        this.notificationService = notificationService;
     }
     async assignLeads(dto) {
         if (dto.assignmentType === 'all') {
@@ -4202,12 +4227,14 @@ let LeadsService = class LeadsService {
                 where: { id: { in: dto.leadIds } },
                 data: { status: 'available', assignedCluster: null, assignedToId: null },
             });
+            await this.notificationService.notifyLeadAvailableToAll(dto.leadIds);
         }
         else if (dto.assignmentType === 'cluster' && dto.clusterId) {
             await this.prisma.lead.updateMany({
                 where: { id: { in: dto.leadIds } },
                 data: { status: 'assigned', assignedCluster: dto.clusterId },
             });
+            await this.notificationService.notifyLeadAssignedToCluster(dto.leadIds, dto.clusterId);
         }
         else {
             throw new common_1.BadRequestException('Invalid assignment type or missing clusterId');
@@ -4252,7 +4279,7 @@ let LeadsService = class LeadsService {
             throw new common_1.BadRequestException('Lead name is required');
         if (!data.email)
             throw new common_1.BadRequestException('Email is required');
-        return this.prisma.lead.create({
+        const createdLead = await this.prisma.lead.create({
             data: {
                 name: data.name,
                 email: data.email,
@@ -4275,6 +4302,11 @@ let LeadsService = class LeadsService {
                 createdBy: { select: { id: true, name: true } },
             },
         });
+        const source = String(createdLead.leadSource || createdLead.source || '').toLowerCase();
+        if (source.includes('investor')) {
+            await this.notificationService.notifyNewLeadFromInvestor(createdLead.id);
+        }
+        return createdLead;
     }
     async update(id, data) {
         await this.findById(id);
@@ -4334,7 +4366,7 @@ let LeadsService = class LeadsService {
 exports.LeadsService = LeadsService;
 exports.LeadsService = LeadsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
 ], LeadsService);
 
 
@@ -4955,6 +4987,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var NotificationService_1;
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NotificationService = void 0;
@@ -4965,18 +4998,239 @@ const email_service_1 = __webpack_require__(/*! ./email.service */ "./src/notifi
 const sms_templates_1 = __webpack_require__(/*! ./sms-templates */ "./src/notification/sms-templates.ts");
 const in_app_templates_1 = __webpack_require__(/*! ./in-app-templates */ "./src/notification/in-app-templates.ts");
 const email_templates_1 = __webpack_require__(/*! ./email-templates */ "./src/notification/email-templates.ts");
-let NotificationService = class NotificationService {
+const ADMIN_AND_SALES_ROLES = ['ADMIN', 'TEAM_LEAD', 'AGENT'];
+let NotificationService = NotificationService_1 = class NotificationService {
     constructor(prisma, smsService, emailService) {
         this.prisma = prisma;
         this.smsService = smsService;
         this.emailService = emailService;
+        this.logger = new common_1.Logger(NotificationService_1.name);
+    }
+    async sendSmsNotification(options) {
+        if (!options.phone) {
+            return;
+        }
+        const message = (0, sms_templates_1.getSmsTemplate)(options.templateType, options.data);
+        try {
+            await this.smsService.sendSms({
+                to: options.phone,
+                message,
+            });
+        }
+        catch (error) {
+            this.logger.warn(`SMS notification failed for ${options.phone}: ${error instanceof Error ? error.message : String(error)}`);
+        }
+    }
+    async notifyUsersByRoles(options) {
+        const users = await this.prisma.user.findMany({
+            where: { role: { in: options.roles } },
+            select: { id: true },
+        });
+        if (!users.length) {
+            return;
+        }
+        await this.prisma.notification.createMany({
+            data: users.map((user) => ({
+                userId: user.id,
+                title: options.title,
+                message: options.message,
+                type: options.type || 'INFO',
+            })),
+        });
+    }
+    async getUsersByRolesWithContact(roles) {
+        return this.prisma.user.findMany({
+            where: { role: { in: roles } },
+            select: { id: true, email: true, name: true },
+        });
+    }
+    async notifyAdminAndSales(options) {
+        await this.notifyUsersByRoles({
+            roles: [...ADMIN_AND_SALES_ROLES],
+            title: options.title,
+            message: options.message,
+            type: options.type,
+        });
+    }
+    async notifyCommissionSent(transactionIds) {
+        if (!transactionIds.length)
+            return;
+        await this.notifyAdminAndSales({
+            title: 'Commissions Sent for Payment',
+            message: `${transactionIds.length} deal commission(s) have been marked as SENT for payment processing.`,
+            type: 'INFO',
+        });
+    }
+    async notifyCommissionsPaid(transactionIds, fileName) {
+        if (!transactionIds.length)
+            return;
+        await this.notifyAdminAndSales({
+            title: 'Commissions Marked Paid',
+            message: `${transactionIds.length} deal commission(s) have been marked as PAID${fileName ? ` via ${fileName}` : ''}.`,
+            type: 'SUCCESS',
+        });
+    }
+    async notifyInstallmentPaymentRecorded(options) {
+        await this.notifyAdminAndSales({
+            title: 'Installment Payment Recorded',
+            message: `Payment of ₦${options.paidAmount.toLocaleString()} was recorded for ${options.buyerName || 'a buyer'} on ${options.assetName || 'an asset'} via ${options.paymentMethod}.`,
+            type: 'SUCCESS',
+        });
+        const plan = await this.prisma.installmentPlan.findUnique({
+            where: { id: options.planId },
+            include: {
+                asset: { select: { name: true } },
+            },
+        });
+        if (plan?.buyerEmail) {
+            await this.sendEmail({
+                to: plan.buyerEmail,
+                templateType: 'PAYMENT_RECEIVED',
+                data: {
+                    amount: options.paidAmount,
+                    reference: options.installmentId,
+                    assetName: plan.asset?.name,
+                },
+                recipient: {
+                    name: plan.buyerName || 'Investor',
+                    email: plan.buyerEmail,
+                },
+            });
+        }
+        if (plan && plan.status?.toUpperCase() === 'COMPLETED') {
+            await this.notifyInstallmentPlanCompleted(plan.id);
+        }
     }
     async notifyInstallmentDue(installmentId) {
-        console.log(`Installment ${installmentId} is due soon.`);
+        const installment = await this.prisma.installment.findUnique({
+            where: { id: installmentId },
+            include: {
+                installmentPlan: {
+                    include: {
+                        asset: { select: { name: true } },
+                        leadAgent: { include: { user: { select: { id: true } } } },
+                        closerAgent: { include: { user: { select: { id: true } } } },
+                    },
+                },
+            },
+        });
+        if (!installment) {
+            return { message: `Installment ${installmentId} not found.` };
+        }
+        const dueDate = installment.dueDate.toLocaleDateString('en-US', { dateStyle: 'medium' });
+        const message = `Installment of ₦${installment.amount.toLocaleString()} for "${installment.installmentPlan?.asset?.name || 'an asset'}" is due on ${dueDate}.`;
+        const recipients = [
+            installment.installmentPlan?.leadAgent?.user?.id,
+            installment.installmentPlan?.closerAgent?.user?.id,
+        ].filter(Boolean);
+        if (recipients.length) {
+            await this.prisma.notification.createMany({
+                data: recipients.map((userId) => ({
+                    userId,
+                    title: 'Installment Due Reminder',
+                    message,
+                    type: 'WARNING',
+                })),
+            });
+        }
+        await this.notifyAdminAndSales({
+            title: 'Installment Due Reminder',
+            message,
+            type: 'WARNING',
+        });
+        const buyerEmail = installment.installmentPlan?.buyerEmail;
+        const buyerName = installment.installmentPlan?.buyerName || 'Investor';
+        if (buyerEmail) {
+            await this.sendEmail({
+                to: buyerEmail,
+                templateType: 'INSTALLMENT_DUE',
+                data: {
+                    amount: installment.amount,
+                    dueDate: installment.dueDate,
+                },
+                recipient: { name: buyerName, email: buyerEmail },
+            });
+            const buyerUser = await this.prisma.user.findUnique({
+                where: { email: buyerEmail },
+                select: { id: true },
+            });
+            if (buyerUser?.id) {
+                await this.prisma.notification.create({
+                    data: {
+                        userId: buyerUser.id,
+                        title: 'Installment Due Reminder',
+                        message,
+                        type: 'WARNING',
+                    },
+                });
+            }
+        }
         return { message: `Installment ${installmentId} is due soon.` };
     }
     async notifyInstallmentOverdue(installmentId) {
-        console.log(`Installment ${installmentId} is overdue.`);
+        const installment = await this.prisma.installment.findUnique({
+            where: { id: installmentId },
+            include: {
+                installmentPlan: {
+                    include: {
+                        asset: { select: { name: true } },
+                        leadAgent: { include: { user: { select: { id: true } } } },
+                        closerAgent: { include: { user: { select: { id: true } } } },
+                    },
+                },
+            },
+        });
+        if (!installment) {
+            return { message: `Installment ${installmentId} not found.` };
+        }
+        const dueDate = installment.dueDate.toLocaleDateString('en-US', { dateStyle: 'medium' });
+        const message = `Installment of ₦${installment.amount.toLocaleString()} for "${installment.installmentPlan?.asset?.name || 'an asset'}" is overdue since ${dueDate}.`;
+        const recipients = [
+            installment.installmentPlan?.leadAgent?.user?.id,
+            installment.installmentPlan?.closerAgent?.user?.id,
+        ].filter(Boolean);
+        if (recipients.length) {
+            await this.prisma.notification.createMany({
+                data: recipients.map((userId) => ({
+                    userId,
+                    title: 'Installment Overdue',
+                    message,
+                    type: 'ERROR',
+                })),
+            });
+        }
+        await this.notifyAdminAndSales({
+            title: 'Installment Overdue',
+            message,
+            type: 'ERROR',
+        });
+        const buyerEmail = installment.installmentPlan?.buyerEmail;
+        const buyerName = installment.installmentPlan?.buyerName || 'Investor';
+        if (buyerEmail) {
+            await this.sendEmail({
+                to: buyerEmail,
+                templateType: 'INSTALLMENT_OVERDUE',
+                data: {
+                    amount: installment.amount,
+                    dueDate: installment.dueDate,
+                },
+                recipient: { name: buyerName, email: buyerEmail },
+            });
+            const buyerUser = await this.prisma.user.findUnique({
+                where: { email: buyerEmail },
+                select: { id: true },
+            });
+            if (buyerUser?.id) {
+                await this.prisma.notification.create({
+                    data: {
+                        userId: buyerUser.id,
+                        title: 'Installment Overdue',
+                        message,
+                        type: 'ERROR',
+                    },
+                });
+            }
+        }
         return { message: `Installment ${installmentId} is overdue.` };
     }
     async findByUser(userId) {
@@ -5020,12 +5274,21 @@ let NotificationService = class NotificationService {
         if (!transaction)
             return;
         const assetName = transaction.asset?.name || 'an asset';
+        const adminUsers = await this.getUsersByRolesWithContact(['ADMIN']);
         await this.prisma.notification.create({
             data: {
                 userId: transaction.buyerId,
                 title: 'New Deal Created',
                 message: `Your deal for "${assetName}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
                 type: 'SUCCESS',
+            },
+        });
+        await this.sendSmsNotification({
+            phone: transaction.buyer?.phone,
+            templateType: 'deal_created',
+            data: {
+                assetName,
+                totalAmount: transaction.totalAmount,
             },
         });
         if (transaction.leadAgent?.user) {
@@ -5037,6 +5300,29 @@ let NotificationService = class NotificationService {
                     type: 'INFO',
                 },
             });
+            await this.sendSmsNotification({
+                phone: transaction.leadAgent.user.phone,
+                templateType: 'deal_created',
+                data: {
+                    assetName,
+                    totalAmount: transaction.totalAmount,
+                },
+            });
+            if (transaction.leadAgent.user.email) {
+                await this.sendEmail({
+                    to: transaction.leadAgent.user.email,
+                    templateType: 'DEAL_CREATED',
+                    data: {
+                        dealId: transaction.id,
+                        agentName: transaction.leadAgent.user.name,
+                        assetName,
+                    },
+                    recipient: {
+                        name: transaction.leadAgent.user.name || 'Agent',
+                        email: transaction.leadAgent.user.email,
+                    },
+                });
+            }
         }
         if (transaction.closerAgent?.user) {
             await this.prisma.notification.create({
@@ -5045,6 +5331,44 @@ let NotificationService = class NotificationService {
                     title: 'New Deal Assigned',
                     message: `A deal for "${assetName}" worth ₦${transaction.totalAmount.toLocaleString()} has been assigned to you.`,
                     type: 'INFO',
+                },
+            });
+            await this.sendSmsNotification({
+                phone: transaction.closerAgent.user.phone,
+                templateType: 'deal_created',
+                data: {
+                    assetName,
+                    totalAmount: transaction.totalAmount,
+                },
+            });
+            if (transaction.closerAgent.user.email) {
+                await this.sendEmail({
+                    to: transaction.closerAgent.user.email,
+                    templateType: 'DEAL_CREATED',
+                    data: {
+                        dealId: transaction.id,
+                        agentName: transaction.closerAgent.user.name,
+                        assetName,
+                    },
+                    recipient: {
+                        name: transaction.closerAgent.user.name || 'Agent',
+                        email: transaction.closerAgent.user.email,
+                    },
+                });
+            }
+        }
+        for (const admin of adminUsers) {
+            await this.sendEmail({
+                to: admin.email,
+                templateType: 'DEAL_CREATED',
+                data: {
+                    dealId: transaction.id,
+                    agentName: transaction.leadAgent?.user?.name || transaction.closerAgent?.user?.name || 'Agent',
+                    assetName,
+                },
+                recipient: {
+                    name: admin.name || 'Admin',
+                    email: admin.email,
                 },
             });
         }
@@ -5069,6 +5393,30 @@ let NotificationService = class NotificationService {
                 type: 'WARNING',
             },
         });
+        await this.sendSmsNotification({
+            phone: transaction.buyer?.phone,
+            templateType: 'payment_ready',
+            data: {
+                installmentAmount,
+                dueDate,
+            },
+        });
+        const adminsAndAgents = await this.getUsersByRolesWithContact(['ADMIN', 'TEAM_LEAD', 'AGENT']);
+        for (const recipient of adminsAndAgents) {
+            await this.sendEmail({
+                to: recipient.email,
+                templateType: 'DEAL_PAYMENT_READY',
+                data: {
+                    dealId: transaction.id,
+                    amount: transaction.totalAmount,
+                    paymentType: transaction.paymentType || 'installment',
+                },
+                recipient: {
+                    name: recipient.name || 'User',
+                    email: recipient.email,
+                },
+            });
+        }
     }
     async notifyDealClosed(transactionId) {
         const transaction = await this.prisma.transaction.findUnique({
@@ -5083,12 +5431,20 @@ let NotificationService = class NotificationService {
         if (!transaction)
             return;
         const assetName = transaction.asset?.name || 'an asset';
+        const adminsAndAgents = await this.getUsersByRolesWithContact(['ADMIN', 'TEAM_LEAD', 'AGENT']);
         await this.prisma.notification.create({
             data: {
                 userId: transaction.buyerId,
                 title: 'Deal Closed',
                 message: `Your deal for "${assetName}" has been closed successfully.`,
                 type: 'SUCCESS',
+            },
+        });
+        await this.sendSmsNotification({
+            phone: transaction.buyer?.phone,
+            templateType: 'deal_closed',
+            data: {
+                assetName,
             },
         });
         if (transaction.leadAgent?.user) {
@@ -5100,6 +5456,28 @@ let NotificationService = class NotificationService {
                     type: 'SUCCESS',
                 },
             });
+            await this.sendSmsNotification({
+                phone: transaction.leadAgent.user.phone,
+                templateType: 'deal_closed',
+                data: {
+                    assetName,
+                },
+            });
+            if (transaction.leadAgent.user.email) {
+                await this.sendEmail({
+                    to: transaction.leadAgent.user.email,
+                    templateType: 'DEAL_CLOSED',
+                    data: {
+                        dealId: transaction.id,
+                        assetName,
+                        commissionStatus: transaction.commissionPaymentStatus,
+                    },
+                    recipient: {
+                        name: transaction.leadAgent.user.name || 'Agent',
+                        email: transaction.leadAgent.user.email,
+                    },
+                });
+            }
         }
         if (transaction.closerAgent?.user) {
             await this.prisma.notification.create({
@@ -5107,6 +5485,261 @@ let NotificationService = class NotificationService {
                     userId: transaction.closerAgent.user.id,
                     title: 'Deal Closed',
                     message: `The deal for "${assetName}" you closed has been finalised. Commission status: ${transaction.commissionPaymentStatus}.`,
+                    type: 'SUCCESS',
+                },
+            });
+            await this.sendSmsNotification({
+                phone: transaction.closerAgent.user.phone,
+                templateType: 'deal_closed',
+                data: {
+                    assetName,
+                },
+            });
+            if (transaction.closerAgent.user.email) {
+                await this.sendEmail({
+                    to: transaction.closerAgent.user.email,
+                    templateType: 'DEAL_CLOSED',
+                    data: {
+                        dealId: transaction.id,
+                        assetName,
+                        commissionStatus: transaction.commissionPaymentStatus,
+                    },
+                    recipient: {
+                        name: transaction.closerAgent.user.name || 'Agent',
+                        email: transaction.closerAgent.user.email,
+                    },
+                });
+            }
+        }
+        for (const recipient of adminsAndAgents) {
+            await this.sendEmail({
+                to: recipient.email,
+                templateType: 'DEAL_CLOSED',
+                data: {
+                    dealId: transaction.id,
+                    assetName,
+                    commissionStatus: transaction.commissionPaymentStatus,
+                },
+                recipient: {
+                    name: recipient.name || 'User',
+                    email: recipient.email,
+                },
+            });
+        }
+    }
+    async notifyAssetPublished(assetId) {
+        const asset = await this.prisma.asset.findUnique({
+            where: { id: assetId },
+            include: { company: { select: { name: true } } },
+        });
+        if (!asset)
+            return;
+        const message = `Asset "${asset.name}" has been published and is now live.`;
+        await this.notifyAdminAndSales({
+            title: 'Asset Published',
+            message,
+            type: 'SUCCESS',
+        });
+        const recipients = await this.getUsersByRolesWithContact(['ADMIN', 'TEAM_LEAD', 'AGENT']);
+        for (const recipient of recipients) {
+            await this.sendEmail({
+                to: recipient.email,
+                templateType: 'ASSET_PUBLISHED',
+                data: {
+                    assetName: asset.name,
+                    companyName: asset.company?.name || 'BuyOps',
+                },
+                recipient: {
+                    name: recipient.name || 'User',
+                    email: recipient.email,
+                },
+            });
+        }
+    }
+    async notifyAssetUpdated(assetId, updatedFields) {
+        const asset = await this.prisma.asset.findUnique({
+            where: { id: assetId },
+            select: { id: true, name: true },
+        });
+        if (!asset)
+            return;
+        const summary = updatedFields.join(', ');
+        const message = `Asset "${asset.name}" has been updated (${summary}).`;
+        await this.notifyAdminAndSales({
+            title: 'Asset Updated',
+            message,
+            type: 'INFO',
+        });
+        const recipients = await this.getUsersByRolesWithContact(['ADMIN', 'TEAM_LEAD', 'AGENT']);
+        for (const recipient of recipients) {
+            await this.sendEmail({
+                to: recipient.email,
+                templateType: 'ASSET_UPDATED',
+                data: {
+                    assetName: asset.name,
+                    updatedFields: summary,
+                },
+                recipient: {
+                    name: recipient.name || 'User',
+                    email: recipient.email,
+                },
+            });
+        }
+    }
+    async notifyNewLeadFromInvestor(leadId) {
+        const lead = await this.prisma.lead.findUnique({
+            where: { id: leadId },
+            include: {
+                asset: { select: { name: true } },
+            },
+        });
+        if (!lead)
+            return;
+        const message = `New investor lead "${lead.name}" created for ${lead.asset?.name || 'an asset'}.`;
+        await this.notifyUsersByRoles({
+            roles: ['ADMIN'],
+            title: 'New Investor Lead',
+            message,
+            type: 'INFO',
+        });
+        const admins = await this.getUsersByRolesWithContact(['ADMIN']);
+        for (const admin of admins) {
+            await this.sendEmail({
+                to: admin.email,
+                templateType: 'NEW_LEAD_FROM_INVESTOR',
+                data: {
+                    leadName: lead.name,
+                    assetName: lead.asset?.name || 'N/A',
+                    budget: lead.budget || 0,
+                },
+                recipient: {
+                    name: admin.name || 'Admin',
+                    email: admin.email,
+                },
+            });
+        }
+    }
+    async notifyLeadAssignedToCluster(leadIds, clusterId) {
+        if (!leadIds.length)
+            return;
+        const [cluster, leads] = await Promise.all([
+            this.prisma.cluster.findUnique({
+                where: { id: clusterId },
+                select: { id: true, name: true },
+            }),
+            this.prisma.lead.findMany({
+                where: { id: { in: leadIds } },
+                include: { asset: { select: { name: true } } },
+            }),
+        ]);
+        const teamLeads = await this.prisma.user.findMany({
+            where: {
+                role: 'TEAM_LEAD',
+                managedClusters: { some: { id: clusterId } },
+            },
+            select: { id: true, email: true, name: true },
+        });
+        const recipients = teamLeads.length
+            ? teamLeads
+            : await this.getUsersByRolesWithContact(['TEAM_LEAD']);
+        for (const lead of leads) {
+            const message = `Lead "${lead.name}" has been assigned to cluster ${cluster?.name || 'N/A'}.`;
+            if (recipients.length) {
+                await this.prisma.notification.createMany({
+                    data: recipients.map((recipient) => ({
+                        userId: recipient.id,
+                        title: 'Lead Assigned to Cluster',
+                        message,
+                        type: 'INFO',
+                    })),
+                });
+            }
+            for (const recipient of recipients) {
+                await this.sendEmail({
+                    to: recipient.email,
+                    templateType: 'LEAD_ASSIGNED_TO_CLUSTER',
+                    data: {
+                        leadName: lead.name,
+                        clusterName: cluster?.name || 'N/A',
+                    },
+                    recipient: {
+                        name: recipient.name || 'Team Lead',
+                        email: recipient.email,
+                    },
+                });
+            }
+        }
+    }
+    async notifyLeadAvailableToAll(leadIds) {
+        if (!leadIds.length)
+            return;
+        const [leads, agents] = await Promise.all([
+            this.prisma.lead.findMany({
+                where: { id: { in: leadIds } },
+                include: { asset: { select: { name: true } } },
+            }),
+            this.getUsersByRolesWithContact(['AGENT']),
+        ]);
+        for (const lead of leads) {
+            const message = `New available lead: ${lead.name} (${lead.asset?.name || 'General interest'}).`;
+            if (agents.length) {
+                await this.prisma.notification.createMany({
+                    data: agents.map((agent) => ({
+                        userId: agent.id,
+                        title: 'New Lead Available',
+                        message,
+                        type: 'INFO',
+                    })),
+                });
+            }
+            for (const agent of agents) {
+                await this.sendEmail({
+                    to: agent.email,
+                    templateType: 'LEAD_AVAILABLE_TO_ALL',
+                    data: {
+                        leadName: lead.name,
+                        assetName: lead.asset?.name || 'N/A',
+                    },
+                    recipient: {
+                        name: agent.name || 'Agent',
+                        email: agent.email,
+                    },
+                });
+            }
+        }
+    }
+    async notifyInstallmentPlanCompleted(planId) {
+        const plan = await this.prisma.installmentPlan.findUnique({
+            where: { id: planId },
+            include: {
+                asset: { select: { name: true } },
+            },
+        });
+        if (!plan || !plan.buyerEmail) {
+            return;
+        }
+        await this.sendEmail({
+            to: plan.buyerEmail,
+            templateType: 'INSTALLMENT_COMPLETED',
+            data: {
+                assetName: plan.asset?.name || 'your asset',
+                totalPaid: plan.paidAmount,
+            },
+            recipient: {
+                name: plan.buyerName || 'Investor',
+                email: plan.buyerEmail,
+            },
+        });
+        const buyerUser = await this.prisma.user.findUnique({
+            where: { email: plan.buyerEmail },
+            select: { id: true },
+        });
+        if (buyerUser?.id) {
+            await this.prisma.notification.create({
+                data: {
+                    userId: buyerUser.id,
+                    title: 'Installment Plan Completed',
+                    message: `Your installment plan for "${plan.asset?.name || 'your asset'}" is fully completed.`,
                     type: 'SUCCESS',
                 },
             });
@@ -5177,7 +5810,7 @@ let NotificationService = class NotificationService {
     }
 };
 exports.NotificationService = NotificationService;
-exports.NotificationService = NotificationService = __decorate([
+exports.NotificationService = NotificationService = NotificationService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof sms_service_1.SmsService !== "undefined" && sms_service_1.SmsService) === "function" ? _b : Object, typeof (_c = typeof email_service_1.EmailService !== "undefined" && email_service_1.EmailService) === "function" ? _c : Object])
 ], NotificationService);
@@ -5243,9 +5876,20 @@ let SmsService = SmsService_1 = class SmsService {
         const accountSid = this.configService.get('TWILIO_ACCOUNT_SID');
         const authToken = this.configService.get('TWILIO_AUTH_TOKEN');
         this.fromPhone = this.configService.get('TWILIO_PHONE_NUMBER');
+        this.isConfigured = Boolean(accountSid && authToken && this.fromPhone);
+        if (!this.isConfigured) {
+            this.twilioClient = null;
+            this.logger.warn('Twilio SMS is disabled because required environment variables are missing.');
+            return;
+        }
         this.twilioClient = new twilio_1.default.Twilio(accountSid, authToken);
+        this.logger.log('Twilio SMS service initialized.');
     }
     async sendSms({ to, message }) {
+        if (!this.isConfigured || !this.twilioClient || !this.fromPhone) {
+            this.logger.warn(`SMS send skipped for ${to}: Twilio is not configured.`);
+            return false;
+        }
         try {
             await this.twilioClient.messages.create({
                 body: message,
@@ -5253,9 +5897,11 @@ let SmsService = SmsService_1 = class SmsService {
                 to,
             });
             this.logger.log(`SMS sent to ${to}`);
+            return true;
         }
         catch (error) {
-            this.logger.error(`Failed to send SMS to ${to}: ${error.message}`);
+            const messageText = error instanceof Error ? error.message : String(error);
+            this.logger.error(`Failed to send SMS to ${to}: ${messageText}`);
             throw error;
         }
     }
@@ -5265,6 +5911,335 @@ exports.SmsService = SmsService = SmsService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
 ], SmsService);
+
+
+/***/ }),
+
+/***/ "./src/payments/payments.controller.ts":
+/*!*********************************************!*\
+  !*** ./src/payments/payments.controller.ts ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b, _c, _d;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PaymentsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const payments_service_1 = __webpack_require__(/*! ./payments.service */ "./src/payments/payments.service.ts");
+class InitializePaymentDto {
+}
+__decorate([
+    (0, class_validator_1.IsIn)(['paystack', 'flutterwave']),
+    __metadata("design:type", typeof (_a = typeof payments_service_1.PaymentProvider !== "undefined" && payments_service_1.PaymentProvider) === "function" ? _a : Object)
+], InitializePaymentDto.prototype, "provider", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
+    __metadata("design:type", Number)
+], InitializePaymentDto.prototype, "amount", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "currency", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "callbackUrl", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "reference", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", typeof (_b = typeof Record !== "undefined" && Record) === "function" ? _b : Object)
+], InitializePaymentDto.prototype, "metadata", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "title", void 0);
+let PaymentsController = class PaymentsController {
+    constructor(paymentsService) {
+        this.paymentsService = paymentsService;
+    }
+    getProviders() {
+        return this.paymentsService.getProviderConfig();
+    }
+    initializePayment(payload) {
+        return this.paymentsService.initializePayment(payload);
+    }
+    verifyPayment(provider, reference) {
+        return this.paymentsService.verifyPayment(provider, reference);
+    }
+};
+exports.PaymentsController = PaymentsController;
+__decorate([
+    (0, common_1.Get)('providers'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "getProviders", null);
+__decorate([
+    (0, common_1.Post)('initialize'),
+    __param(0, (0, common_1.Body)(new common_1.ValidationPipe({ transform: true }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [InitializePaymentDto]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "initializePayment", null);
+__decorate([
+    (0, common_1.Get)('verify'),
+    __param(0, (0, common_1.Query)('provider')),
+    __param(1, (0, common_1.Query)('reference')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_d = typeof payments_service_1.PaymentProvider !== "undefined" && payments_service_1.PaymentProvider) === "function" ? _d : Object, String]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "verifyPayment", null);
+exports.PaymentsController = PaymentsController = __decorate([
+    (0, common_1.Controller)('payments'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:paramtypes", [typeof (_c = typeof payments_service_1.PaymentsService !== "undefined" && payments_service_1.PaymentsService) === "function" ? _c : Object])
+], PaymentsController);
+
+
+/***/ }),
+
+/***/ "./src/payments/payments.module.ts":
+/*!*****************************************!*\
+  !*** ./src/payments/payments.module.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PaymentsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const payments_controller_1 = __webpack_require__(/*! ./payments.controller */ "./src/payments/payments.controller.ts");
+const payments_service_1 = __webpack_require__(/*! ./payments.service */ "./src/payments/payments.service.ts");
+let PaymentsModule = class PaymentsModule {
+};
+exports.PaymentsModule = PaymentsModule;
+exports.PaymentsModule = PaymentsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [config_1.ConfigModule],
+        controllers: [payments_controller_1.PaymentsController],
+        providers: [payments_service_1.PaymentsService],
+        exports: [payments_service_1.PaymentsService],
+    })
+], PaymentsModule);
+
+
+/***/ }),
+
+/***/ "./src/payments/payments.service.ts":
+/*!******************************************!*\
+  !*** ./src/payments/payments.service.ts ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var PaymentsService_1;
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PaymentsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+let PaymentsService = PaymentsService_1 = class PaymentsService {
+    constructor(configService) {
+        this.configService = configService;
+        this.logger = new common_1.Logger(PaymentsService_1.name);
+    }
+    getProviderConfig() {
+        const paystackConfigured = Boolean(this.configService.get('PAYSTACK_SECRET_KEY'));
+        const flutterwaveConfigured = Boolean(this.configService.get('FLUTTERWAVE_SECRET_KEY'));
+        return {
+            paystack: {
+                configured: paystackConfigured,
+                publicKey: this.configService.get('PAYSTACK_PUBLIC_KEY') || null,
+            },
+            flutterwave: {
+                configured: flutterwaveConfigured,
+                publicKey: this.configService.get('FLUTTERWAVE_PUBLIC_KEY') || null,
+            },
+        };
+    }
+    async initializePayment(payload) {
+        if (payload.provider === 'paystack') {
+            return this.initializePaystackPayment(payload);
+        }
+        return this.initializeFlutterwavePayment(payload);
+    }
+    async verifyPayment(provider, reference) {
+        if (provider === 'paystack') {
+            return this.verifyPaystackPayment(reference);
+        }
+        return this.verifyFlutterwavePayment(reference);
+    }
+    async initializePaystackPayment(payload) {
+        const secretKey = this.configService.get('PAYSTACK_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('PAYSTACK_SECRET_KEY is not configured');
+        }
+        const response = await this.requestJson('https://api.paystack.co/transaction/initialize', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: payload.email,
+                amount: Math.round(payload.amount * 100),
+                currency: payload.currency || 'NGN',
+                callback_url: payload.callbackUrl || this.configService.get('PAYMENT_CALLBACK_URL'),
+                reference: payload.reference,
+                metadata: payload.metadata || {},
+            }),
+        });
+        return {
+            provider: 'paystack',
+            reference: response?.data?.reference,
+            authorizationUrl: response?.data?.authorization_url,
+            accessCode: response?.data?.access_code,
+            raw: response,
+        };
+    }
+    async initializeFlutterwavePayment(payload) {
+        const secretKey = this.configService.get('FLUTTERWAVE_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('FLUTTERWAVE_SECRET_KEY is not configured');
+        }
+        const txRef = payload.reference || `buyops-${Date.now()}`;
+        const response = await this.requestJson('https://api.flutterwave.com/v3/payments', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tx_ref: txRef,
+                amount: payload.amount,
+                currency: payload.currency || 'NGN',
+                redirect_url: payload.callbackUrl || this.configService.get('PAYMENT_CALLBACK_URL') || 'http://localhost:5173',
+                customer: {
+                    email: payload.email,
+                },
+                customizations: {
+                    title: payload.title || 'BuyOps Payment',
+                },
+                meta: payload.metadata || {},
+            }),
+        });
+        return {
+            provider: 'flutterwave',
+            reference: txRef,
+            authorizationUrl: response?.data?.link,
+            raw: response,
+        };
+    }
+    async verifyPaystackPayment(reference) {
+        const secretKey = this.configService.get('PAYSTACK_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('PAYSTACK_SECRET_KEY is not configured');
+        }
+        const response = await this.requestJson(`https://api.paystack.co/transaction/verify/${reference}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+            },
+        });
+        return {
+            provider: 'paystack',
+            reference,
+            status: response?.data?.status,
+            paidAt: response?.data?.paid_at,
+            amount: response?.data?.amount ? response.data.amount / 100 : undefined,
+            currency: response?.data?.currency,
+            customerEmail: response?.data?.customer?.email,
+            raw: response,
+        };
+    }
+    async verifyFlutterwavePayment(reference) {
+        const secretKey = this.configService.get('FLUTTERWAVE_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('FLUTTERWAVE_SECRET_KEY is not configured');
+        }
+        const response = await this.requestJson(`https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=${encodeURIComponent(reference)}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+            },
+        });
+        return {
+            provider: 'flutterwave',
+            reference,
+            status: response?.data?.status,
+            paidAt: response?.data?.created_at,
+            amount: response?.data?.amount,
+            currency: response?.data?.currency,
+            customerEmail: response?.data?.customer?.email,
+            raw: response,
+        };
+    }
+    async requestJson(url, init) {
+        const response = await fetch(url, init);
+        const text = await response.text();
+        let json;
+        try {
+            json = text ? JSON.parse(text) : {};
+        }
+        catch {
+            json = { message: text };
+        }
+        if (!response.ok) {
+            this.logger.error(`Payment provider request failed (${response.status}): ${JSON.stringify(json)}`);
+            throw new common_1.InternalServerErrorException(json?.message || json?.error || 'Payment provider request failed');
+        }
+        return json;
+    }
+};
+exports.PaymentsService = PaymentsService;
+exports.PaymentsService = PaymentsService = PaymentsService_1 = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
+], PaymentsService);
 
 
 /***/ }),
@@ -6492,6 +7467,7 @@ const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "
 const transactions_controller_1 = __webpack_require__(/*! ./transactions.controller */ "./src/transactions/transactions.controller.ts");
 const transactions_service_1 = __webpack_require__(/*! ./transactions.service */ "./src/transactions/transactions.service.ts");
 const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
 let TransactionsModule = class TransactionsModule {
 };
 exports.TransactionsModule = TransactionsModule;
@@ -6499,6 +7475,7 @@ exports.TransactionsModule = TransactionsModule = __decorate([
     (0, common_1.Module)({
         imports: [
             prisma_module_1.PrismaModule,
+            notification_module_1.NotificationModule,
             platform_express_1.MulterModule.register({
                 dest: './uploads',
             }),
@@ -6528,15 +7505,17 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TransactionsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
 let TransactionsService = class TransactionsService {
-    constructor(prisma) {
+    constructor(prisma, notificationService) {
         this.prisma = prisma;
+        this.notificationService = notificationService;
     }
     async getUnpaidCommissions({ month }) {
         return this.findAll({
@@ -6555,13 +7534,20 @@ let TransactionsService = class TransactionsService {
             where: { id: { in: transactionIds } },
             data: { commissionPaymentStatus: 'SENT' },
         });
+        await this.notificationService.notifyCommissionSent(transactionIds);
         return { message: 'Commissions marked as sent', transactionIds };
     }
     async uploadPaymentProof(file) {
+        const sentTransactions = await this.prisma.transaction.findMany({
+            where: { commissionPaymentStatus: 'SENT' },
+            select: { id: true },
+        });
+        const transactionIds = sentTransactions.map((tx) => tx.id);
         await this.prisma.transaction.updateMany({
             where: { commissionPaymentStatus: 'SENT' },
             data: { commissionPaymentStatus: 'PAID' },
         });
+        await this.notificationService.notifyCommissionsPaid(transactionIds, file?.originalname);
         return { message: 'Payment proof uploaded and commissions marked as paid', fileName: file?.originalname };
     }
     async findAll(filters) {
@@ -6624,7 +7610,7 @@ let TransactionsService = class TransactionsService {
         const buyer = await this.prisma.user.findUnique({ where: { id: data.buyerId } });
         if (!buyer)
             throw new common_1.NotFoundException('Buyer not found');
-        return this.prisma.transaction.create({
+        const transaction = await this.prisma.transaction.create({
             data: {
                 assetId: data.assetId,
                 buyerId: data.buyerId,
@@ -6647,6 +7633,16 @@ let TransactionsService = class TransactionsService {
                 company: { select: { id: true, name: true } },
             },
         });
+        await this.notificationService.notifyDealCreated(transaction.id);
+        if ((transaction.paymentType || '').toLowerCase() === 'installment') {
+            await this.notificationService.notifyDealPaymentReady(transaction.id);
+        }
+        await this.notificationService.notifyAdminAndSales({
+            title: 'New Deal Created',
+            message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
+            type: 'INFO',
+        });
+        return transaction;
     }
     async update(id, data) {
         await this.findById(id);
@@ -6665,7 +7661,7 @@ let TransactionsService = class TransactionsService {
             updateData.paymentType = data.paymentType;
         if (data.companyId !== undefined)
             updateData.companyId = data.companyId;
-        return this.prisma.transaction.update({
+        const updated = await this.prisma.transaction.update({
             where: { id },
             data: updateData,
             include: {
@@ -6673,6 +7669,21 @@ let TransactionsService = class TransactionsService {
                 company: { select: { id: true, name: true } },
             },
         });
+        if (data.commissionPaymentStatus === 'SENT') {
+            await this.notificationService.notifyCommissionSent([id]);
+        }
+        if (data.commissionPaymentStatus === 'PAID') {
+            await this.notificationService.notifyCommissionsPaid([id]);
+        }
+        if (data.status === 'COMPLETED') {
+            await this.notificationService.notifyDealClosed(id);
+            await this.notificationService.notifyAdminAndSales({
+                title: 'Deal Completed',
+                message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
+                type: 'SUCCESS',
+            });
+        }
+        return updated;
     }
     async delete(id) {
         await this.findById(id);
@@ -6701,7 +7712,7 @@ let TransactionsService = class TransactionsService {
 exports.TransactionsService = TransactionsService;
 exports.TransactionsService = TransactionsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
 ], TransactionsService);
 function formatDeal(tx) {
     return {
@@ -7875,7 +8886,7 @@ async function bootstrap() {
             enableImplicitConversion: true,
         },
     }));
-    const port = process.env.PORT || 4000;
+    const port = process.env.PORT || 8080;
     await app.listen(port);
     console.log(`Server listening on ${port}`);
 }

@@ -1,11 +1,15 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { NotificationService } from '../notification/notification.service';
 
 @Injectable()
 export class LeadsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+    private notificationService: NotificationService,
+  ) { }
 
-    // Assign leads to a cluster or all
+  // Assign leads to a cluster or all
   async assignLeads(dto: { leadIds: string[]; assignmentType: 'cluster' | 'all'; clusterId?: string }) {
     if (dto.assignmentType === 'all') {
       // Make leads available to all clusters
@@ -13,12 +17,16 @@ export class LeadsService {
         where: { id: { in: dto.leadIds } },
         data: { status: 'available', assignedCluster: null, assignedToId: null },
       });
+
+      await this.notificationService.notifyLeadAvailableToAll(dto.leadIds);
     } else if (dto.assignmentType === 'cluster' && dto.clusterId) {
       // Assign leads to a specific cluster
       await this.prisma.lead.updateMany({
         where: { id: { in: dto.leadIds } },
         data: { status: 'assigned', assignedCluster: dto.clusterId },
       });
+
+      await this.notificationService.notifyLeadAssignedToCluster(dto.leadIds, dto.clusterId);
     } else {
       throw new BadRequestException('Invalid assignment type or missing clusterId');
     }
@@ -61,7 +69,7 @@ export class LeadsService {
     if (!data.name) throw new BadRequestException('Lead name is required');
     if (!data.email) throw new BadRequestException('Email is required');
 
-    return this.prisma.lead.create({
+    const createdLead = await this.prisma.lead.create({
       data: {
         name: data.name,
         email: data.email,
@@ -84,6 +92,13 @@ export class LeadsService {
         createdBy: { select: { id: true, name: true } },
       },
     });
+
+    const source = String(createdLead.leadSource || createdLead.source || '').toLowerCase();
+    if (source.includes('investor')) {
+      await this.notificationService.notifyNewLeadFromInvestor(createdLead.id);
+    }
+
+    return createdLead;
   }
 
   async update(id: string, data: any) {
