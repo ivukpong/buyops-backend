@@ -148,4 +148,28 @@ export class LeadsService {
       byStatus: byStatus.map((s: any) => ({ status: s.status, count: s._count })),
     };
   }
+
+  async assignSingleLead(leadId: string, dto: { assignedToId?: string; clusterId?: string }) {
+    if (!leadId) throw new BadRequestException('Missing leadId');
+    const updateData: any = {};
+    if (dto.assignedToId) {
+      updateData.assignedToId = dto.assignedToId;
+      updateData.status = 'assigned';
+    }
+    if (dto.clusterId) {
+      updateData.assignedCluster = dto.clusterId;
+      updateData.status = 'assigned';
+    }
+    if (!updateData.assignedToId && !updateData.assignedCluster) {
+      throw new BadRequestException('Must provide assignedToId or clusterId');
+    }
+    const lead = await this.prisma.lead.update({
+      where: { id: leadId },
+      data: updateData,
+    });
+    if (dto.clusterId) {
+      await this.notificationService.notifyLeadAssignedToCluster([leadId], dto.clusterId);
+    }
+    return { message: 'Lead assigned', lead };
+  }
 }

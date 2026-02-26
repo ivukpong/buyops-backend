@@ -96,6 +96,32 @@ export class AssetsService {
     });
   }
 
+  async getOverviewStats() {
+    const assets = await this.prisma.asset.findMany({
+      select: { status: true, price: true, fractionCost: true },
+    });
+
+    const statusCounts: Record<string, number> = {};
+    let totalValue = 0;
+
+    for (const asset of assets) {
+      const statusKey = (asset.status || 'unknown').toLowerCase();
+      statusCounts[statusKey] = (statusCounts[statusKey] || 0) + 1;
+
+      const rawValue = asset.price || asset.fractionCost || '0';
+      const numericValue = Number.parseFloat(rawValue);
+      if (!Number.isNaN(numericValue)) {
+        totalValue += numericValue;
+      }
+    }
+
+    return {
+      totalAssets: assets.length,
+      totalValue,
+      statusCounts,
+    };
+  }
+
   async findById(id: string) {
     const asset = await this.prisma.asset.findUnique({
       where: { id },

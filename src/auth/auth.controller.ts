@@ -30,6 +30,10 @@ export class RegisterDto {
   name!: string;
 
   @IsOptional()
+  @IsString()
+  phone?: string;
+
+  @IsOptional()
   role?: UserRole;
 }
 
@@ -43,7 +47,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly usersService: UsersService
-  ) {}
+  ) { }
 
 
   @Post('login')

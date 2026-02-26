@@ -34,6 +34,11 @@ class AssignLeadsDto {
     clusterId?: string;
 }
 
+class AssignSingleLeadDto {
+    assignedToId?: string;
+    clusterId?: string;
+}
+
 @Controller("leads")
 export class LeadsController {
     constructor(private leadsService: LeadsService) { }
@@ -75,6 +80,13 @@ export class LeadsController {
     @Post("assign")
     async assignLeads(@Body() dto: AssignLeadsDto) {
         return this.leadsService.assignLeads(dto);
+    }
+
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN", "SALES")
+    @Post(":id/assign")
+    async assignSingleLead(@Param("id") id: string, @Body() dto: AssignSingleLeadDto) {
+        return this.leadsService.assignSingleLead(id, dto);
     }
 
     // @UseGuards(JwtAuthGuard, RolesGuard)

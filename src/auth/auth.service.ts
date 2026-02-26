@@ -53,12 +53,13 @@ export class AuthService {
         id: user.id,
         email: user.email,
         name: user.name || user.email.split('@')[0],
+        phone: user.phone || null,
         role: user.role || 'USER',
       },
     };
   }
 
-  async register(data: { email: string; password: string; name?: string; role?: UserRole }) {
+  async register(data: { email: string; password: string; name?: string; role?: UserRole; phone?: string }) {
     // Normalize email: trim and lowercase
     const normalizedEmail = data.email.trim().toLowerCase();
     const existing = await this.prisma.user.findUnique({
@@ -79,6 +80,7 @@ export class AuthService {
         email: normalizedEmail,
         password: hashed,
         name: data.name || normalizedEmail.split('@')[0],
+        phone: data.phone || null,
         role: data.role || UserRole.USER,
       },
     });

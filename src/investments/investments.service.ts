@@ -4,19 +4,30 @@ import { PrismaService } from '../prisma/prisma.service';
 // FIX 26: No Investment model — repurpose as a view of transactions for investors
 @Injectable()
 export class InvestmentsService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private prisma: PrismaService) { }
 
   async findByUser(userId: string) {
-    return this.prisma.transaction.findMany({
-      where: { buyerId: userId },
-      include: {
-        asset: { select: { id: true, name: true, type: true, location: true } },
-        company: { select: { id: true, name: true } },
-        installments: { orderBy: { dueDate: 'asc' } },
-        installmentPlans: true,
-      },
-      orderBy: { date: 'desc' },
-    });
+    try {
+      return this.prisma.transaction.findMany({
+        where: { buyerId: userId },
+        include: {
+          asset: { select: { id: true, name: true, type: true, location: true, images: true } },
+          company: { select: { id: true, name: true } },
+          installments: { orderBy: { dueDate: 'asc' } },
+          installmentPlans: true,
+        },
+        orderBy: { date: 'desc' },
+      });
+    } catch (error) {
+      return this.prisma.transaction.findMany({
+        where: { buyerId: userId },
+        include: {
+          asset: { select: { id: true, name: true, type: true, location: true, images: true } },
+          company: { select: { id: true, name: true } },
+        },
+        orderBy: { date: 'desc' },
+      });
+    }
   }
 
   async findAll() {

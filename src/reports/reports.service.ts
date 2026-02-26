@@ -34,6 +34,58 @@ export class ReportsService {
     return where;
   }
 
+  private getLeadDateFilter(dateRange?: string): any {
+    const where: any = {};
+    const now = new Date();
+    switch (dateRange) {
+      case '7d': {
+        const d = new Date(); d.setDate(d.getDate() - 7);
+        where.createdAt = { gte: d }; break;
+      }
+      case '30d': {
+        const d = new Date(); d.setDate(d.getDate() - 30);
+        where.createdAt = { gte: d }; break;
+      }
+      case '90d': {
+        const d = new Date(); d.setDate(d.getDate() - 90);
+        where.createdAt = { gte: d }; break;
+      }
+      case 'ytd': {
+        where.createdAt = { gte: new Date(now.getFullYear(), 0, 1) }; break;
+      }
+      default: {
+        const d = new Date(); d.setDate(d.getDate() - 30);
+        where.createdAt = { gte: d }; break;
+      }
+    }
+    return where;
+  }
+
+  private getLeadPreviousPeriodFilter(dateRange?: string): any | null {
+    const now = new Date();
+    switch (dateRange) {
+      case '7d': {
+        const s = new Date(); s.setDate(s.getDate() - 14);
+        const e = new Date(); e.setDate(e.getDate() - 7);
+        return { createdAt: { gte: s, lt: e } };
+      }
+      case '30d': {
+        const s = new Date(); s.setDate(s.getDate() - 60);
+        const e = new Date(); e.setDate(e.getDate() - 30);
+        return { createdAt: { gte: s, lt: e } };
+      }
+      case '90d': {
+        const s = new Date(); s.setDate(s.getDate() - 180);
+        const e = new Date(); e.setDate(e.getDate() - 90);
+        return { createdAt: { gte: s, lt: e } };
+      }
+      case 'ytd': {
+        return { createdAt: { gte: new Date(now.getFullYear() - 1, 0, 1), lt: new Date(now.getFullYear() - 1, 11, 31) } };
+      }
+      default: return null;
+    }
+  }
+
   private getPreviousPeriodFilter(dateRange?: string): any | null {
     const now = new Date();
     switch (dateRange) {
@@ -84,11 +136,13 @@ export class ReportsService {
     const prevAvg = prevCount > 0 ? prevRevenue / prevCount : 0;
 
     // Calculate conversion rate: total completed transactions / total leads
-    const totalLeads = await this.prisma.lead.count({ where: dateFilter });
+    const leadDateFilter = this.getLeadDateFilter(dateRange);
+    const leadPrevFilter = this.getLeadPreviousPeriodFilter(dateRange);
+    const totalLeads = await this.prisma.lead.count({ where: leadDateFilter });
     const conversionRate = totalLeads > 0 ? ((totalCount / totalLeads) * 100).toFixed(1) : 0;
 
     // Calculate previous conversion for change calculation
-    const prevLeads = prevFilter ? await this.prisma.lead.count({ where: prevFilter }) : 0;
+    const prevLeads = leadPrevFilter ? await this.prisma.lead.count({ where: leadPrevFilter }) : 0;
     const prevConversionRate = prevLeads > 0 ? (prevCount / prevLeads) * 100 : 0;
     const conversionChange = prevConversionRate > 0
       ? ((parseFloat(conversionRate as string) - prevConversionRate) / prevConversionRate) * 100

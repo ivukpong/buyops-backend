@@ -38,6 +38,11 @@ export class AssetsController {
     return this.assetsService.findAll(query);
   }
 
+  @Get('stats/overview')
+  async getOverviewStats() {
+    return this.assetsService.getOverviewStats();
+  }
+
   @Get(':id')
   async findOne(@Param('id') id: string) {
     return this.assetsService.findById(id);
