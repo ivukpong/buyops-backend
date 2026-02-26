@@ -98,9 +98,19 @@ export class CompaniesService {
         throw new BadRequestException('Company type is required and must be one of: developer, realtor, partner, consultant, investor');
       }
 
+      // Name uniqueness check
+      const existingByName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
+      if (existingByName) throw new ConflictException('A company with this name already exists');
+
       // Email uniqueness check
       const existing = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email) } });
       if (existing) throw new ConflictException('A company with this email already exists');
+
+      // Phone uniqueness check
+      if (data.phone?.trim()) {
+        const existingByPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim() } });
+        if (existingByPhone) throw new ConflictException('A company with this phone number already exists');
+      }
 
       // Note: activeAssets and totalTransactions are computed fields and are NOT saved to the database
       const company = await this.prisma.company.create({
