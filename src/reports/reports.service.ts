@@ -26,6 +26,18 @@ export class ReportsService {
       case 'ytd': {
         where.date = { gte: new Date(now.getFullYear(), 0, 1) }; break;
       }
+      case '6m': {
+        const d = new Date(); d.setMonth(d.getMonth() - 6);
+        where.date = { gte: d }; break;
+      }
+      case '1y': {
+        const d = new Date(); d.setFullYear(d.getFullYear() - 1);
+        where.date = { gte: d }; break;
+      }
+      case 'all': {
+        // No date filter - return all records
+        break;
+      }
       default: {
         const d = new Date(); d.setDate(d.getDate() - 30);
         where.date = { gte: d }; break;
@@ -52,6 +64,18 @@ export class ReportsService {
       }
       case 'ytd': {
         where.createdAt = { gte: new Date(now.getFullYear(), 0, 1) }; break;
+      }
+      case '6m': {
+        const d = new Date(); d.setMonth(d.getMonth() - 6);
+        where.createdAt = { gte: d }; break;
+      }
+      case '1y': {
+        const d = new Date(); d.setFullYear(d.getFullYear() - 1);
+        where.createdAt = { gte: d }; break;
+      }
+      case 'all': {
+        // No date filter - return all records
+        break;
       }
       default: {
         const d = new Date(); d.setDate(d.getDate() - 30);
