@@ -42,27 +42,28 @@ async function main() {
   // USERS
   const password = await bcrypt.hash('TestPass2026!', 10);
   const admin = await prisma.user.create({
-    data: { email: 'admin@buyops.com', password, name: 'Iniobong Admin', role: 'ADMIN' },
+    data: { serialId: 'BO-USR-0001', email: 'admin@buyops.com', password, name: 'Iniobong Admin', role: 'ADMIN' },
   });
   const teamLeadUser = await prisma.user.create({
-    data: { email: 'teamlead1@buyops.com', password, name: 'Ada TeamLead', role: 'TEAM_LEAD' },
+    data: { serialId: 'BO-USR-0002', email: 'teamlead1@buyops.com', password, name: 'Ada TeamLead', role: 'TEAM_LEAD' },
   });
   const agentUser = await prisma.user.create({
-    data: { email: 'agent1@buyops.com', password, name: 'Chinedu Okeke', role: 'AGENT' },
+    data: { serialId: 'BO-USR-0003', email: 'agent1@buyops.com', password, name: 'Chinedu Okeke', role: 'AGENT' },
   });
   const freelancerUser = await prisma.user.create({
-    data: { email: 'freelancer1@buyops.com', password, name: 'Grace Freelance', role: 'FREELANCER' },
+    data: { serialId: 'BO-USR-0004', email: 'freelancer1@buyops.com', password, name: 'Grace Freelance', role: 'FREELANCER' },
   });
   const investor1 = await prisma.user.create({
-    data: { email: 'customer1@buyops.com', password, name: 'Fatima Ibrahim', role: 'INVESTOR' },
+    data: { serialId: 'BO-USR-0005', email: 'customer1@buyops.com', password, name: 'Fatima Ibrahim', role: 'INVESTOR' },
   });
   const investor2 = await prisma.user.create({
-    data: { email: 'customer2@buyops.com', password, name: 'Tunde Adebayo', role: 'INVESTOR' },
+    data: { serialId: 'BO-USR-0006', email: 'customer2@buyops.com', password, name: 'Tunde Adebayo', role: 'INVESTOR' },
   });
 
   // CLUSTERS
   const cluster = await prisma.cluster.create({
     data: {
+      serialId: 'BO-CLT-0001',
       name: 'Lagos Sales Team',
       code: 'LAG-SALES',
       status: 'active',
@@ -74,6 +75,7 @@ async function main() {
   // AGENT PROFILE
   const agent = await prisma.agent.create({
     data: {
+      serialId: 'BO-AGT-0001',
       userId: agentUser.id,
       clusterId: cluster.id,
       status: 'ACTIVE',
@@ -85,6 +87,7 @@ async function main() {
   // FREELANCER PROFILE
   const freelancer = await prisma.freelancer.create({
     data: {
+      serialId: 'BO-FRL-0001',
       userId: freelancerUser.id,
       clusterId: cluster.id,
       status: 'ACTIVE',
@@ -100,6 +103,7 @@ async function main() {
   // COMPANIES
   const elara = await prisma.company.create({
     data: {
+      serialId: 'BO-CMP-0001',
       name: 'Elara Gardens Ltd',
       type: 'developer',
       registrationNumber: 'RC-1987654',
@@ -120,6 +124,7 @@ async function main() {
   });
   const primevest = await prisma.company.create({
     data: {
+      serialId: 'BO-CMP-0002',
       name: 'Primevest Properties',
       type: 'realtor',
       registrationNumber: 'RC-1234567',
@@ -142,6 +147,7 @@ async function main() {
   // ASSETS
   const asset1 = await prisma.asset.create({
     data: {
+      serialId: 'BO-AST-0001',
       name: 'Elara Pearl Duplexes',
       companyId: elara.id,
       type: 'Completed',
@@ -171,6 +177,7 @@ async function main() {
 
   const asset2 = await prisma.asset.create({
     data: {
+      serialId: 'BO-AST-0002',
       name: 'Primeview Terraces',
       companyId: primevest.id,
       type: 'Off-plan',
@@ -200,6 +207,7 @@ async function main() {
 
   const asset3 = await prisma.asset.create({
     data: {
+      serialId: 'BO-AST-0003',
       name: 'Lagos Land Parcels',
       companyId: elara.id,
       type: 'Land',
@@ -254,6 +262,7 @@ async function main() {
   // INSTALLMENT PLANS
   const plan1 = await prisma.installmentPlan.create({
     data: {
+      serialId: 'BO-IPL-0001',
       assetId: asset1.id,
       companyId: elara.id,
       totalAmount: 145_000_000,
@@ -277,6 +286,7 @@ async function main() {
   // TRANSACTIONS
   const transaction1 = await prisma.transaction.create({
     data: {
+      serialId: 'BO-TRN-0001',
       assetId: asset1.id,
       buyerId: investor1.id,
       totalAmount: 145_000_000,
@@ -298,6 +308,7 @@ async function main() {
 
   const transaction2 = await prisma.transaction.create({
     data: {
+      serialId: 'BO-TRN-0002',
       assetId: asset2.id,
       buyerId: investor2.id,
       totalAmount: 95_000_000,
@@ -322,6 +333,7 @@ async function main() {
   await prisma.installment.createMany({
     data: [
       {
+        serialId: 'BO-INS-0001',
         transactionId: transaction1.id,
         installmentPlanId: plan1.id,
         dueDate: new Date(NOW.getTime() + 30 * 24 * 60 * 60 * 1000),
@@ -330,6 +342,7 @@ async function main() {
         status: 'PENDING',
       },
       {
+        serialId: 'BO-INS-0002',
         transactionId: transaction1.id,
         installmentPlanId: plan1.id,
         dueDate: new Date(NOW.getTime() + 60 * 24 * 60 * 60 * 1000),
@@ -345,6 +358,7 @@ async function main() {
   await prisma.lead.createMany({
     data: [
       {
+        serialId: 'BO-LED-0001',
         name: 'Mohammed Yusuf',
         email: 'mohd.yusuf@gmail.com',
         phone: '+2348123456789',
@@ -360,6 +374,7 @@ async function main() {
         createdById: admin.id,
       },
       {
+        serialId: 'BO-LED-0002',
         name: 'Ngozi Okafor',
         email: 'ngozi.okafor@gmail.com',
         phone: '+2348098765432',
@@ -375,6 +390,7 @@ async function main() {
         createdById: admin.id,
       },
       {
+        serialId: 'BO-LED-0003',
         name: 'Blessing Eze',
         email: 'blessing.eze@gmail.com',
         phone: '+2348076543210',
@@ -395,6 +411,7 @@ async function main() {
   await prisma.commission.createMany({
     data: [
       {
+        serialId: 'BO-COM-0001',
         transactionId: transaction1.id,
         agentId: agent.id,
         amount: 2_000_000,
@@ -402,6 +419,7 @@ async function main() {
         status: 'UNPAID',
       },
       {
+        serialId: 'BO-COM-0002',
         transactionId: transaction2.id,
         agentId: agent.id,
         amount: 3_800_000,

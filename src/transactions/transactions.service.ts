@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { CommissionPaymentStatus } from '@prisma/client';
 import { NotificationService } from '../notification/notification.service';
+import { generateSerialId } from '../common/serial-id.helper';
 
 export interface TransactionFilter {
   status?: string;
@@ -138,8 +139,10 @@ export class TransactionsService {
     const buyer = await this.prisma.user.findUnique({ where: { id: data.buyerId } });
     if (!buyer) throw new NotFoundException('Buyer not found');
 
+    const serialId = await generateSerialId(this.prisma, 'TRN');
     const transaction = await this.prisma.transaction.create({
       data: {
+        serialId,
         assetId: data.assetId,
         buyerId: data.buyerId,
         totalAmount: parseFloat(data.totalAmount),
@@ -248,6 +251,7 @@ export class TransactionsService {
 function formatDeal(tx: any) {
   return {
     id: tx.id,
+    serialId: tx.serialId ?? "",
     leadName: tx.buyer?.name ?? tx.leadAgent?.user?.name ?? "",
     buyer: tx.buyer?.name ?? "",
     leadAgent: tx.leadAgent?.user?.name ?? "",

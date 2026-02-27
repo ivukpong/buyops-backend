@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException, ConflictException }
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
 import { PrismaClient, UserRole } from '@prisma/client';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class AgentsService {
@@ -21,6 +22,7 @@ export class AgentsService {
     // Map to frontend shape
     return agents.map(agent => ({
       id: agent.id,
+      serialId: agent.serialId ?? "",
       name: agent.user?.name ?? "",
       email: agent.user?.email ?? "",
       phone: agent.user?.phone ?? "",
@@ -76,8 +78,10 @@ export class AgentsService {
     } else {
       // Create user with default password
       const hashedPassword = await bcrypt.hash('password123', 10);
+      const userSerialId = await generateSerialId(this.prisma, 'USR');
       user = await this.prisma.user.create({
         data: {
+          serialId: userSerialId,
           email: data.email,
           password: hashedPassword,
           name: data.name,
@@ -87,8 +91,10 @@ export class AgentsService {
       });
     }
 
+    const agentSerialId = await generateSerialId(this.prisma, 'AGT');
     return this.prisma.agent.create({
       data: {
+        serialId: agentSerialId,
         userId: user.id,
         clusterId: data.cluster || null,
         status: data.status ? (data.status.toUpperCase() as any) : 'PENDING',

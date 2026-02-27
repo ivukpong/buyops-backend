@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import * as bcrypt from 'bcrypt';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class FreelancersService {
@@ -18,6 +19,7 @@ export class FreelancersService {
 
     return freelancers.map(freelancer => ({
       id: freelancer.id,
+      serialId: freelancer.serialId ?? "",
       name: freelancer.user?.name ?? "",
       email: freelancer.user?.email ?? "",
       registeredBy: freelancer.registeredBy ?? "",
@@ -64,13 +66,16 @@ export class FreelancersService {
       if (existing) throw new ConflictException('User is already registered as a freelancer');
     } else {
       const hashedPassword = await bcrypt.hash('password123', 10);
+      const userSerialId = await generateSerialId(this.prisma, 'USR');
       user = await this.prisma.user.create({
-        data: { email: data.email, password: hashedPassword, name: data.name, role: 'FREELANCER' },
+        data: { serialId: userSerialId, email: data.email, password: hashedPassword, name: data.name, role: 'FREELANCER' },
       });
     }
 
+    const freelancerSerialId = await generateSerialId(this.prisma, 'FRL');
     return this.prisma.freelancer.create({
       data: {
+        serialId: freelancerSerialId,
         userId: user.id,
         clusterId: data.cluster || null,
         status: data.status ? (data.status.toUpperCase() as any) : 'PENDING',

@@ -1,5 +1,6 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class ClustersService {
@@ -81,6 +82,7 @@ export class ClustersService {
 
       return {
         id: cluster.id,
+        serialId: cluster.serialId ?? "",
         name: cluster.name,
         teamLead,
         managerId: cluster.managerId,
@@ -121,8 +123,10 @@ export class ClustersService {
     if (!data.name) throw new BadRequestException('Cluster name is required');
     const managerId = await this.resolveManagerId(data.teamLead);
     const status = this.normalizeClusterStatus(data.status);
+    const serialId = await generateSerialId(this.prisma, 'CLT');
     return this.prisma.cluster.create({
       data: {
+        serialId,
         name: data.name,
         code: data.code || null,
         status,

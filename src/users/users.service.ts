@@ -22,6 +22,7 @@ export class UsersService {
       where,
       select: {
         id: true,
+        serialId: true,
         email: true,
         name: true,
         role: true,

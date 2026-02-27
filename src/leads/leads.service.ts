@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from '../notification/notification.service';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class LeadsService {
@@ -69,8 +70,10 @@ export class LeadsService {
     if (!data.name) throw new BadRequestException('Lead name is required');
     if (!data.email) throw new BadRequestException('Email is required');
 
+    const serialId = await generateSerialId(this.prisma, 'LED');
     const createdLead = await this.prisma.lead.create({
       data: {
+        serialId,
         name: data.name,
         email: data.email,
         phone: data.phone || null,

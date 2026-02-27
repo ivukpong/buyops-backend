@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from '../notification/notification.service';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class InstallmentsService {
@@ -29,6 +30,7 @@ export class InstallmentsService {
 
         return plans.map(plan => ({
             id: plan.id,
+            serialId: plan.serialId ?? "",
             asset: plan.asset?.name ?? "",
             buyer: plan.buyerName ?? "",
             buyerEmail: plan.buyerEmail ?? "",
@@ -49,6 +51,7 @@ export class InstallmentsService {
             closerAgent: plan.closerAgent?.user?.name ?? "",
             installments: plan.installments.map(inst => ({
                 id: inst.id,
+                serialId: inst.serialId ?? "",
                 dueDate: inst.dueDate?.toISOString().split("T")[0] ?? "",
                 amount: inst.amount,
                 paidAmount: inst.paidAmount,
@@ -60,9 +63,11 @@ export class InstallmentsService {
     }
 
     async create(dto: any) {
+        const serialId = await generateSerialId(this.prisma, 'IPL');
         return this.prisma.installmentPlan.create({
             data: {
                 ...dto,
+                serialId,
                 companyId: dto.companyId, // Added required field
                 remainingBalance: dto.totalAmount - (dto.downPayment || 0),
                 paidAmount: 0,

@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from '../notification/notification.service';
 import * as bcrypt from 'bcrypt';
 import { UserRole } from '@prisma/client';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class AuthService {
@@ -75,8 +76,10 @@ export class AuthService {
 
     const hashed = await bcrypt.hash(data.password, 10);
 
+    const serialId = await generateSerialId(this.prisma, 'USR');
     const user = await this.prisma.user.create({
       data: {
+        serialId,
         email: normalizedEmail,
         password: hashed,
         name: data.name || normalizedEmail.split('@')[0],

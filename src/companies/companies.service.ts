@@ -6,6 +6,7 @@ import {
   InternalServerErrorException
 } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class CompaniesService {
@@ -113,8 +114,10 @@ export class CompaniesService {
       }
 
       // Note: activeAssets and totalTransactions are computed fields and are NOT saved to the database
+      const serialId = await generateSerialId(this.prisma, 'CMP');
       const company = await this.prisma.company.create({
         data: {
+          serialId,
           name: data.name.trim(),
           type: data.type,
           email: this.normalizeEmail(data.email),

@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from '../notification/notification.service';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class AssetsService {
@@ -182,8 +183,10 @@ export class AssetsService {
     const company = await this.prisma.company.findUnique({ where: { id: data.companyId } });
     if (!company) throw new NotFoundException('Company not found');
 
+    const serialId = await generateSerialId(this.prisma, 'AST');
     const newAsset = await this.prisma.asset.create({
       data: {
+        serialId,
         name: data.name,
         company: { connect: { id: data.companyId } },
         title: data.title || data.name,
