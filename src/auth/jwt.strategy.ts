@@ -21,8 +21,20 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
       throw new UnauthorizedException("Invalid token: missing user identifier");
     }
 
+    // Minimal select — only fields needed for guards + request context.
+    // Avoids heavy joins on every authenticated request.
     const user = await this.prisma.user.findUnique({
-      where: { id: userId }, // or { email: userId } if you use email
+      where: { id: userId },
+      select: {
+        id: true,
+        serialId: true,
+        email: true,
+        name: true,
+        role: true,
+        status: true,
+        agentProfileId: true,
+        freelancerProfileId: true,
+      },
     });
 
     if (!user) {

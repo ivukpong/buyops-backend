@@ -220,6 +220,7 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let AgentsService = class AgentsService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -235,6 +236,7 @@ let AgentsService = class AgentsService {
         });
         return agents.map(agent => ({
             id: agent.id,
+            serialId: agent.serialId ?? "",
             name: agent.user?.name ?? "",
             email: agent.user?.email ?? "",
             phone: agent.user?.phone ?? "",
@@ -285,8 +287,10 @@ let AgentsService = class AgentsService {
         }
         else {
             const hashedPassword = await bcrypt.hash('password123', 10);
+            const userSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'USR');
             user = await this.prisma.user.create({
                 data: {
+                    serialId: userSerialId,
                     email: data.email,
                     password: hashedPassword,
                     name: data.name,
@@ -295,8 +299,10 @@ let AgentsService = class AgentsService {
                 },
             });
         }
+        const agentSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'AGT');
         return this.prisma.agent.create({
             data: {
+                serialId: agentSerialId,
                 userId: user.id,
                 clusterId: data.cluster || null,
                 status: data.status ? data.status.toUpperCase() : 'PENDING',
@@ -721,6 +727,7 @@ exports.AssetsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let AssetsService = class AssetsService {
     constructor(prisma, notificationService) {
         this.prisma = prisma;
@@ -875,8 +882,10 @@ let AssetsService = class AssetsService {
         const company = await this.prisma.company.findUnique({ where: { id: data.companyId } });
         if (!company)
             throw new common_1.NotFoundException('Company not found');
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'AST');
         const newAsset = await this.prisma.asset.create({
             data: {
+                serialId,
                 name: data.name,
                 company: { connect: { id: data.companyId } },
                 title: data.title || data.name,
@@ -1462,6 +1471,7 @@ const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./
 const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
 const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let AuthService = class AuthService {
     constructor(prisma, jwtService, notificationService) {
         this.prisma = prisma;
@@ -1512,8 +1522,10 @@ let AuthService = class AuthService {
             throw new common_1.ConflictException('Password must be at least 8 characters long and include a number and a special character.');
         }
         const hashed = await bcrypt.hash(data.password, 10);
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'USR');
         const user = await this.prisma.user.create({
             data: {
+                serialId,
                 email: normalizedEmail,
                 password: hashed,
                 name: data.name || normalizedEmail.split('@')[0],
@@ -1727,6 +1739,16 @@ let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(pas
         }
         const user = await this.prisma.user.findUnique({
             where: { id: userId },
+            select: {
+                id: true,
+                serialId: true,
+                email: true,
+                name: true,
+                role: true,
+                status: true,
+                agentProfileId: true,
+                freelancerProfileId: true,
+            },
         });
         if (!user) {
             throw new common_1.UnauthorizedException("User not found");
@@ -1905,6 +1927,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ClustersService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let ClustersService = class ClustersService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -1970,6 +1993,7 @@ let ClustersService = class ClustersService {
             });
             return {
                 id: cluster.id,
+                serialId: cluster.serialId ?? "",
                 name: cluster.name,
                 teamLead,
                 managerId: cluster.managerId,
@@ -2009,8 +2033,10 @@ let ClustersService = class ClustersService {
             throw new common_1.BadRequestException('Cluster name is required');
         const managerId = await this.resolveManagerId(data.teamLead);
         const status = this.normalizeClusterStatus(data.status);
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CLT');
         return this.prisma.cluster.create({
             data: {
+                serialId,
                 name: data.name,
                 code: data.code || null,
                 status,
@@ -2128,6 +2154,38 @@ exports.RolesGuard = RolesGuard = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof core_1.Reflector !== "undefined" && core_1.Reflector) === "function" ? _a : Object])
 ], RolesGuard);
+
+
+/***/ }),
+
+/***/ "./src/common/serial-id.helper.ts":
+/*!****************************************!*\
+  !*** ./src/common/serial-id.helper.ts ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.generateSerialId = generateSerialId;
+const MODEL_MAP = {
+    USR: 'user',
+    CMP: 'company',
+    AST: 'asset',
+    LED: 'lead',
+    AGT: 'agent',
+    FRL: 'freelancer',
+    CLT: 'cluster',
+    TRN: 'transaction',
+    IPL: 'installmentPlan',
+    INS: 'installment',
+    COM: 'commission',
+};
+async function generateSerialId(prisma, prefix) {
+    const model = MODEL_MAP[prefix];
+    const count = await prisma[model].count();
+    const serial = String(count + 1).padStart(4, '0');
+    return `BO-${prefix}-${serial}`;
+}
 
 
 /***/ }),
@@ -2357,6 +2415,7 @@ Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.CompaniesService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let CompaniesService = class CompaniesService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -2429,11 +2488,21 @@ let CompaniesService = class CompaniesService {
             if (!data.type || !['developer', 'realtor', 'partner', 'consultant', 'investor'].includes(data.type)) {
                 throw new common_1.BadRequestException('Company type is required and must be one of: developer, realtor, partner, consultant, investor');
             }
+            const existingByName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
+            if (existingByName)
+                throw new common_1.ConflictException('A company with this name already exists');
             const existing = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email) } });
             if (existing)
                 throw new common_1.ConflictException('A company with this email already exists');
+            if (data.phone?.trim()) {
+                const existingByPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim() } });
+                if (existingByPhone)
+                    throw new common_1.ConflictException('A company with this phone number already exists');
+            }
+            const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CMP');
             const company = await this.prisma.company.create({
                 data: {
+                    serialId,
                     name: data.name.trim(),
                     type: data.type,
                     email: this.normalizeEmail(data.email),
@@ -2861,8 +2930,6 @@ exports.DashboardController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const dashboard_service_1 = __webpack_require__(/*! ./dashboard.service */ "./src/dashboard/dashboard.service.ts");
 const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
-const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
-const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
 let DashboardController = class DashboardController {
     constructor(dashboardService) {
         this.dashboardService = dashboardService;
@@ -2876,16 +2943,14 @@ let DashboardController = class DashboardController {
 };
 exports.DashboardController = DashboardController;
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Get)('overview'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], DashboardController.prototype, "getOverview", null);
 __decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt'), roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
     (0, common_1.Get)('recent-transactions'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
@@ -2959,7 +3024,7 @@ let DashboardService = class DashboardService {
     }
     async getOverview() {
         const [totalAgents, activeClusters, totalRevenue, totalCommissions, activeAssets, assetTypeCounts, salesVolume,] = await Promise.all([
-            this.prisma.agent.count({ where: { status: 'ACTIVE' } }),
+            this.prisma.agent.count(),
             this.prisma.cluster.count({ where: { status: 'active' } }),
             this.prisma.transaction.aggregate({
                 where: { status: 'COMPLETED' },
@@ -3306,6 +3371,7 @@ exports.FreelancersService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let FreelancersService = class FreelancersService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -3320,6 +3386,7 @@ let FreelancersService = class FreelancersService {
         });
         return freelancers.map(freelancer => ({
             id: freelancer.id,
+            serialId: freelancer.serialId ?? "",
             name: freelancer.user?.name ?? "",
             email: freelancer.user?.email ?? "",
             registeredBy: freelancer.registeredBy ?? "",
@@ -3355,12 +3422,15 @@ let FreelancersService = class FreelancersService {
         }
         else {
             const hashedPassword = await bcrypt.hash('password123', 10);
+            const userSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'USR');
             user = await this.prisma.user.create({
-                data: { email: data.email, password: hashedPassword, name: data.name, role: 'FREELANCER' },
+                data: { serialId: userSerialId, email: data.email, password: hashedPassword, name: data.name, role: 'FREELANCER' },
             });
         }
+        const freelancerSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'FRL');
         return this.prisma.freelancer.create({
             data: {
+                serialId: freelancerSerialId,
                 userId: user.id,
                 clusterId: data.cluster || null,
                 status: data.status ? data.status.toUpperCase() : 'PENDING',
@@ -3636,6 +3706,7 @@ exports.InstallmentsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let InstallmentsService = class InstallmentsService {
     constructor(prisma, notificationService) {
         this.prisma = prisma;
@@ -3659,6 +3730,7 @@ let InstallmentsService = class InstallmentsService {
         });
         return plans.map(plan => ({
             id: plan.id,
+            serialId: plan.serialId ?? "",
             asset: plan.asset?.name ?? "",
             buyer: plan.buyerName ?? "",
             buyerEmail: plan.buyerEmail ?? "",
@@ -3679,6 +3751,7 @@ let InstallmentsService = class InstallmentsService {
             closerAgent: plan.closerAgent?.user?.name ?? "",
             installments: plan.installments.map(inst => ({
                 id: inst.id,
+                serialId: inst.serialId ?? "",
                 dueDate: inst.dueDate?.toISOString().split("T")[0] ?? "",
                 amount: inst.amount,
                 paidAmount: inst.paidAmount,
@@ -3689,9 +3762,11 @@ let InstallmentsService = class InstallmentsService {
         }));
     }
     async create(dto) {
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'IPL');
         return this.prisma.installmentPlan.create({
             data: {
                 ...dto,
+                serialId,
                 companyId: dto.companyId,
                 remainingBalance: dto.totalAmount - (dto.downPayment || 0),
                 paidAmount: 0,
@@ -4286,6 +4361,7 @@ exports.LeadsService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let LeadsService = class LeadsService {
     constructor(prisma, notificationService) {
         this.prisma = prisma;
@@ -4349,8 +4425,10 @@ let LeadsService = class LeadsService {
             throw new common_1.BadRequestException('Lead name is required');
         if (!data.email)
             throw new common_1.BadRequestException('Email is required');
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'LED');
         const createdLead = await this.prisma.lead.create({
             data: {
+                serialId,
                 name: data.name,
                 email: data.email,
                 phone: data.phone || null,
@@ -6396,6 +6474,12 @@ let PrismaService = class PrismaService extends client_1.PrismaClient {
         const pool = new pg_1.Pool({
             connectionString: process.env.DATABASE_URL,
             ssl: { rejectUnauthorized: false },
+            max: 3,
+            min: 1,
+            idleTimeoutMillis: 10000,
+            connectionTimeoutMillis: 20000,
+            keepAlive: true,
+            keepAliveInitialDelayMillis: 5000,
         });
         super({
             adapter: new adapter_pg_1.PrismaPg(pool),
@@ -6716,6 +6800,21 @@ let ReportsService = class ReportsService {
                 where.date = { gte: new Date(now.getFullYear(), 0, 1) };
                 break;
             }
+            case '6m': {
+                const d = new Date();
+                d.setMonth(d.getMonth() - 6);
+                where.date = { gte: d };
+                break;
+            }
+            case '1y': {
+                const d = new Date();
+                d.setFullYear(d.getFullYear() - 1);
+                where.date = { gte: d };
+                break;
+            }
+            case 'all': {
+                break;
+            }
             default: {
                 const d = new Date();
                 d.setDate(d.getDate() - 30);
@@ -6749,6 +6848,21 @@ let ReportsService = class ReportsService {
             }
             case 'ytd': {
                 where.createdAt = { gte: new Date(now.getFullYear(), 0, 1) };
+                break;
+            }
+            case '6m': {
+                const d = new Date();
+                d.setMonth(d.getMonth() - 6);
+                where.createdAt = { gte: d };
+                break;
+            }
+            case '1y': {
+                const d = new Date();
+                d.setFullYear(d.getFullYear() - 1);
+                where.createdAt = { gte: d };
+                break;
+            }
+            case 'all': {
                 break;
             }
             default: {
@@ -7673,6 +7787,7 @@ const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let TransactionsService = class TransactionsService {
     constructor(prisma, notificationService) {
         this.prisma = prisma;
@@ -7732,7 +7847,7 @@ let TransactionsService = class TransactionsService {
                 asset: { select: { name: true } },
                 buyer: { select: { name: true } },
                 company: { select: { name: true } },
-                leadAgent: { include: { user: { select: { name: true } } } },
+                leadAgent: { include: { user: { select: { name: true, accountNumber: true } } } },
                 closerAgent: { include: { user: { select: { name: true } } } },
                 installments: true,
             },
@@ -7771,8 +7886,10 @@ let TransactionsService = class TransactionsService {
         const buyer = await this.prisma.user.findUnique({ where: { id: data.buyerId } });
         if (!buyer)
             throw new common_1.NotFoundException('Buyer not found');
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'TRN');
         const transaction = await this.prisma.transaction.create({
             data: {
+                serialId,
                 assetId: data.assetId,
                 buyerId: data.buyerId,
                 totalAmount: parseFloat(data.totalAmount),
@@ -7878,10 +7995,12 @@ exports.TransactionsService = TransactionsService = __decorate([
 function formatDeal(tx) {
     return {
         id: tx.id,
+        serialId: tx.serialId ?? "",
         leadName: tx.buyer?.name ?? tx.leadAgent?.user?.name ?? "",
         buyer: tx.buyer?.name ?? "",
         leadAgent: tx.leadAgent?.user?.name ?? "",
         closerAgent: tx.closerAgent?.user?.name ?? "",
+        accountNumber: tx.leadAgent?.user?.accountNumber ?? "",
         company: tx.company?.name ?? "",
         asset: tx.asset?.name ?? "",
         propertyValue: tx.totalAmount ? `₦${tx.totalAmount.toLocaleString()}` : "",
@@ -8481,6 +8600,7 @@ let UsersService = class UsersService {
             where,
             select: {
                 id: true,
+                serialId: true,
                 email: true,
                 name: true,
                 role: true,
@@ -8556,9 +8676,18 @@ let UsersService = class UsersService {
                 agentProfile: {
                     include: {
                         cluster: true,
-                        assignedLeads: true,
-                        leadTransactions: true,
-                        closerTransactions: true,
+                        assignedLeads: {
+                            orderBy: { createdAt: 'desc' },
+                            take: 50,
+                        },
+                        leadTransactions: {
+                            orderBy: { date: 'desc' },
+                            take: 20,
+                        },
+                        closerTransactions: {
+                            orderBy: { date: 'desc' },
+                            take: 20,
+                        },
                     },
                 },
                 freelancerProfile: {

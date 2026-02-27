@@ -41,6 +41,12 @@ export class PrismaService
     const pool = new Pool({
       connectionString: process.env.DATABASE_URL,
       ssl: { rejectUnauthorized: false }, // Railway-safe
+      max: 3,                       // Railway hobby allows ~5 total; stay well under
+      min: 1,                       // keep 1 warm conn so first request doesn't cold-start
+      idleTimeoutMillis: 10_000,    // release idle conns before Railway's ~30s proxy timeout
+      connectionTimeoutMillis: 20_000, // wait up to 20s for the proxy to accept a new TCP conn
+      keepAlive: true,              // send TCP keepalive packets — prevents proxy from dropping idle conns
+      keepAliveInitialDelayMillis: 5_000, // start keepalive probes after 5s idle
     });
 
     super({

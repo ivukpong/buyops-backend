@@ -100,9 +100,18 @@ export class UsersService {
         agentProfile: {
           include: {
             cluster: true,
-            assignedLeads: true,
-            leadTransactions: true,
-            closerTransactions: true,
+            assignedLeads: {
+              orderBy: { createdAt: 'desc' },
+              take: 50,
+            },
+            leadTransactions: {
+              orderBy: { date: 'desc' },
+              take: 20,
+            },
+            closerTransactions: {
+              orderBy: { date: 'desc' },
+              take: 20,
+            },
           },
         },
         freelancerProfile: {
