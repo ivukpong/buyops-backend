@@ -16,7 +16,7 @@ export class DashboardService {
       assetTypeCounts,
       salesVolume,
     ] = await Promise.all([
-      this.prisma.agent.count(),
+      this.prisma.user.count({ where: { role: 'AGENT' } }),
       this.prisma.cluster.count({ where: { status: 'active' } }),
       this.prisma.transaction.aggregate({
         where: { status: 'COMPLETED' },

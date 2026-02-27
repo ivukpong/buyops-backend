@@ -113,6 +113,12 @@ export class CompaniesService {
         if (existingByPhone) throw new ConflictException('A company with this phone number already exists');
       }
 
+      // Registration number uniqueness check
+      if (data.registrationNumber?.trim()) {
+        const existingByRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim() } });
+        if (existingByRegNo) throw new ConflictException('A company with this registration number already exists');
+      }
+
       // Note: activeAssets and totalTransactions are computed fields and are NOT saved to the database
       const serialId = await generateSerialId(this.prisma, 'CMP');
       const company = await this.prisma.company.create({
@@ -145,8 +151,16 @@ export class CompaniesService {
       return this.enrichCompanyData(company);
     } catch (error) {
       if (error.code === 'P2002') {
-        const field = error.meta?.target?.[0] || 'field';
-        throw new ConflictException(`A company with this ${field} already exists`);
+        const rawField = error.meta?.target?.[0] || '';
+        const fieldLabels: Record<string, string> = {
+          name: 'company name',
+          email: 'email address',
+          phone: 'phone number',
+          registrationNumber: 'registration number',
+          serialId: 'serial ID',
+        };
+        const label = fieldLabels[rawField] || rawField || 'a unique field';
+        throw new ConflictException(`A company with this ${label} already exists`);
       }
       if (error instanceof BadRequestException || error instanceof ConflictException) throw error;
       console.error('Company creation error:', error);
@@ -155,44 +169,80 @@ export class CompaniesService {
   }
 
   async update(id: string, data: any) {
-    // Validate company exists
-    if (!id || id.trim() === '') throw new BadRequestException('Company ID is required');
+    try {
+      // Validate company exists
+      if (!id || id.trim() === '') throw new BadRequestException('Company ID is required');
 
-    const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
-    if (!exists) throw new NotFoundException(`Company with ID ${id} not found`);
+      const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+      if (!exists) throw new NotFoundException(`Company with ID ${id} not found`);
 
-    // Note: activeAssets and totalTransactions are computed fields and should NOT be saved to the database
-    const updateData: any = {};
-    if (data.name !== undefined) updateData.name = data.name.trim();
-    if (data.type !== undefined) updateData.type = data.type;
-    if (data.email !== undefined) updateData.email = this.normalizeEmail(data.email);
-    if (data.phone !== undefined) updateData.phone = data.phone?.trim();
-    if (data.status !== undefined) updateData.status = this.normalizeStatus(data.status);
-    if (data.contactPerson !== undefined) updateData.contactPerson = data.contactPerson?.trim();
-    if (data.address !== undefined) updateData.address = data.address?.trim();
-    if (data.commissionRate !== undefined) updateData.commissionRate = parseFloat(data.commissionRate);
-    if (data.paymentTerms !== undefined) updateData.paymentTerms = data.paymentTerms?.trim();
-    if (data.agreementStartDate !== undefined) updateData.agreementStartDate = data.agreementStartDate ? new Date(data.agreementStartDate) : null;
-    if (data.agreementExpiryDate !== undefined) updateData.agreementExpiryDate = data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null;
-    if (data.registrationNumber !== undefined) updateData.registrationNumber = data.registrationNumber?.trim();
-    if (data.notes !== undefined) updateData.notes = data.notes?.trim();
-    if (data.accountName !== undefined || data.bankAccountName !== undefined) {
-      updateData.accountName = (data.accountName || data.bankAccountName)?.trim() || null;
+      // Uniqueness checks (exclude current company)
+      if (data.name !== undefined && data.name.trim()) {
+        const dupName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' }, NOT: { id } } });
+        if (dupName) throw new ConflictException('A company with this name already exists');
+      }
+      if (data.email !== undefined && data.email.trim()) {
+        const dupEmail = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email), NOT: { id } } });
+        if (dupEmail) throw new ConflictException('A company with this email address already exists');
+      }
+      if (data.phone !== undefined && data.phone.trim()) {
+        const dupPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim(), NOT: { id } } });
+        if (dupPhone) throw new ConflictException('A company with this phone number already exists');
+      }
+      if (data.registrationNumber !== undefined && data.registrationNumber.trim()) {
+        const dupRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim(), NOT: { id } } });
+        if (dupRegNo) throw new ConflictException('A company with this registration number already exists');
+      }
+
+      // Note: activeAssets and totalTransactions are computed fields and should NOT be saved to the database
+      const updateData: any = {};
+      if (data.name !== undefined) updateData.name = data.name.trim();
+      if (data.type !== undefined) updateData.type = data.type;
+      if (data.email !== undefined) updateData.email = this.normalizeEmail(data.email);
+      if (data.phone !== undefined) updateData.phone = data.phone?.trim();
+      if (data.status !== undefined) updateData.status = this.normalizeStatus(data.status);
+      if (data.contactPerson !== undefined) updateData.contactPerson = data.contactPerson?.trim();
+      if (data.address !== undefined) updateData.address = data.address?.trim();
+      if (data.commissionRate !== undefined) updateData.commissionRate = parseFloat(data.commissionRate);
+      if (data.paymentTerms !== undefined) updateData.paymentTerms = data.paymentTerms?.trim();
+      if (data.agreementStartDate !== undefined) updateData.agreementStartDate = data.agreementStartDate ? new Date(data.agreementStartDate) : null;
+      if (data.agreementExpiryDate !== undefined) updateData.agreementExpiryDate = data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null;
+      if (data.registrationNumber !== undefined) updateData.registrationNumber = data.registrationNumber?.trim();
+      if (data.notes !== undefined) updateData.notes = data.notes?.trim();
+      if (data.accountName !== undefined || data.bankAccountName !== undefined) {
+        updateData.accountName = (data.accountName || data.bankAccountName)?.trim() || null;
+      }
+      if (data.bankName !== undefined) updateData.bankName = data.bankName?.trim();
+      if (data.accountNumber !== undefined) updateData.accountNumber = data.accountNumber?.trim();
+
+      const company = await this.prisma.company.update({
+        where: { id },
+        data: updateData,
+        include: {
+          assets: { select: { id: true, name: true, type: true, status: true } },
+          _count: { select: { assets: true, transactions: true } }
+        },
+      });
+
+      // Return company with computed activeAssets and totalTransactions
+      return this.enrichCompanyData(company);
+    } catch (error) {
+      if (error.code === 'P2002') {
+        const rawField = error.meta?.target?.[0] || '';
+        const fieldLabels: Record<string, string> = {
+          name: 'company name',
+          email: 'email address',
+          phone: 'phone number',
+          registrationNumber: 'registration number',
+          serialId: 'serial ID',
+        };
+        const label = fieldLabels[rawField] || rawField || 'a unique field';
+        throw new ConflictException(`A company with this ${label} already exists`);
+      }
+      if (error instanceof BadRequestException || error instanceof ConflictException || error instanceof NotFoundException) throw error;
+      console.error('Company update error:', error);
+      throw new InternalServerErrorException('Failed to update company');
     }
-    if (data.bankName !== undefined) updateData.bankName = data.bankName?.trim();
-    if (data.accountNumber !== undefined) updateData.accountNumber = data.accountNumber?.trim();
-
-    const company = await this.prisma.company.update({
-      where: { id },
-      data: updateData,
-      include: {
-        assets: { select: { id: true, name: true, type: true, status: true } },
-        _count: { select: { assets: true, transactions: true } }
-      },
-    });
-
-    // Return company with computed activeAssets and totalTransactions
-    return this.enrichCompanyData(company);
   }
 
   async delete(id: string) {

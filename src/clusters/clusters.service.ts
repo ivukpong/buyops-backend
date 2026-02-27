@@ -164,7 +164,7 @@ export class ClustersService {
     const [total, active, agents, freelancers] = await Promise.all([
       this.prisma.cluster.count(),
       this.prisma.cluster.count({ where: { status: 'active' } }),
-      this.prisma.agent.count(),
+      this.prisma.user.count({ where: { role: 'AGENT' } }),
       this.prisma.freelancer.count(),
     ]);
 
