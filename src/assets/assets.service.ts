@@ -281,20 +281,20 @@ export class AssetsService {
     if (data.description !== undefined) updateData.description = data.description;
     if (data.companyId !== undefined) updateData.companyId = data.companyId;
     // Basic Details
-    if (data.landSize !== undefined) updateData.landSize = parseFloat(data.landSize);
-    if (data.builtSize !== undefined) updateData.builtSize = parseFloat(data.builtSize);
-    if (data.constructionStart !== undefined) updateData.constructionStart = new Date(data.constructionStart);
-    if (data.constructionEnd !== undefined) updateData.constructionEnd = new Date(data.constructionEnd);
+    if (data.landSize !== undefined && data.landSize !== '' && data.landSize !== null) updateData.landSize = parseFloat(data.landSize);
+    if (data.builtSize !== undefined && data.builtSize !== '' && data.builtSize !== null) updateData.builtSize = parseFloat(data.builtSize);
+    if (data.constructionStart !== undefined) updateData.constructionStart = data.constructionStart ? new Date(data.constructionStart) : null;
+    if (data.constructionEnd !== undefined) updateData.constructionEnd = data.constructionEnd ? new Date(data.constructionEnd) : null;
     if (data.propertyCategory !== undefined) updateData.propertyCategory = data.propertyCategory;
     if (data.unitConfiguration !== undefined) updateData.unitConfiguration = data.unitConfiguration;
     if (data.facilityManagement !== undefined) updateData.facilityManagement = data.facilityManagement;
     // Unit details
-    if (data.units !== undefined) updateData.units = parseInt(data.units);
-    if (data.totalUnits !== undefined) updateData.totalUnits = parseInt(data.totalUnits);
-    if (data.availableUnits !== undefined) updateData.availableUnits = parseInt(data.availableUnits);
-    if (data.bedrooms !== undefined) updateData.bedrooms = parseInt(data.bedrooms);
-    if (data.bathrooms !== undefined) updateData.bathrooms = parseInt(data.bathrooms);
-    if (data.area !== undefined) updateData.area = parseFloat(data.area);
+    if (data.units !== undefined && data.units !== '' && data.units !== null) updateData.units = parseInt(data.units);
+    if (data.totalUnits !== undefined && data.totalUnits !== '' && data.totalUnits !== null) updateData.totalUnits = parseInt(data.totalUnits);
+    if (data.availableUnits !== undefined && data.availableUnits !== '' && data.availableUnits !== null) updateData.availableUnits = parseInt(data.availableUnits);
+    if (data.bedrooms !== undefined && data.bedrooms !== '' && data.bedrooms !== null) updateData.bedrooms = parseInt(data.bedrooms);
+    if (data.bathrooms !== undefined && data.bathrooms !== '' && data.bathrooms !== null) updateData.bathrooms = parseInt(data.bathrooms);
+    if (data.area !== undefined && data.area !== '' && data.area !== null) updateData.area = parseFloat(data.area);
     if (data.parking !== undefined) updateData.parking = data.parking;
     if (data.furnished !== undefined) updateData.furnished = data.furnished;
     if (data.facilities !== undefined) updateData.facilities = data.facilities;
@@ -302,38 +302,38 @@ export class AssetsService {
     if (data.ownershipOptions !== undefined) updateData.ownershipOptions = data.ownershipOptions;
     // Investment Structure
     if (data.ownershipType !== undefined) updateData.ownershipType = data.ownershipType;
-    if (data.fractionTotal !== undefined) updateData.fractionTotal = parseInt(data.fractionTotal);
+    if (data.fractionTotal !== undefined && data.fractionTotal !== '' && data.fractionTotal !== null) updateData.fractionTotal = parseInt(data.fractionTotal);
     // Pricing
     if (data.price !== undefined) updateData.price = data.price;
     if (data.priceRange !== undefined) updateData.priceRange = data.priceRange;
     if (data.markup !== undefined) updateData.markup = data.markup;
     if (data.fractionCost !== undefined) updateData.fractionCost = data.fractionCost;
     if (data.costPerFraction !== undefined) updateData.fractionCost = data.costPerFraction;
-    if (data.fundingStatus !== undefined) updateData.fundingStatus = parseInt(data.fundingStatus);
+    if (data.fundingStatus !== undefined && data.fundingStatus !== '' && data.fundingStatus !== null) updateData.fundingStatus = parseInt(data.fundingStatus);
     if (data.paymentOptions !== undefined) updateData.paymentOptions = data.paymentOptions;
     if (data.installmentPeriods !== undefined) updateData.installmentPeriods = data.installmentPeriods;
     if (data.downPaymentAmount !== undefined) updateData.downPaymentAmount = data.downPaymentAmount;
-    if (data.offPlanDiscount !== undefined) updateData.offPlanDiscount = parseFloat(data.offPlanDiscount);
-    if (data.stageBasedDiscount !== undefined) updateData.stageBasedDiscount = parseFloat(data.stageBasedDiscount);
+    if (data.offPlanDiscount !== undefined && data.offPlanDiscount !== '' && data.offPlanDiscount !== null) updateData.offPlanDiscount = parseFloat(data.offPlanDiscount);
+    if (data.stageBasedDiscount !== undefined && data.stageBasedDiscount !== '' && data.stageBasedDiscount !== null) updateData.stageBasedDiscount = parseFloat(data.stageBasedDiscount);
     // Commission
     if (data.commission !== undefined) updateData.commission = data.commission;
     if (data.commissionRate !== undefined) updateData.commissionRate = data.commissionRate;
-    if (data.leadCommission !== undefined) updateData.leadCommission = parseFloat(data.leadCommission);
-    if (data.closerCommission !== undefined) updateData.closerCommission = parseFloat(data.closerCommission);
+    if (data.leadCommission !== undefined && data.leadCommission !== '' && data.leadCommission !== null) updateData.leadCommission = parseFloat(data.leadCommission);
+    if (data.closerCommission !== undefined && data.closerCommission !== '' && data.closerCommission !== null) updateData.closerCommission = parseFloat(data.closerCommission);
     // Returns
-    if (data.projectedRentalIncome !== undefined) updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
+    if (data.projectedRentalIncome !== undefined && data.projectedRentalIncome !== '' && data.projectedRentalIncome !== null) updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
     if (data.rentalFrequency !== undefined) updateData.rentalFrequency = data.rentalFrequency;
-    if (data.operatingCost !== undefined) updateData.operatingCost = parseFloat(data.operatingCost);
-    if (data.firstPayoutDate !== undefined) updateData.firstPayoutDate = new Date(data.firstPayoutDate);
+    if (data.operatingCost !== undefined && data.operatingCost !== '' && data.operatingCost !== null) updateData.operatingCost = parseFloat(data.operatingCost);
+    if (data.firstPayoutDate !== undefined) updateData.firstPayoutDate = data.firstPayoutDate ? new Date(data.firstPayoutDate) : null;
     if (data.rentalYield !== undefined) updateData.rentalYield = data.rentalYield;
-    if (data.rentalYieldMin !== undefined) updateData.rentalYieldMin = parseFloat(data.rentalYieldMin);
-    if (data.rentalYieldMax !== undefined) updateData.rentalYieldMax = parseFloat(data.rentalYieldMax);
-    if (data.capitalAppreciation !== undefined) updateData.capitalAppreciation = parseFloat(data.capitalAppreciation);
-    if (data.capitalAppreciationMin !== undefined) updateData.capitalAppreciationMin = parseFloat(data.capitalAppreciationMin);
-    if (data.capitalAppreciationMax !== undefined) updateData.capitalAppreciationMax = parseFloat(data.capitalAppreciationMax);
+    if (data.rentalYieldMin !== undefined && data.rentalYieldMin !== '' && data.rentalYieldMin !== null) updateData.rentalYieldMin = parseFloat(data.rentalYieldMin);
+    if (data.rentalYieldMax !== undefined && data.rentalYieldMax !== '' && data.rentalYieldMax !== null) updateData.rentalYieldMax = parseFloat(data.rentalYieldMax);
+    if (data.capitalAppreciation !== undefined && data.capitalAppreciation !== '' && data.capitalAppreciation !== null) updateData.capitalAppreciation = parseFloat(data.capitalAppreciation);
+    if (data.capitalAppreciationMin !== undefined && data.capitalAppreciationMin !== '' && data.capitalAppreciationMin !== null) updateData.capitalAppreciationMin = parseFloat(data.capitalAppreciationMin);
+    if (data.capitalAppreciationMax !== undefined && data.capitalAppreciationMax !== '' && data.capitalAppreciationMax !== null) updateData.capitalAppreciationMax = parseFloat(data.capitalAppreciationMax);
     if (data.totalReturns !== undefined) updateData.totalReturns = data.totalReturns;
-    if (data.totalReturnsMin !== undefined) updateData.totalReturnsMin = parseFloat(data.totalReturnsMin);
-    if (data.totalReturnsMax !== undefined) updateData.totalReturnsMax = parseFloat(data.totalReturnsMax);
+    if (data.totalReturnsMin !== undefined && data.totalReturnsMin !== '' && data.totalReturnsMin !== null) updateData.totalReturnsMin = parseFloat(data.totalReturnsMin);
+    if (data.totalReturnsMax !== undefined && data.totalReturnsMax !== '' && data.totalReturnsMax !== null) updateData.totalReturnsMax = parseFloat(data.totalReturnsMax);
     // Risk & Management
     if (data.riskLevel !== undefined) updateData.riskLevel = data.riskLevel;
     if (data.riskFactors !== undefined) updateData.riskFactors = data.riskFactors;
@@ -343,7 +343,7 @@ export class AssetsService {
     if (data.exitLiquidity !== undefined) updateData.exitLiquidity = data.exitLiquidity;
     if (data.managementMode !== undefined) updateData.managementMode = data.managementMode;
     // Media
-    if (data.virtualTours !== undefined) updateData.virtualTours = parseInt(data.virtualTours);
+    if (data.virtualTours !== undefined && data.virtualTours !== '' && data.virtualTours !== null) updateData.virtualTours = parseInt(data.virtualTours);
 
     await this.prisma.asset.update({
       where: { id },

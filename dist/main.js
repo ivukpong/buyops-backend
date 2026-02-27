@@ -976,31 +976,31 @@ let AssetsService = class AssetsService {
             updateData.description = data.description;
         if (data.companyId !== undefined)
             updateData.companyId = data.companyId;
-        if (data.landSize !== undefined)
+        if (data.landSize !== undefined && data.landSize !== '' && data.landSize !== null)
             updateData.landSize = parseFloat(data.landSize);
-        if (data.builtSize !== undefined)
+        if (data.builtSize !== undefined && data.builtSize !== '' && data.builtSize !== null)
             updateData.builtSize = parseFloat(data.builtSize);
         if (data.constructionStart !== undefined)
-            updateData.constructionStart = new Date(data.constructionStart);
+            updateData.constructionStart = data.constructionStart ? new Date(data.constructionStart) : null;
         if (data.constructionEnd !== undefined)
-            updateData.constructionEnd = new Date(data.constructionEnd);
+            updateData.constructionEnd = data.constructionEnd ? new Date(data.constructionEnd) : null;
         if (data.propertyCategory !== undefined)
             updateData.propertyCategory = data.propertyCategory;
         if (data.unitConfiguration !== undefined)
             updateData.unitConfiguration = data.unitConfiguration;
         if (data.facilityManagement !== undefined)
             updateData.facilityManagement = data.facilityManagement;
-        if (data.units !== undefined)
+        if (data.units !== undefined && data.units !== '' && data.units !== null)
             updateData.units = parseInt(data.units);
-        if (data.totalUnits !== undefined)
+        if (data.totalUnits !== undefined && data.totalUnits !== '' && data.totalUnits !== null)
             updateData.totalUnits = parseInt(data.totalUnits);
-        if (data.availableUnits !== undefined)
+        if (data.availableUnits !== undefined && data.availableUnits !== '' && data.availableUnits !== null)
             updateData.availableUnits = parseInt(data.availableUnits);
-        if (data.bedrooms !== undefined)
+        if (data.bedrooms !== undefined && data.bedrooms !== '' && data.bedrooms !== null)
             updateData.bedrooms = parseInt(data.bedrooms);
-        if (data.bathrooms !== undefined)
+        if (data.bathrooms !== undefined && data.bathrooms !== '' && data.bathrooms !== null)
             updateData.bathrooms = parseInt(data.bathrooms);
-        if (data.area !== undefined)
+        if (data.area !== undefined && data.area !== '' && data.area !== null)
             updateData.area = parseFloat(data.area);
         if (data.parking !== undefined)
             updateData.parking = data.parking;
@@ -1014,7 +1014,7 @@ let AssetsService = class AssetsService {
             updateData.ownershipOptions = data.ownershipOptions;
         if (data.ownershipType !== undefined)
             updateData.ownershipType = data.ownershipType;
-        if (data.fractionTotal !== undefined)
+        if (data.fractionTotal !== undefined && data.fractionTotal !== '' && data.fractionTotal !== null)
             updateData.fractionTotal = parseInt(data.fractionTotal);
         if (data.price !== undefined)
             updateData.price = data.price;
@@ -1026,7 +1026,7 @@ let AssetsService = class AssetsService {
             updateData.fractionCost = data.fractionCost;
         if (data.costPerFraction !== undefined)
             updateData.fractionCost = data.costPerFraction;
-        if (data.fundingStatus !== undefined)
+        if (data.fundingStatus !== undefined && data.fundingStatus !== '' && data.fundingStatus !== null)
             updateData.fundingStatus = parseInt(data.fundingStatus);
         if (data.paymentOptions !== undefined)
             updateData.paymentOptions = data.paymentOptions;
@@ -1034,43 +1034,43 @@ let AssetsService = class AssetsService {
             updateData.installmentPeriods = data.installmentPeriods;
         if (data.downPaymentAmount !== undefined)
             updateData.downPaymentAmount = data.downPaymentAmount;
-        if (data.offPlanDiscount !== undefined)
+        if (data.offPlanDiscount !== undefined && data.offPlanDiscount !== '' && data.offPlanDiscount !== null)
             updateData.offPlanDiscount = parseFloat(data.offPlanDiscount);
-        if (data.stageBasedDiscount !== undefined)
+        if (data.stageBasedDiscount !== undefined && data.stageBasedDiscount !== '' && data.stageBasedDiscount !== null)
             updateData.stageBasedDiscount = parseFloat(data.stageBasedDiscount);
         if (data.commission !== undefined)
             updateData.commission = data.commission;
         if (data.commissionRate !== undefined)
             updateData.commissionRate = data.commissionRate;
-        if (data.leadCommission !== undefined)
+        if (data.leadCommission !== undefined && data.leadCommission !== '' && data.leadCommission !== null)
             updateData.leadCommission = parseFloat(data.leadCommission);
-        if (data.closerCommission !== undefined)
+        if (data.closerCommission !== undefined && data.closerCommission !== '' && data.closerCommission !== null)
             updateData.closerCommission = parseFloat(data.closerCommission);
-        if (data.projectedRentalIncome !== undefined)
+        if (data.projectedRentalIncome !== undefined && data.projectedRentalIncome !== '' && data.projectedRentalIncome !== null)
             updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
         if (data.rentalFrequency !== undefined)
             updateData.rentalFrequency = data.rentalFrequency;
-        if (data.operatingCost !== undefined)
+        if (data.operatingCost !== undefined && data.operatingCost !== '' && data.operatingCost !== null)
             updateData.operatingCost = parseFloat(data.operatingCost);
         if (data.firstPayoutDate !== undefined)
-            updateData.firstPayoutDate = new Date(data.firstPayoutDate);
+            updateData.firstPayoutDate = data.firstPayoutDate ? new Date(data.firstPayoutDate) : null;
         if (data.rentalYield !== undefined)
             updateData.rentalYield = data.rentalYield;
-        if (data.rentalYieldMin !== undefined)
+        if (data.rentalYieldMin !== undefined && data.rentalYieldMin !== '' && data.rentalYieldMin !== null)
             updateData.rentalYieldMin = parseFloat(data.rentalYieldMin);
-        if (data.rentalYieldMax !== undefined)
+        if (data.rentalYieldMax !== undefined && data.rentalYieldMax !== '' && data.rentalYieldMax !== null)
             updateData.rentalYieldMax = parseFloat(data.rentalYieldMax);
-        if (data.capitalAppreciation !== undefined)
+        if (data.capitalAppreciation !== undefined && data.capitalAppreciation !== '' && data.capitalAppreciation !== null)
             updateData.capitalAppreciation = parseFloat(data.capitalAppreciation);
-        if (data.capitalAppreciationMin !== undefined)
+        if (data.capitalAppreciationMin !== undefined && data.capitalAppreciationMin !== '' && data.capitalAppreciationMin !== null)
             updateData.capitalAppreciationMin = parseFloat(data.capitalAppreciationMin);
-        if (data.capitalAppreciationMax !== undefined)
+        if (data.capitalAppreciationMax !== undefined && data.capitalAppreciationMax !== '' && data.capitalAppreciationMax !== null)
             updateData.capitalAppreciationMax = parseFloat(data.capitalAppreciationMax);
         if (data.totalReturns !== undefined)
             updateData.totalReturns = data.totalReturns;
-        if (data.totalReturnsMin !== undefined)
+        if (data.totalReturnsMin !== undefined && data.totalReturnsMin !== '' && data.totalReturnsMin !== null)
             updateData.totalReturnsMin = parseFloat(data.totalReturnsMin);
-        if (data.totalReturnsMax !== undefined)
+        if (data.totalReturnsMax !== undefined && data.totalReturnsMax !== '' && data.totalReturnsMax !== null)
             updateData.totalReturnsMax = parseFloat(data.totalReturnsMax);
         if (data.riskLevel !== undefined)
             updateData.riskLevel = data.riskLevel;
@@ -1086,7 +1086,7 @@ let AssetsService = class AssetsService {
             updateData.exitLiquidity = data.exitLiquidity;
         if (data.managementMode !== undefined)
             updateData.managementMode = data.managementMode;
-        if (data.virtualTours !== undefined)
+        if (data.virtualTours !== undefined && data.virtualTours !== '' && data.virtualTours !== null)
             updateData.virtualTours = parseInt(data.virtualTours);
         await this.prisma.asset.update({
             where: { id },
@@ -2076,7 +2076,7 @@ let ClustersService = class ClustersService {
         const [total, active, agents, freelancers] = await Promise.all([
             this.prisma.cluster.count(),
             this.prisma.cluster.count({ where: { status: 'active' } }),
-            this.prisma.agent.count(),
+            this.prisma.user.count({ where: { role: 'AGENT' } }),
             this.prisma.freelancer.count(),
         ]);
         return { totalClusters: total, activeClusters: active, totalAgents: agents, totalFreelancers: freelancers };
@@ -2499,6 +2499,11 @@ let CompaniesService = class CompaniesService {
                 if (existingByPhone)
                     throw new common_1.ConflictException('A company with this phone number already exists');
             }
+            if (data.registrationNumber?.trim()) {
+                const existingByRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim() } });
+                if (existingByRegNo)
+                    throw new common_1.ConflictException('A company with this registration number already exists');
+            }
             const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CMP');
             const company = await this.prisma.company.create({
                 data: {
@@ -2529,8 +2534,16 @@ let CompaniesService = class CompaniesService {
         }
         catch (error) {
             if (error.code === 'P2002') {
-                const field = error.meta?.target?.[0] || 'field';
-                throw new common_1.ConflictException(`A company with this ${field} already exists`);
+                const rawField = error.meta?.target?.[0] || '';
+                const fieldLabels = {
+                    name: 'company name',
+                    email: 'email address',
+                    phone: 'phone number',
+                    registrationNumber: 'registration number',
+                    serialId: 'serial ID',
+                };
+                const label = fieldLabels[rawField] || rawField || 'a unique field';
+                throw new common_1.ConflictException(`A company with this ${label} already exists`);
             }
             if (error instanceof common_1.BadRequestException || error instanceof common_1.ConflictException)
                 throw error;
@@ -2539,54 +2552,94 @@ let CompaniesService = class CompaniesService {
         }
     }
     async update(id, data) {
-        if (!id || id.trim() === '')
-            throw new common_1.BadRequestException('Company ID is required');
-        const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
-        if (!exists)
-            throw new common_1.NotFoundException(`Company with ID ${id} not found`);
-        const updateData = {};
-        if (data.name !== undefined)
-            updateData.name = data.name.trim();
-        if (data.type !== undefined)
-            updateData.type = data.type;
-        if (data.email !== undefined)
-            updateData.email = this.normalizeEmail(data.email);
-        if (data.phone !== undefined)
-            updateData.phone = data.phone?.trim();
-        if (data.status !== undefined)
-            updateData.status = this.normalizeStatus(data.status);
-        if (data.contactPerson !== undefined)
-            updateData.contactPerson = data.contactPerson?.trim();
-        if (data.address !== undefined)
-            updateData.address = data.address?.trim();
-        if (data.commissionRate !== undefined)
-            updateData.commissionRate = parseFloat(data.commissionRate);
-        if (data.paymentTerms !== undefined)
-            updateData.paymentTerms = data.paymentTerms?.trim();
-        if (data.agreementStartDate !== undefined)
-            updateData.agreementStartDate = data.agreementStartDate ? new Date(data.agreementStartDate) : null;
-        if (data.agreementExpiryDate !== undefined)
-            updateData.agreementExpiryDate = data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null;
-        if (data.registrationNumber !== undefined)
-            updateData.registrationNumber = data.registrationNumber?.trim();
-        if (data.notes !== undefined)
-            updateData.notes = data.notes?.trim();
-        if (data.accountName !== undefined || data.bankAccountName !== undefined) {
-            updateData.accountName = (data.accountName || data.bankAccountName)?.trim() || null;
+        try {
+            if (!id || id.trim() === '')
+                throw new common_1.BadRequestException('Company ID is required');
+            const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+            if (!exists)
+                throw new common_1.NotFoundException(`Company with ID ${id} not found`);
+            if (data.name !== undefined && data.name.trim()) {
+                const dupName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' }, NOT: { id } } });
+                if (dupName)
+                    throw new common_1.ConflictException('A company with this name already exists');
+            }
+            if (data.email !== undefined && data.email.trim()) {
+                const dupEmail = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email), NOT: { id } } });
+                if (dupEmail)
+                    throw new common_1.ConflictException('A company with this email address already exists');
+            }
+            if (data.phone !== undefined && data.phone.trim()) {
+                const dupPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim(), NOT: { id } } });
+                if (dupPhone)
+                    throw new common_1.ConflictException('A company with this phone number already exists');
+            }
+            if (data.registrationNumber !== undefined && data.registrationNumber.trim()) {
+                const dupRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim(), NOT: { id } } });
+                if (dupRegNo)
+                    throw new common_1.ConflictException('A company with this registration number already exists');
+            }
+            const updateData = {};
+            if (data.name !== undefined)
+                updateData.name = data.name.trim();
+            if (data.type !== undefined)
+                updateData.type = data.type;
+            if (data.email !== undefined)
+                updateData.email = this.normalizeEmail(data.email);
+            if (data.phone !== undefined)
+                updateData.phone = data.phone?.trim();
+            if (data.status !== undefined)
+                updateData.status = this.normalizeStatus(data.status);
+            if (data.contactPerson !== undefined)
+                updateData.contactPerson = data.contactPerson?.trim();
+            if (data.address !== undefined)
+                updateData.address = data.address?.trim();
+            if (data.commissionRate !== undefined)
+                updateData.commissionRate = parseFloat(data.commissionRate);
+            if (data.paymentTerms !== undefined)
+                updateData.paymentTerms = data.paymentTerms?.trim();
+            if (data.agreementStartDate !== undefined)
+                updateData.agreementStartDate = data.agreementStartDate ? new Date(data.agreementStartDate) : null;
+            if (data.agreementExpiryDate !== undefined)
+                updateData.agreementExpiryDate = data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null;
+            if (data.registrationNumber !== undefined)
+                updateData.registrationNumber = data.registrationNumber?.trim();
+            if (data.notes !== undefined)
+                updateData.notes = data.notes?.trim();
+            if (data.accountName !== undefined || data.bankAccountName !== undefined) {
+                updateData.accountName = (data.accountName || data.bankAccountName)?.trim() || null;
+            }
+            if (data.bankName !== undefined)
+                updateData.bankName = data.bankName?.trim();
+            if (data.accountNumber !== undefined)
+                updateData.accountNumber = data.accountNumber?.trim();
+            const company = await this.prisma.company.update({
+                where: { id },
+                data: updateData,
+                include: {
+                    assets: { select: { id: true, name: true, type: true, status: true } },
+                    _count: { select: { assets: true, transactions: true } }
+                },
+            });
+            return this.enrichCompanyData(company);
         }
-        if (data.bankName !== undefined)
-            updateData.bankName = data.bankName?.trim();
-        if (data.accountNumber !== undefined)
-            updateData.accountNumber = data.accountNumber?.trim();
-        const company = await this.prisma.company.update({
-            where: { id },
-            data: updateData,
-            include: {
-                assets: { select: { id: true, name: true, type: true, status: true } },
-                _count: { select: { assets: true, transactions: true } }
-            },
-        });
-        return this.enrichCompanyData(company);
+        catch (error) {
+            if (error.code === 'P2002') {
+                const rawField = error.meta?.target?.[0] || '';
+                const fieldLabels = {
+                    name: 'company name',
+                    email: 'email address',
+                    phone: 'phone number',
+                    registrationNumber: 'registration number',
+                    serialId: 'serial ID',
+                };
+                const label = fieldLabels[rawField] || rawField || 'a unique field';
+                throw new common_1.ConflictException(`A company with this ${label} already exists`);
+            }
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ConflictException || error instanceof common_1.NotFoundException)
+                throw error;
+            console.error('Company update error:', error);
+            throw new common_1.InternalServerErrorException('Failed to update company');
+        }
     }
     async delete(id) {
         if (!id || id.trim() === '')
@@ -3024,7 +3077,7 @@ let DashboardService = class DashboardService {
     }
     async getOverview() {
         const [totalAgents, activeClusters, totalRevenue, totalCommissions, activeAssets, assetTypeCounts, salesVolume,] = await Promise.all([
-            this.prisma.agent.count(),
+            this.prisma.user.count({ where: { role: 'AGENT' } }),
             this.prisma.cluster.count({ where: { status: 'active' } }),
             this.prisma.transaction.aggregate({
                 where: { status: 'COMPLETED' },
