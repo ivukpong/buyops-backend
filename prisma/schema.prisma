@@ -124,6 +124,8 @@ model Asset {
   // Investment Structure
   ownershipType         String?
   fractionTotal         Int?
+  landUnitType          String?
+  landUnitCount         Int?
   // Pricing
   markup                String?
   paymentOptions        String[] @default([])

@@ -219,6 +219,8 @@ export class AssetsService {
         // Investment Structure
         ownershipType: data.ownershipType || null,
         fractionTotal: data.fractionTotal ? parseInt(data.fractionTotal) : null,
+        landUnitType: data.landUnitType || null,
+        landUnitCount: data.landUnitCount ? parseInt(data.landUnitCount) : null,
         // Pricing
         price: data.price || null,
         priceRange: data.priceRange || null,
@@ -303,6 +305,8 @@ export class AssetsService {
     // Investment Structure
     if (data.ownershipType !== undefined) updateData.ownershipType = data.ownershipType;
     if (data.fractionTotal !== undefined && data.fractionTotal !== '' && data.fractionTotal !== null) updateData.fractionTotal = parseInt(data.fractionTotal);
+    if (data.landUnitType !== undefined) updateData.landUnitType = data.landUnitType;
+    if (data.landUnitCount !== undefined && data.landUnitCount !== '' && data.landUnitCount !== null) updateData.landUnitCount = parseInt(data.landUnitCount);
     // Pricing
     if (data.price !== undefined) updateData.price = data.price;
     if (data.priceRange !== undefined) updateData.priceRange = data.priceRange;

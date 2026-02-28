@@ -175,4 +175,14 @@ export class LeadsService {
     }
     return { message: 'Lead assigned', lead };
   }
+
+  async updateLeadStatus(id: string, status: string) {
+    if (!id) throw new BadRequestException('Missing leadId');
+    if (!status) throw new BadRequestException('Missing status');
+    const lead = await this.prisma.lead.update({
+      where: { id },
+      data: { status },
+    });
+    return { message: 'Lead status updated', lead };
+  }
 }

@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, ConflictException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { generateSerialId } from '../common/serial-id.helper';
 
@@ -121,6 +121,9 @@ export class ClustersService {
 
   async create(data: any) {
     if (!data.name) throw new BadRequestException('Cluster name is required');
+    // Duplicate name check
+    const existingByName = await this.prisma.cluster.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
+    if (existingByName) throw new ConflictException('A cluster with this name already exists');
     const managerId = await this.resolveManagerId(data.teamLead);
     const status = this.normalizeClusterStatus(data.status);
     const serialId = await generateSerialId(this.prisma, 'CLT');

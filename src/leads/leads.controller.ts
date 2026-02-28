@@ -9,6 +9,7 @@ import {
     UseGuards,
     Req
 } from "@nestjs/common";
+import { IsOptional, IsString } from 'class-validator';
 import { LeadsService } from "./leads.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
@@ -35,7 +36,12 @@ class AssignLeadsDto {
 }
 
 class AssignSingleLeadDto {
+    @IsOptional()
+    @IsString()
     assignedToId?: string;
+
+    @IsOptional()
+    @IsString()
     clusterId?: string;
 }
 
@@ -83,10 +89,17 @@ export class LeadsController {
     }
 
     // @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles("ADMIN", "SALES")
+    // @Roles("ADMIN")
     @Post(":id/assign")
     async assignSingleLead(@Param("id") id: string, @Body() dto: AssignSingleLeadDto) {
         return this.leadsService.assignSingleLead(id, dto);
+    }
+
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")
+    @Put(":id/status")
+    async updateLeadStatus(@Param("id") id: string, @Body() body: { status: string }) {
+        return this.leadsService.updateLeadStatus(id, body.status);
     }
 
     // @UseGuards(JwtAuthGuard, RolesGuard)

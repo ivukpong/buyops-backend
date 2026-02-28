@@ -915,6 +915,8 @@ let AssetsService = class AssetsService {
                 ownershipOptions: data.ownershipOptions || [],
                 ownershipType: data.ownershipType || null,
                 fractionTotal: data.fractionTotal ? parseInt(data.fractionTotal) : null,
+                landUnitType: data.landUnitType || null,
+                landUnitCount: data.landUnitCount ? parseInt(data.landUnitCount) : null,
                 price: data.price || null,
                 priceRange: data.priceRange || null,
                 markup: data.markup || null,
@@ -1016,6 +1018,10 @@ let AssetsService = class AssetsService {
             updateData.ownershipType = data.ownershipType;
         if (data.fractionTotal !== undefined && data.fractionTotal !== '' && data.fractionTotal !== null)
             updateData.fractionTotal = parseInt(data.fractionTotal);
+        if (data.landUnitType !== undefined)
+            updateData.landUnitType = data.landUnitType;
+        if (data.landUnitCount !== undefined && data.landUnitCount !== '' && data.landUnitCount !== null)
+            updateData.landUnitCount = parseInt(data.landUnitCount);
         if (data.price !== undefined)
             updateData.price = data.price;
         if (data.priceRange !== undefined)
@@ -2031,6 +2037,9 @@ let ClustersService = class ClustersService {
     async create(data) {
         if (!data.name)
             throw new common_1.BadRequestException('Cluster name is required');
+        const existingByName = await this.prisma.cluster.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
+        if (existingByName)
+            throw new common_1.ConflictException('A cluster with this name already exists');
         const managerId = await this.resolveManagerId(data.teamLead);
         const status = this.normalizeClusterStatus(data.status);
         const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CLT');
@@ -4262,6 +4271,7 @@ var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.LeadsController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
 const leads_service_1 = __webpack_require__(/*! ./leads.service */ "./src/leads/leads.service.ts");
 class CreateLeadDto {
 }
@@ -4269,6 +4279,16 @@ class AssignLeadsDto {
 }
 class AssignSingleLeadDto {
 }
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AssignSingleLeadDto.prototype, "assignedToId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AssignSingleLeadDto.prototype, "clusterId", void 0);
 let LeadsController = class LeadsController {
     constructor(leadsService) {
         this.leadsService = leadsService;
@@ -4291,6 +4311,9 @@ let LeadsController = class LeadsController {
     }
     async assignSingleLead(id, dto) {
         return this.leadsService.assignSingleLead(id, dto);
+    }
+    async updateLeadStatus(id, body) {
+        return this.leadsService.updateLeadStatus(id, body.status);
     }
     async update(id, dto) {
         return this.leadsService.update(id, dto);
@@ -4341,6 +4364,14 @@ __decorate([
     __metadata("design:paramtypes", [String, AssignSingleLeadDto]),
     __metadata("design:returntype", Promise)
 ], LeadsController.prototype, "assignSingleLead", null);
+__decorate([
+    (0, common_1.Put)(":id/status"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "updateLeadStatus", null);
 __decorate([
     (0, common_1.Put)(":id"),
     __param(0, (0, common_1.Param)("id")),
@@ -4586,6 +4617,17 @@ let LeadsService = class LeadsService {
             await this.notificationService.notifyLeadAssignedToCluster([leadId], dto.clusterId);
         }
         return { message: 'Lead assigned', lead };
+    }
+    async updateLeadStatus(id, status) {
+        if (!id)
+            throw new common_1.BadRequestException('Missing leadId');
+        if (!status)
+            throw new common_1.BadRequestException('Missing status');
+        const lead = await this.prisma.lead.update({
+            where: { id },
+            data: { status },
+        });
+        return { message: 'Lead status updated', lead };
     }
 };
 exports.LeadsService = LeadsService;
