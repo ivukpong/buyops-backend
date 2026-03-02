@@ -100,4 +100,36 @@ export class AuthController {
   async logout(@Req() req: any) {
     return this.authService.logout(req.user.id);
   }
+
+  // ── 2FA endpoints ──────────────────────────────
+
+  /** Step 1: Generate a TOTP secret and QR code for the current user */
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/setup')
+  async setup2FA(@Req() req: any) {
+    return this.authService.generate2FASecret(req.user.id);
+  }
+
+  /** Step 2: Confirm the code scanned from the QR and enable 2FA */
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/enable')
+  @HttpCode(200)
+  async enable2FA(@Req() req: any, @Body() body: { token: string }) {
+    return this.authService.enable2FA(req.user.id, body.token);
+  }
+
+  /** Disable 2FA (requires a valid TOTP to confirm intent) */
+  @UseGuards(JwtAuthGuard)
+  @Post('2fa/disable')
+  @HttpCode(200)
+  async disable2FA(@Req() req: any, @Body() body: { token: string }) {
+    return this.authService.disable2FA(req.user.id, body.token);
+  }
+
+  /** During login: exchange interim token + TOTP code for a full JWT */
+  @Post('2fa/verify')
+  @HttpCode(200)
+  async verify2FA(@Body() body: { interimToken: string; token: string }) {
+    return this.authService.verify2FAAndLogin(body.interimToken, body.token);
+  }
 }

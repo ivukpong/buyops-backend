@@ -81,14 +81,14 @@ export class TransactionsController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles("ADMIN")
+    @Roles("ADMIN")
     @Post("commissions/send")
     async sendCommissions(@Body() dto: SendCommissionsDto) {
         return this.transactionsService.sendCommissionsForPayment(dto.transactionIds);
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles("ADMIN")
+    @Roles("ADMIN")
     @Post("commissions/payment-proof")
     @UseInterceptors(FileInterceptor("file"))
     async uploadPaymentProof(@UploadedFile() file: Express.Multer.File) {
@@ -96,7 +96,7 @@ export class TransactionsController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    // @Roles("ADMIN")
+    @Roles("ADMIN")
     @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateTransactionDto>) {
         return this.transactionsService.update(id, dto);

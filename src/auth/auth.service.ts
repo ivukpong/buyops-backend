@@ -3,11 +3,14 @@ import {
   Injectable,
   NotFoundException,
   UnauthorizedException,
+  BadRequestException,
 } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from '../notification/notification.service';
 import * as bcrypt from 'bcrypt';
+import * as speakeasy from 'speakeasy';
+import * as QRCode from 'qrcode';
 import { UserRole } from '@prisma/client';
 import { generateSerialId } from '../common/serial-id.helper';
 
@@ -37,6 +40,21 @@ export class AuthService {
   }
 
   async login(user: any) {
+    // Check if 2FA is required for this user
+    const fullUser = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { twoFactorEnabled: true },
+    });
+
+    if ((fullUser as any)?.twoFactorEnabled) {
+      // Issue a short-lived interim token (no role, short expiry) for 2FA step
+      const interimToken = this.jwtService.sign(
+        { sub: user.id, email: user.email, requires2FA: true },
+        { expiresIn: '5m' },
+      );
+      return { requiresTwoFactor: true, interimToken };
+    }
+
     console.log('LOGIN USER:', user); // Add this line
     const payload = {
       sub: user.id,
@@ -266,5 +284,119 @@ export class AuthService {
     // • add token to blacklist (Redis)
     // • log the event
     return { message: 'Logged out successfully' };
+  }
+
+  // ────────────────────────────────────────────────
+  // Two-Factor Authentication (TOTP)
+  // ────────────────────────────────────────────────
+
+  async generate2FASecret(userId: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+
+    const secret = speakeasy.generateSecret({
+      name: `BuyOps (${user.email})`,
+      issuer: 'BuyOps',
+      length: 20,
+    });
+
+    // Temporarily store the secret (not yet enabled)
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorSecret: secret.base32 } as any,
+    });
+
+    const qrCodeUrl = await QRCode.toDataURL(secret.otpauth_url!);
+    return { secret: secret.base32, qrCode: qrCodeUrl };
+  }
+
+  async enable2FA(userId: string, token: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+    const secret = (user as any).twoFactorSecret;
+    if (!secret) throw new BadRequestException('Please set up 2FA first');
+
+    const verified = speakeasy.totp.verify({
+      secret,
+      encoding: 'base32',
+      token,
+      window: 1,
+    });
+
+    if (!verified) throw new BadRequestException('Invalid verification code');
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorEnabled: true } as any,
+    });
+
+    return { message: '2FA enabled successfully' };
+  }
+
+  async disable2FA(userId: string, token: string) {
+    const user = await this.prisma.user.findUnique({ where: { id: userId } });
+    if (!user) throw new NotFoundException('User not found');
+    if (!(user as any).twoFactorEnabled) throw new BadRequestException('2FA is not enabled');
+
+    const secret = (user as any).twoFactorSecret;
+    const verified = speakeasy.totp.verify({
+      secret,
+      encoding: 'base32',
+      token,
+      window: 1,
+    });
+
+    if (!verified) throw new BadRequestException('Invalid verification code');
+
+    await this.prisma.user.update({
+      where: { id: userId },
+      data: { twoFactorEnabled: false, twoFactorSecret: null } as any,
+    });
+
+    return { message: '2FA disabled successfully' };
+  }
+
+  async verify2FAAndLogin(interimToken: string, totpToken: string) {
+    let payload: any;
+    try {
+      payload = this.jwtService.verify(interimToken);
+    } catch {
+      throw new UnauthorizedException('Invalid or expired interim token');
+    }
+
+    if (!payload.requires2FA) throw new UnauthorizedException('Invalid interim token');
+
+    const user = await this.prisma.user.findUnique({ where: { id: payload.sub } });
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const secret = (user as any).twoFactorSecret;
+    if (!secret) throw new BadRequestException('2FA secret not found');
+
+    const verified = speakeasy.totp.verify({
+      secret,
+      encoding: 'base32',
+      token: totpToken,
+      window: 1,
+    });
+
+    if (!verified) throw new UnauthorizedException('Invalid 2FA code');
+
+    // Issue full JWT
+    const { password: _, ...safeUser } = user as any;
+    const jwtPayload = { sub: user.id, email: user.email, role: user.role };
+    const accessToken = this.jwtService.sign(jwtPayload, { expiresIn: '1h' });
+    const refreshToken = this.jwtService.sign(jwtPayload, { expiresIn: '30d' });
+
+    return {
+      access_token: accessToken,
+      refresh_token: refreshToken,
+      user: {
+        id: user.id,
+        email: user.email,
+        name: user.name || user.email.split('@')[0],
+        phone: user.phone || null,
+        role: user.role,
+      },
+    };
   }
 }

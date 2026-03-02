@@ -92,6 +92,7 @@ export class ClustersService {
         status: cluster.status,
         location: cluster.location,
         code: cluster.code,
+        commissionType: (cluster as any).commissionType ?? 'AGENT',
       };
     }));
   }
@@ -135,6 +136,7 @@ export class ClustersService {
         status,
         location: data.location || null,
         managerId,
+        commissionType: data.commissionType || 'AGENT',
       },
       include: {
         manager: { select: { id: true, name: true } },
@@ -150,6 +152,7 @@ export class ClustersService {
     if (data.status !== undefined) updateData.status = this.normalizeClusterStatus(data.status);
     if (data.location !== undefined) updateData.location = data.location;
     if (data.teamLead !== undefined) updateData.managerId = await this.resolveManagerId(data.teamLead);
+    if (data.commissionType !== undefined) updateData.commissionType = data.commissionType;
     return this.prisma.cluster.update({
       where: { id },
       data: updateData,

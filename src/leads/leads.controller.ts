@@ -7,8 +7,11 @@ import {
     Put,
     Query,
     UseGuards,
+    UseInterceptors,
+    UploadedFile,
     Req
 } from "@nestjs/common";
+import { FileInterceptor } from "@nestjs/platform-express";
 import { IsOptional, IsString } from 'class-validator';
 import { LeadsService } from "./leads.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
@@ -93,6 +96,15 @@ export class LeadsController {
     @Post(":id/assign")
     async assignSingleLead(@Param("id") id: string, @Body() dto: AssignSingleLeadDto) {
         return this.leadsService.assignSingleLead(id, dto);
+    }
+
+    // @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")
+    @Post("bulk-import")
+    @UseInterceptors(FileInterceptor("file"))
+    async bulkImport(@UploadedFile() file: Express.Multer.File, @Req() req: any) {
+        const createdById = req?.user?.id;
+        return this.leadsService.bulkImport(file, createdById);
     }
 
     // @UseGuards(JwtAuthGuard, RolesGuard)

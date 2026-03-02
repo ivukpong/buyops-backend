@@ -2,6 +2,7 @@ import { Injectable, NotFoundException, BadRequestException } from '@nestjs/comm
 import { PrismaService } from '../prisma/prisma.service';
 import { NotificationService } from '../notification/notification.service';
 import { generateSerialId } from '../common/serial-id.helper';
+import * as ExcelJS from 'exceljs';
 
 @Injectable()
 export class LeadsService {
@@ -67,14 +68,14 @@ export class LeadsService {
   }
 
   async create(data: any, createdById: string) {
-    if (!data.name) throw new BadRequestException('Lead name is required');
     if (!data.email) throw new BadRequestException('Email is required');
+    const resolvedName = (data.name && data.name.trim()) || data.email.split('@')[0];
 
     const serialId = await generateSerialId(this.prisma, 'LED');
     const createdLead = await this.prisma.lead.create({
       data: {
         serialId,
-        name: data.name,
+        name: resolvedName,
         email: data.email,
         phone: data.phone || null,
         assetInterest: data.assetInterest || null,
@@ -184,5 +185,66 @@ export class LeadsService {
       data: { status },
     });
     return { message: 'Lead status updated', lead };
+  }
+
+  async bulkImport(file: Express.Multer.File, createdById?: string) {
+    if (!file) throw new BadRequestException('No file uploaded');
+
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.load(file.buffer);
+    const worksheet = workbook.worksheets[0];
+
+    if (!worksheet) throw new BadRequestException('Excel file contains no worksheets');
+
+    const results = { created: 0, skipped: 0, errors: [] as string[] };
+
+    // Read header row to map column names
+    const headerRow = worksheet.getRow(1);
+    const headers: Record<number, string> = {};
+    headerRow.eachCell((cell, colNumber) => {
+      headers[colNumber] = String(cell.value || '').trim().toLowerCase();
+    });
+
+    const getCol = (row: ExcelJS.Row, names: string[]) => {
+      for (const [colStr, header] of Object.entries(headers)) {
+        if (names.some(n => header.includes(n))) {
+          const val = row.getCell(parseInt(colStr)).value;
+          return val ? String(val).trim() : '';
+        }
+      }
+      return '';
+    };
+
+    for (let rowNum = 2; rowNum <= worksheet.rowCount; rowNum++) {
+      const row = worksheet.getRow(rowNum);
+      if (row.cellCount === 0) continue;
+
+      const email = getCol(row, ['email']);
+      if (!email) {
+        results.skipped++;
+        continue;
+      }
+
+      const name = getCol(row, ['name', 'full name']) || email.split('@')[0];
+      const phone = getCol(row, ['phone', 'telephone', 'mobile']);
+      const budget = getCol(row, ['budget']);
+      const location = getCol(row, ['location', 'city', 'address']);
+      const assetInterest = getCol(row, ['asset', 'interest', 'property']);
+      const source = getCol(row, ['source']);
+      const notes = getCol(row, ['notes', 'comment', 'remark']);
+
+      try {
+        await this.create(
+          { name, email, phone, budget, location, assetInterest, source, leadSource: 'bulk-import', notes },
+          createdById || '',
+        );
+        results.created++;
+      } catch (err: any) {
+        results.errors.push(`Row ${rowNum}: ${err?.message || 'Unknown error'}`);
+        results.skipped++;
+      }
+    }
+
+    return { message: `Bulk import complete`, ...results };
   }
 }
