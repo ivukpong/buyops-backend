@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
+import { generateSerialId } from '../common/serial-id.helper';
 
 // FIX 26: No Investment model — repurpose as a view of transactions for investors
 @Injectable()
@@ -52,5 +53,43 @@ export class InvestmentsService {
       totalInvestments: agg._count,
       totalInvested: agg._sum.totalAmount || 0,
     };
+  }
+
+  /**
+   * Called by the investor mobile app after a successful payment is verified.
+   * Creates a minimal self-service transaction record. Commission fields are
+   * zeroed out because investor purchases originate directly (no agent involved).
+   */
+  async createInvestorPurchase(
+    userId: string,
+    data: { amount: number; note?: string; assetId?: string },
+  ) {
+    if (!data.amount || data.amount <= 0) {
+      throw new BadRequestException('Amount must be a positive number.');
+    }
+    if (!data.assetId) {
+      throw new BadRequestException('assetId is required to record an investment.');
+    }
+
+    const serialId = await generateSerialId(this.prisma, 'TXN');
+
+    const transaction = await this.prisma.transaction.create({
+      data: {
+        serialId,
+        buyerId: userId,
+        assetId: data.assetId,
+        totalAmount: data.amount,
+        paymentType: 'OUTRIGHT',
+        leadCommission: 0,
+        closerCommission: 0,
+        totalCommission: 0,
+        ownershipType: 'Full',
+      },
+      include: {
+        asset: { select: { id: true, name: true, type: true, location: true } },
+      },
+    });
+
+    return transaction;
   }
 }

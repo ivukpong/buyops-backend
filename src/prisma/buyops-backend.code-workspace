@@ -13,7 +13,7 @@
       "path": "../../../../Repositories/buyops-investors-mobile"
     },
     {
-      "path": "../../../buyops-investors-web"
+      "path": "../../../../Repositories/buyops-investors-web"
     }
   ],
   "settings": {

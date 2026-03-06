@@ -67,7 +67,9 @@ export class AuthController {
   }
 
   // FIX 3: refreshToken service method only takes 1 arg (the token string)
-  @UseGuards(JwtAuthGuard)
+  // NOTE: No JwtAuthGuard here — the refresh token itself is verified inside the service.
+  // Guarding with JwtAuthGuard would cause refresh to always fail since it's only
+  // called when the access token has already expired.
   @Post('refresh')
   @HttpCode(HttpStatus.OK)
   async refreshToken(@Body() dto: RefreshTokenDto) {
