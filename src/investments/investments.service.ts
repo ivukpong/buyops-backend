@@ -71,7 +71,7 @@ export class InvestmentsService {
       throw new BadRequestException('assetId is required to record an investment.');
     }
 
-    const serialId = await generateSerialId(this.prisma, 'TXN');
+    const serialId = await generateSerialId(this.prisma, 'TRN');
 
     const transaction = await this.prisma.transaction.create({
       data: {
