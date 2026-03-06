@@ -1,32 +1,381 @@
 /******/ (() => { // webpackBootstrap
 /******/ 	"use strict";
-/******/ 	var __webpack_modules__ = ([
-/* 0 */,
-/* 1 */
-/***/ ((module) => {
+/******/ 	var __webpack_modules__ = ({
 
-module.exports = require("dotenv/config");
+/***/ "./src/agents/agents.controller.ts":
+/*!*****************************************!*\
+  !*** ./src/agents/agents.controller.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AgentsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const agents_service_1 = __webpack_require__(/*! ./agents.service */ "./src/agents/agents.service.ts");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+class CreateAgentDto {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "cluster", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateAgentDto.prototype, "status", void 0);
+let AgentsController = class AgentsController {
+    constructor(agentsService) {
+        this.agentsService = agentsService;
+    }
+    async findAll() {
+        return this.agentsService.findAll();
+    }
+    async getStats() {
+        return this.agentsService.getStats();
+    }
+    async findOne(id) {
+        return this.agentsService.findById(id);
+    }
+    async create(dto) {
+        return this.agentsService.create(dto);
+    }
+    async update(id, dto) {
+        return this.agentsService.update(id, dto);
+    }
+    async remove(id) {
+        return this.agentsService.delete(id);
+    }
+};
+exports.AgentsController = AgentsController;
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AgentsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("stats"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AgentsController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AgentsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AgentsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_b = typeof Partial !== "undefined" && Partial) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], AgentsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AgentsController.prototype, "remove", null);
+exports.AgentsController = AgentsController = __decorate([
+    (0, common_1.Controller)("agents"),
+    __metadata("design:paramtypes", [typeof (_a = typeof agents_service_1.AgentsService !== "undefined" && agents_service_1.AgentsService) === "function" ? _a : Object])
+], AgentsController);
+
 
 /***/ }),
-/* 2 */
-/***/ ((module) => {
 
-module.exports = require("@nestjs/common");
+/***/ "./src/agents/agents.module.ts":
+/*!*************************************!*\
+  !*** ./src/agents/agents.module.ts ***!
+  \*************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AgentsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const agents_controller_1 = __webpack_require__(/*! ./agents.controller */ "./src/agents/agents.controller.ts");
+const agents_service_1 = __webpack_require__(/*! ./agents.service */ "./src/agents/agents.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let AgentsModule = class AgentsModule {
+};
+exports.AgentsModule = AgentsModule;
+exports.AgentsModule = AgentsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [agents_controller_1.AgentsController],
+        providers: [agents_service_1.AgentsService],
+        exports: [agents_service_1.AgentsService],
+    })
+], AgentsModule);
+
 
 /***/ }),
-/* 3 */
-/***/ ((module) => {
 
-module.exports = require("@nestjs/core");
+/***/ "./src/agents/agents.service.ts":
+/*!**************************************!*\
+  !*** ./src/agents/agents.service.ts ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AgentsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let AgentsService = class AgentsService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async findAll() {
+        const agents = await this.prisma.agent.findMany({
+            include: {
+                user: { select: { id: true, email: true, name: true, phone: true, role: true } },
+                cluster: { select: { id: true, name: true } },
+                _count: { select: { leadTransactions: true } },
+            },
+            orderBy: { status: 'asc' },
+        });
+        return agents.map(agent => ({
+            id: agent.id,
+            serialId: agent.serialId ?? "",
+            name: agent.user?.name ?? "",
+            email: agent.user?.email ?? "",
+            phone: agent.user?.phone ?? "",
+            cluster: agent.cluster?.name ?? "",
+            clusterId: agent.cluster?.id ?? "",
+            role: agent.user?.role ?? "AGENT",
+            status: agent.status?.toLowerCase() ?? "pending",
+            activeDeals: agent._count.leadTransactions,
+            closedDeals: agent.closedDeals,
+            totalCommission: agent.totalCommission,
+            performance: agent.closedDeals > 0 ? Math.min(100, Math.round((agent.closedDeals / 10) * 100)) : 0,
+        }));
+    }
+    async findById(id) {
+        const agent = await this.prisma.agent.findUnique({
+            where: { id },
+            include: {
+                user: { select: { id: true, email: true, name: true } },
+                cluster: true,
+                assignedLeads: { orderBy: { createdAt: 'desc' }, take: 10 },
+                leadTransactions: { orderBy: { date: 'desc' }, take: 10 },
+                closerTransactions: { orderBy: { date: 'desc' }, take: 10 },
+                commissions: { orderBy: { createdAt: 'desc' }, take: 10 },
+            },
+        });
+        if (!agent)
+            throw new common_1.NotFoundException(`Agent with ID ${id} not found`);
+        return agent;
+    }
+    async create(data) {
+        if (!data.name)
+            throw new common_1.BadRequestException('Name is required');
+        if (!data.email)
+            throw new common_1.BadRequestException('Email is required');
+        let user = await this.prisma.user.findUnique({ where: { email: data.email } });
+        if (user) {
+            const existing = await this.prisma.agent.findUnique({ where: { userId: user.id } });
+            if (existing)
+                throw new common_1.ConflictException('User is already registered as an agent');
+            await this.prisma.user.update({
+                where: { id: user.id },
+                data: {
+                    name: data.name,
+                    phone: data.phone,
+                    role: (data.role ? client_1.UserRole[data.role.toUpperCase()] : client_1.UserRole.AGENT),
+                },
+            });
+        }
+        else {
+            const hashedPassword = await bcrypt.hash('password123', 10);
+            const userSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'USR');
+            user = await this.prisma.user.create({
+                data: {
+                    serialId: userSerialId,
+                    email: data.email,
+                    password: hashedPassword,
+                    name: data.name,
+                    phone: data.phone,
+                    role: (data.role ? client_1.UserRole[data.role.toUpperCase()] : client_1.UserRole.AGENT),
+                },
+            });
+        }
+        const agentSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'AGT');
+        return this.prisma.agent.create({
+            data: {
+                serialId: agentSerialId,
+                userId: user.id,
+                clusterId: data.cluster || null,
+                status: data.status ? data.status.toUpperCase() : 'PENDING',
+                closedDeals: 0,
+                totalCommission: 0,
+            },
+            include: {
+                user: { select: { id: true, email: true, name: true, phone: true, role: true } },
+                cluster: { select: { id: true, name: true } },
+            },
+        });
+    }
+    async update(id, data) {
+        const agent = await this.findById(id);
+        if (data.name || data.email || data.phone || data.role) {
+            await this.prisma.user.update({
+                where: { id: agent.userId },
+                data: {
+                    ...(data.name ? { name: data.name } : {}),
+                    ...(data.email ? { email: data.email } : {}),
+                    ...(data.phone ? { phone: data.phone } : {}),
+                    ...(data.role ? { role: data.role.toUpperCase() } : {}),
+                },
+            });
+        }
+        const updateData = {};
+        if (data.cluster !== undefined)
+            updateData.clusterId = data.cluster;
+        if (data.status !== undefined)
+            updateData.status = data.status.toUpperCase();
+        return this.prisma.agent.update({
+            where: { id },
+            data: updateData,
+            include: {
+                user: { select: { id: true, email: true, name: true, phone: true, role: true } },
+                cluster: { select: { id: true, name: true } },
+            },
+        });
+    }
+    async delete(id) {
+        await this.findById(id);
+        await this.prisma.agent.delete({ where: { id } });
+        return { message: 'Agent deleted successfully', id };
+    }
+    async getStats() {
+        const [total, active, pending] = await Promise.all([
+            this.prisma.agent.count(),
+            this.prisma.agent.count({ where: { status: 'ACTIVE' } }),
+            this.prisma.agent.count({ where: { status: 'PENDING' } }),
+        ]);
+        const commissionAgg = await this.prisma.agent.aggregate({ _sum: { totalCommission: true, closedDeals: true } });
+        return {
+            totalAgents: total,
+            activeAgents: active,
+            pendingAgents: pending,
+            totalClosedDeals: commissionAgg._sum.closedDeals || 0,
+            totalCommission: commissionAgg._sum.totalCommission || 0,
+        };
+    }
+};
+exports.AgentsService = AgentsService;
+exports.AgentsService = AgentsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], AgentsService);
+
 
 /***/ }),
-/* 4 */
-/***/ ((module) => {
 
-module.exports = require("path");
-
-/***/ }),
-/* 5 */
+/***/ "./src/app.module.ts":
+/*!***************************!*\
+  !*** ./src/app.module.ts ***!
+  \***************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -38,26 +387,26 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AppModule = void 0;
-const common_1 = __webpack_require__(2);
-const config_1 = __webpack_require__(6);
-const jwt_1 = __webpack_require__(7);
-const auth_module_1 = __webpack_require__(8);
-const users_module_1 = __webpack_require__(39);
-const assets_module_1 = __webpack_require__(43);
-const companies_module_1 = __webpack_require__(49);
-const agents_module_1 = __webpack_require__(53);
-const clusters_module_1 = __webpack_require__(56);
-const leads_module_1 = __webpack_require__(59);
-const transactions_module_1 = __webpack_require__(63);
-const installments_module_1 = __webpack_require__(66);
-const notification_module_1 = __webpack_require__(35);
-const sales_module_1 = __webpack_require__(69);
-const investments_module_1 = __webpack_require__(72);
-const dashboard_module_1 = __webpack_require__(75);
-const reports_module_1 = __webpack_require__(78);
-const freelancers_module_1 = __webpack_require__(82);
-const prisma_module_1 = __webpack_require__(34);
-const payments_module_1 = __webpack_require__(85);
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
+const auth_module_1 = __webpack_require__(/*! ./auth/auth.module */ "./src/auth/auth.module.ts");
+const users_module_1 = __webpack_require__(/*! ./users/users.module */ "./src/users/users.module.ts");
+const assets_module_1 = __webpack_require__(/*! ./assets/assets.module */ "./src/assets/assets.module.ts");
+const companies_module_1 = __webpack_require__(/*! ./companies/companies.module */ "./src/companies/companies.module.ts");
+const agents_module_1 = __webpack_require__(/*! ./agents/agents.module */ "./src/agents/agents.module.ts");
+const clusters_module_1 = __webpack_require__(/*! ./clusters/clusters.module */ "./src/clusters/clusters.module.ts");
+const leads_module_1 = __webpack_require__(/*! ./leads/leads.module */ "./src/leads/leads.module.ts");
+const transactions_module_1 = __webpack_require__(/*! ./transactions/transactions.module */ "./src/transactions/transactions.module.ts");
+const installments_module_1 = __webpack_require__(/*! ./installments/installments.module */ "./src/installments/installments.module.ts");
+const notification_module_1 = __webpack_require__(/*! ./notification/notification.module */ "./src/notification/notification.module.ts");
+const sales_module_1 = __webpack_require__(/*! ./sales/sales.module */ "./src/sales/sales.module.ts");
+const investments_module_1 = __webpack_require__(/*! ./investments/investments.module */ "./src/investments/investments.module.ts");
+const dashboard_module_1 = __webpack_require__(/*! ./dashboard/dashboard.module */ "./src/dashboard/dashboard.module.ts");
+const reports_module_1 = __webpack_require__(/*! ./reports/reports.module */ "./src/reports/reports.module.ts");
+const freelancers_module_1 = __webpack_require__(/*! ./freelancers/freelancers.module */ "./src/freelancers/freelancers.module.ts");
+const prisma_module_1 = __webpack_require__(/*! ./prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const payments_module_1 = __webpack_require__(/*! ./payments/payments.module */ "./src/payments/payments.module.ts");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -96,19 +445,235 @@ exports.AppModule = AppModule = __decorate([
 
 
 /***/ }),
-/* 6 */
-/***/ ((module) => {
 
-module.exports = require("@nestjs/config");
+/***/ "./src/assets/assets.controller.ts":
+/*!*****************************************!*\
+  !*** ./src/assets/assets.controller.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AssetsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
+const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
+const multer_1 = __webpack_require__(/*! multer */ "multer");
+const path_1 = __webpack_require__(/*! path */ "path");
+const assets_service_1 = __webpack_require__(/*! ./assets.service */ "./src/assets/assets.service.ts");
+const upload_config_1 = __webpack_require__(/*! ../common/upload.config */ "./src/common/upload.config.ts");
+let AssetsController = class AssetsController {
+    constructor(assetsService) {
+        this.assetsService = assetsService;
+    }
+    async findAll(query) {
+        return this.assetsService.findAll(query);
+    }
+    async getOverviewStats() {
+        return this.assetsService.getOverviewStats();
+    }
+    async findOne(id) {
+        return this.assetsService.findById(id);
+    }
+    async create(createAssetDto) {
+        return this.assetsService.create(createAssetDto);
+    }
+    async update(id, updateAssetDto) {
+        return this.assetsService.update(id, updateAssetDto);
+    }
+    async delete(id) {
+        return this.assetsService.delete(id);
+    }
+    async publish(id) {
+        return this.assetsService.publish(id);
+    }
+    async unpublish(id) {
+        return this.assetsService.unpublish(id);
+    }
+    async uploadImages(id, files) {
+        return this.assetsService.uploadImages(id, files);
+    }
+    async addImage(id, imageData) {
+        return this.assetsService.addImage(id, imageData);
+    }
+    async deleteImage(id, imageId) {
+        return this.assetsService.deleteImage(id, imageId);
+    }
+    async uploadDocuments(id, files) {
+        return this.assetsService.uploadDocuments(id, files);
+    }
+    async addDocument(id, documentData) {
+        return this.assetsService.addDocument(id, documentData);
+    }
+    async deleteDocument(id, documentId) {
+        return this.assetsService.deleteDocument(id, documentId);
+    }
+};
+exports.AssetsController = AssetsController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('stats/overview'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "getOverviewStats", null);
+__decorate([
+    (0, common_1.Get)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "delete", null);
+__decorate([
+    (0, common_1.Put)(':id/publish'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "publish", null);
+__decorate([
+    (0, common_1.Put)(':id/unpublish'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "unpublish", null);
+__decorate([
+    (0, common_1.Post)(':id/images/upload'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('images', 10, {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads/images',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = (0, path_1.extname)(file.originalname);
+                callback(null, `image-${uniqueSuffix}${ext}`);
+            },
+        }),
+        fileFilter: upload_config_1.imageFileFilter,
+        limits: { fileSize: 10 * 1024 * 1024 },
+    })),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.UploadedFiles)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "uploadImages", null);
+__decorate([
+    (0, common_1.Post)(':id/images'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "addImage", null);
+__decorate([
+    (0, common_1.Delete)(':id/images/:imageId'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('imageId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "deleteImage", null);
+__decorate([
+    (0, common_1.Post)(':id/documents/upload'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('documents', 10, {
+        storage: (0, multer_1.diskStorage)({
+            destination: './uploads/documents',
+            filename: (req, file, callback) => {
+                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+                const ext = (0, path_1.extname)(file.originalname);
+                callback(null, `doc-${uniqueSuffix}${ext}`);
+            },
+        }),
+        fileFilter: upload_config_1.documentFileFilter,
+        limits: { fileSize: 10 * 1024 * 1024 },
+    })),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.UploadedFiles)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Array]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "uploadDocuments", null);
+__decorate([
+    (0, common_1.Post)(':id/documents'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "addDocument", null);
+__decorate([
+    (0, common_1.Delete)(':id/documents/:documentId'),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Param)('documentId')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], AssetsController.prototype, "deleteDocument", null);
+exports.AssetsController = AssetsController = __decorate([
+    (0, common_1.Controller)('assets'),
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    __metadata("design:paramtypes", [typeof (_a = typeof assets_service_1.AssetsService !== "undefined" && assets_service_1.AssetsService) === "function" ? _a : Object])
+], AssetsController);
+
 
 /***/ }),
-/* 7 */
-/***/ ((module) => {
 
-module.exports = require("@nestjs/jwt");
-
-/***/ }),
-/* 8 */
+/***/ "./src/assets/assets.module.ts":
+/*!*************************************!*\
+  !*** ./src/assets/assets.module.ts ***!
+  \*************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -119,45 +684,527 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AuthModule = void 0;
-const common_1 = __webpack_require__(2);
-const jwt_1 = __webpack_require__(7);
-const passport_1 = __webpack_require__(9);
-const auth_controller_1 = __webpack_require__(10);
-const auth_service_1 = __webpack_require__(11);
-const jwt_strategy_1 = __webpack_require__(32);
-const prisma_module_1 = __webpack_require__(34);
-const notification_module_1 = __webpack_require__(35);
-const users_service_1 = __webpack_require__(28);
-let AuthModule = class AuthModule {
+exports.AssetsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const assets_controller_1 = __webpack_require__(/*! ./assets.controller */ "./src/assets/assets.controller.ts");
+const assets_service_1 = __webpack_require__(/*! ./assets.service */ "./src/assets/assets.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
+let AssetsModule = class AssetsModule {
 };
-exports.AuthModule = AuthModule;
-exports.AuthModule = AuthModule = __decorate([
+exports.AssetsModule = AssetsModule;
+exports.AssetsModule = AssetsModule = __decorate([
     (0, common_1.Module)({
-        imports: [
-            prisma_module_1.PrismaModule,
-            passport_1.PassportModule,
-            notification_module_1.NotificationModule,
-            jwt_1.JwtModule.register({
-                secret: process.env.JWT_SECRET || 'buyops26',
-                signOptions: { expiresIn: '7d' },
-            }),
-        ],
-        controllers: [auth_controller_1.AuthController],
-        providers: [auth_service_1.AuthService, users_service_1.UsersService, jwt_strategy_1.JwtStrategy],
-        exports: [auth_service_1.AuthService],
+        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
+        controllers: [assets_controller_1.AssetsController],
+        providers: [assets_service_1.AssetsService],
+        exports: [assets_service_1.AssetsService],
     })
-], AuthModule);
+], AssetsModule);
 
 
 /***/ }),
-/* 9 */
-/***/ ((module) => {
 
-module.exports = require("@nestjs/passport");
+/***/ "./src/assets/assets.service.ts":
+/*!**************************************!*\
+  !*** ./src/assets/assets.service.ts ***!
+  \**************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AssetsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let AssetsService = class AssetsService {
+    constructor(prisma, notificationService) {
+        this.prisma = prisma;
+        this.notificationService = notificationService;
+    }
+    async publish(id) {
+        await this.findById(id);
+        const published = await this.prisma.asset.update({
+            where: { id },
+            data: { status: 'published' },
+        });
+        await this.notificationService.notifyAssetPublished(id);
+        return published;
+    }
+    async unpublish(id) {
+        await this.findById(id);
+        return this.prisma.asset.update({
+            where: { id },
+            data: { status: 'draft' },
+        });
+    }
+    async deleteImage(assetId, imageId) {
+        await this.findById(assetId);
+        return this.prisma.assetImage.delete({ where: { id: imageId } });
+    }
+    async deleteDocument(assetId, documentId) {
+        await this.findById(assetId);
+        return this.prisma.assetDocument.delete({ where: { id: documentId } });
+    }
+    async findAll(filters) {
+        const where = {};
+        if (filters?.status)
+            where.status = filters.status;
+        if (filters?.type)
+            where.type = filters.type;
+        if (filters?.companyId)
+            where.companyId = filters.companyId;
+        const assets = await this.prisma.asset.findMany({
+            where,
+            include: {
+                company: true,
+                images: { orderBy: { order: 'asc' } },
+                documents: true,
+                leads: { orderBy: { createdAt: 'desc' }, take: 10 },
+                transactions: { orderBy: { date: 'desc' }, take: 10 },
+                installmentPlans: true,
+                _count: { select: { leads: true, transactions: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+        return assets.map(asset => {
+            const finalPrice = asset.price
+                ? parseFloat(asset.price)
+                : asset.fractionCost
+                    ? parseFloat(asset.fractionCost)
+                    : 0;
+            const rentalYield = asset.rentalYield
+                ? parseFloat(asset.rentalYield)
+                : asset.rentalYieldMax
+                    ? asset.rentalYieldMax
+                    : 0;
+            const capAppreciation = asset.capitalAppreciation
+                ? parseFloat(asset.capitalAppreciation)
+                : asset.capitalAppreciationMax
+                    ? asset.capitalAppreciationMax
+                    : 0;
+            const totalAnnualReturn = rentalYield + capAppreciation;
+            return {
+                ...asset,
+                facilities: asset.facilities ?? [],
+                ownershipOptions: asset.ownershipOptions ?? [],
+                paymentOptions: asset.paymentOptions ?? [],
+                installmentPeriods: asset.installmentPeriods ?? [],
+                riskFactors: asset.riskFactors ?? [],
+                finalPrice,
+                totalAnnualReturn,
+                projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
+                virtualTours: asset.virtualTours ?? 0,
+            };
+        });
+    }
+    async getOverviewStats() {
+        const assets = await this.prisma.asset.findMany({
+            select: { status: true, price: true, fractionCost: true },
+        });
+        const statusCounts = {};
+        let totalValue = 0;
+        for (const asset of assets) {
+            const statusKey = (asset.status || 'unknown').toLowerCase();
+            statusCounts[statusKey] = (statusCounts[statusKey] || 0) + 1;
+            const rawValue = asset.price || asset.fractionCost || '0';
+            const numericValue = Number.parseFloat(rawValue);
+            if (!Number.isNaN(numericValue)) {
+                totalValue += numericValue;
+            }
+        }
+        return {
+            totalAssets: assets.length,
+            totalValue,
+            statusCounts,
+        };
+    }
+    async findById(id) {
+        const asset = await this.prisma.asset.findUnique({
+            where: { id },
+            include: {
+                company: true,
+                images: { orderBy: { order: 'asc' } },
+                documents: true,
+                leads: { orderBy: { createdAt: 'desc' }, take: 10 },
+                transactions: { orderBy: { date: 'desc' }, take: 10 },
+                installmentPlans: true,
+                _count: { select: { leads: true, transactions: true } },
+            },
+        });
+        if (!asset)
+            throw new common_1.NotFoundException(`Asset with ID ${id} not found`);
+        const finalPrice = asset.price
+            ? parseFloat(asset.price)
+            : asset.fractionCost
+                ? parseFloat(asset.fractionCost)
+                : 0;
+        const rentalYield = asset.rentalYield
+            ? parseFloat(asset.rentalYield)
+            : asset.rentalYieldMax
+                ? asset.rentalYieldMax
+                : 0;
+        const capAppreciation = asset.capitalAppreciation
+            ? parseFloat(asset.capitalAppreciation)
+            : asset.capitalAppreciationMax
+                ? asset.capitalAppreciationMax
+                : 0;
+        const totalAnnualReturn = rentalYield + capAppreciation;
+        return {
+            ...asset,
+            facilities: asset.facilities ?? [],
+            ownershipOptions: asset.ownershipOptions ?? [],
+            paymentOptions: asset.paymentOptions ?? [],
+            installmentPeriods: asset.installmentPeriods ?? [],
+            riskFactors: asset.riskFactors ?? [],
+            finalPrice,
+            totalAnnualReturn,
+            projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
+            virtualTours: asset.virtualTours ?? 0,
+        };
+    }
+    async create(data) {
+        if (!data.name)
+            throw new common_1.BadRequestException('Asset name is required');
+        if (!data.companyId)
+            throw new common_1.BadRequestException('Company ID is required');
+        const company = await this.prisma.company.findUnique({ where: { id: data.companyId } });
+        if (!company)
+            throw new common_1.NotFoundException('Company not found');
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'AST');
+        const newAsset = await this.prisma.asset.create({
+            data: {
+                serialId,
+                name: data.name,
+                company: { connect: { id: data.companyId } },
+                title: data.title || data.name,
+                referenceCode: data.referenceCode || null,
+                type: data.type || null,
+                status: data.status || 'draft',
+                projectStatus: data.projectStatus || null,
+                location: data.location || null,
+                address: data.address || null,
+                description: data.description || null,
+                landSize: data.landSize ? parseFloat(data.landSize) : null,
+                builtSize: data.builtSize ? parseFloat(data.builtSize) : null,
+                constructionStart: data.constructionStart ? new Date(data.constructionStart) : null,
+                constructionEnd: data.constructionEnd ? new Date(data.constructionEnd) : null,
+                propertyCategory: data.propertyCategory || null,
+                unitConfiguration: data.unitConfiguration || null,
+                facilityManagement: data.facilityManagement ?? null,
+                units: data.units ? parseInt(data.units) : null,
+                totalUnits: data.totalUnits ? parseInt(data.totalUnits) : null,
+                availableUnits: data.availableUnits ? parseInt(data.availableUnits) : null,
+                bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
+                bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
+                area: data.area ? parseFloat(data.area) : null,
+                parking: data.parking || null,
+                furnished: data.furnished || null,
+                facilities: data.facilities || data.sharedFacilities || [],
+                ownershipOptions: data.ownershipOptions || [],
+                ownershipType: data.ownershipType || null,
+                fractionTotal: data.fractionTotal ? parseInt(data.fractionTotal) : null,
+                landUnitType: data.landUnitType || null,
+                landUnitCount: data.landUnitCount ? parseInt(data.landUnitCount) : null,
+                price: data.price || null,
+                priceRange: data.priceRange || null,
+                markup: data.markup || null,
+                fractionCost: data.fractionCost || data.costPerFraction || null,
+                fundingStatus: data.fundingStatus ? parseInt(data.fundingStatus) : null,
+                paymentOptions: data.paymentOptions || [],
+                installmentPeriods: data.installmentPeriods || [],
+                downPaymentAmount: data.downPaymentAmount || null,
+                offPlanDiscount: data.offPlanDiscount ? parseFloat(data.offPlanDiscount) : null,
+                stageBasedDiscount: data.stageBasedDiscount ? parseFloat(data.stageBasedDiscount) : null,
+                commission: data.commission || null,
+                commissionRate: data.commissionRate || null,
+                leadCommission: data.leadCommission ? parseFloat(data.leadCommission) : null,
+                closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : null,
+                projectedRentalIncome: data.projectedRentalIncome ? parseFloat(data.projectedRentalIncome) : null,
+                rentalFrequency: data.rentalFrequency || null,
+                operatingCost: data.operatingCost ? parseFloat(data.operatingCost) : null,
+                firstPayoutDate: data.firstPayoutDate ? new Date(data.firstPayoutDate) : null,
+                rentalYield: data.rentalYield || null,
+                rentalYieldMin: data.rentalYieldMin ? parseFloat(data.rentalYieldMin) : null,
+                rentalYieldMax: data.rentalYieldMax ? parseFloat(data.rentalYieldMax) : null,
+                capitalAppreciation: data.capitalAppreciation ? parseFloat(data.capitalAppreciation) : null,
+                capitalAppreciationMin: data.capitalAppreciationMin ? parseFloat(data.capitalAppreciationMin) : null,
+                capitalAppreciationMax: data.capitalAppreciationMax ? parseFloat(data.capitalAppreciationMax) : null,
+                totalReturns: data.totalReturns || null,
+                totalReturnsMin: data.totalReturnsMin ? parseFloat(data.totalReturnsMin) : null,
+                totalReturnsMax: data.totalReturnsMax ? parseFloat(data.totalReturnsMax) : null,
+                riskLevel: data.riskLevel || null,
+                riskFactors: data.riskFactors || [],
+                constructionStage: data.constructionStage || data.constructionProgress || null,
+                offPlanSecurity: data.offPlanSecurity || null,
+                exitLiquidity: data.exitLiquidity || null,
+                managementMode: data.managementMode || null,
+                virtualTours: data.virtualTours ? parseInt(data.virtualTours) : null,
+            },
+        });
+        return this.findById(newAsset.id);
+    }
+    async update(id, data) {
+        const existingAsset = await this.findById(id);
+        const updateData = {};
+        if (data.name !== undefined)
+            updateData.name = data.name;
+        if (data.title !== undefined)
+            updateData.title = data.title;
+        if (data.referenceCode !== undefined)
+            updateData.referenceCode = data.referenceCode;
+        if (data.type !== undefined)
+            updateData.type = data.type;
+        if (data.status !== undefined)
+            updateData.status = data.status;
+        if (data.projectStatus !== undefined)
+            updateData.projectStatus = data.projectStatus;
+        if (data.location !== undefined)
+            updateData.location = data.location;
+        if (data.address !== undefined)
+            updateData.address = data.address;
+        if (data.description !== undefined)
+            updateData.description = data.description;
+        if (data.companyId !== undefined)
+            updateData.companyId = data.companyId;
+        if (data.landSize !== undefined && data.landSize !== '' && data.landSize !== null)
+            updateData.landSize = parseFloat(data.landSize);
+        if (data.builtSize !== undefined && data.builtSize !== '' && data.builtSize !== null)
+            updateData.builtSize = parseFloat(data.builtSize);
+        if (data.constructionStart !== undefined)
+            updateData.constructionStart = data.constructionStart ? new Date(data.constructionStart) : null;
+        if (data.constructionEnd !== undefined)
+            updateData.constructionEnd = data.constructionEnd ? new Date(data.constructionEnd) : null;
+        if (data.propertyCategory !== undefined)
+            updateData.propertyCategory = data.propertyCategory;
+        if (data.unitConfiguration !== undefined)
+            updateData.unitConfiguration = data.unitConfiguration;
+        if (data.facilityManagement !== undefined)
+            updateData.facilityManagement = data.facilityManagement;
+        if (data.units !== undefined && data.units !== '' && data.units !== null)
+            updateData.units = parseInt(data.units);
+        if (data.totalUnits !== undefined && data.totalUnits !== '' && data.totalUnits !== null)
+            updateData.totalUnits = parseInt(data.totalUnits);
+        if (data.availableUnits !== undefined && data.availableUnits !== '' && data.availableUnits !== null)
+            updateData.availableUnits = parseInt(data.availableUnits);
+        if (data.bedrooms !== undefined && data.bedrooms !== '' && data.bedrooms !== null)
+            updateData.bedrooms = parseInt(data.bedrooms);
+        if (data.bathrooms !== undefined && data.bathrooms !== '' && data.bathrooms !== null)
+            updateData.bathrooms = parseInt(data.bathrooms);
+        if (data.area !== undefined && data.area !== '' && data.area !== null)
+            updateData.area = parseFloat(data.area);
+        if (data.parking !== undefined)
+            updateData.parking = data.parking;
+        if (data.furnished !== undefined)
+            updateData.furnished = data.furnished;
+        if (data.facilities !== undefined)
+            updateData.facilities = data.facilities;
+        if (data.sharedFacilities !== undefined)
+            updateData.facilities = data.sharedFacilities;
+        if (data.ownershipOptions !== undefined)
+            updateData.ownershipOptions = data.ownershipOptions;
+        if (data.ownershipType !== undefined)
+            updateData.ownershipType = data.ownershipType;
+        if (data.fractionTotal !== undefined && data.fractionTotal !== '' && data.fractionTotal !== null)
+            updateData.fractionTotal = parseInt(data.fractionTotal);
+        if (data.landUnitType !== undefined)
+            updateData.landUnitType = data.landUnitType;
+        if (data.landUnitCount !== undefined && data.landUnitCount !== '' && data.landUnitCount !== null)
+            updateData.landUnitCount = parseInt(data.landUnitCount);
+        if (data.price !== undefined)
+            updateData.price = data.price;
+        if (data.priceRange !== undefined)
+            updateData.priceRange = data.priceRange;
+        if (data.markup !== undefined)
+            updateData.markup = data.markup;
+        if (data.fractionCost !== undefined)
+            updateData.fractionCost = data.fractionCost;
+        if (data.costPerFraction !== undefined)
+            updateData.fractionCost = data.costPerFraction;
+        if (data.fundingStatus !== undefined && data.fundingStatus !== '' && data.fundingStatus !== null)
+            updateData.fundingStatus = parseInt(data.fundingStatus);
+        if (data.paymentOptions !== undefined)
+            updateData.paymentOptions = data.paymentOptions;
+        if (data.installmentPeriods !== undefined)
+            updateData.installmentPeriods = data.installmentPeriods;
+        if (data.downPaymentAmount !== undefined)
+            updateData.downPaymentAmount = data.downPaymentAmount;
+        if (data.offPlanDiscount !== undefined && data.offPlanDiscount !== '' && data.offPlanDiscount !== null)
+            updateData.offPlanDiscount = parseFloat(data.offPlanDiscount);
+        if (data.stageBasedDiscount !== undefined && data.stageBasedDiscount !== '' && data.stageBasedDiscount !== null)
+            updateData.stageBasedDiscount = parseFloat(data.stageBasedDiscount);
+        if (data.commission !== undefined)
+            updateData.commission = data.commission;
+        if (data.commissionRate !== undefined)
+            updateData.commissionRate = data.commissionRate;
+        if (data.leadCommission !== undefined && data.leadCommission !== '' && data.leadCommission !== null)
+            updateData.leadCommission = parseFloat(data.leadCommission);
+        if (data.closerCommission !== undefined && data.closerCommission !== '' && data.closerCommission !== null)
+            updateData.closerCommission = parseFloat(data.closerCommission);
+        if (data.projectedRentalIncome !== undefined && data.projectedRentalIncome !== '' && data.projectedRentalIncome !== null)
+            updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
+        if (data.rentalFrequency !== undefined)
+            updateData.rentalFrequency = data.rentalFrequency;
+        if (data.operatingCost !== undefined && data.operatingCost !== '' && data.operatingCost !== null)
+            updateData.operatingCost = parseFloat(data.operatingCost);
+        if (data.firstPayoutDate !== undefined)
+            updateData.firstPayoutDate = data.firstPayoutDate ? new Date(data.firstPayoutDate) : null;
+        if (data.rentalYield !== undefined)
+            updateData.rentalYield = data.rentalYield;
+        if (data.rentalYieldMin !== undefined && data.rentalYieldMin !== '' && data.rentalYieldMin !== null)
+            updateData.rentalYieldMin = parseFloat(data.rentalYieldMin);
+        if (data.rentalYieldMax !== undefined && data.rentalYieldMax !== '' && data.rentalYieldMax !== null)
+            updateData.rentalYieldMax = parseFloat(data.rentalYieldMax);
+        if (data.capitalAppreciation !== undefined && data.capitalAppreciation !== '' && data.capitalAppreciation !== null)
+            updateData.capitalAppreciation = parseFloat(data.capitalAppreciation);
+        if (data.capitalAppreciationMin !== undefined && data.capitalAppreciationMin !== '' && data.capitalAppreciationMin !== null)
+            updateData.capitalAppreciationMin = parseFloat(data.capitalAppreciationMin);
+        if (data.capitalAppreciationMax !== undefined && data.capitalAppreciationMax !== '' && data.capitalAppreciationMax !== null)
+            updateData.capitalAppreciationMax = parseFloat(data.capitalAppreciationMax);
+        if (data.totalReturns !== undefined)
+            updateData.totalReturns = data.totalReturns;
+        if (data.totalReturnsMin !== undefined && data.totalReturnsMin !== '' && data.totalReturnsMin !== null)
+            updateData.totalReturnsMin = parseFloat(data.totalReturnsMin);
+        if (data.totalReturnsMax !== undefined && data.totalReturnsMax !== '' && data.totalReturnsMax !== null)
+            updateData.totalReturnsMax = parseFloat(data.totalReturnsMax);
+        if (data.riskLevel !== undefined)
+            updateData.riskLevel = data.riskLevel;
+        if (data.riskFactors !== undefined)
+            updateData.riskFactors = data.riskFactors;
+        if (data.constructionStage !== undefined)
+            updateData.constructionStage = data.constructionStage;
+        if (data.constructionProgress !== undefined)
+            updateData.constructionStage = data.constructionProgress;
+        if (data.offPlanSecurity !== undefined)
+            updateData.offPlanSecurity = data.offPlanSecurity;
+        if (data.exitLiquidity !== undefined)
+            updateData.exitLiquidity = data.exitLiquidity;
+        if (data.managementMode !== undefined)
+            updateData.managementMode = data.managementMode;
+        if (data.virtualTours !== undefined && data.virtualTours !== '' && data.virtualTours !== null)
+            updateData.virtualTours = parseInt(data.virtualTours);
+        await this.prisma.asset.update({
+            where: { id },
+            data: updateData,
+        });
+        const changedFields = Object.keys(updateData);
+        if (changedFields.length) {
+            await this.notificationService.notifyAssetUpdated(existingAsset.id, changedFields);
+        }
+        return this.findById(id);
+    }
+    async delete(id) {
+        await this.findById(id);
+        const savedByCount = await this.prisma.savedProperty.count({ where: { assetId: id } });
+        if (savedByCount > 0) {
+            throw new common_1.BadRequestException(`Cannot delete asset. It is saved by ${savedByCount} user(s). Please ask them to unsave it first.`);
+        }
+        const leadsCount = await this.prisma.lead.count({ where: { assetInterest: id } });
+        if (leadsCount > 0) {
+            throw new common_1.BadRequestException(`Cannot delete asset. It has ${leadsCount} associated lead(s).`);
+        }
+        const transactionsCount = await this.prisma.transaction.count({ where: { assetId: id } });
+        if (transactionsCount > 0) {
+            throw new common_1.BadRequestException(`Cannot delete asset. It has ${transactionsCount} associated transaction(s).`);
+        }
+        await this.prisma.asset.delete({ where: { id } });
+        return { message: 'Asset deleted successfully', id };
+    }
+    async addImage(assetId, imageData) {
+        await this.findById(assetId);
+        return this.prisma.assetImage.create({
+            data: {
+                assetId,
+                url: imageData.url,
+                caption: imageData.caption || null,
+                order: imageData.order || 0,
+            },
+        });
+    }
+    async removeImage(imageId) {
+        return this.prisma.assetImage.delete({ where: { id: imageId } });
+    }
+    async addDocument(assetId, docData) {
+        await this.findById(assetId);
+        return this.prisma.assetDocument.create({
+            data: {
+                assetId,
+                url: docData.url,
+                title: docData.title || null,
+                type: docData.type || null,
+            },
+        });
+    }
+    async removeDocument(docId) {
+        return this.prisma.assetDocument.delete({ where: { id: docId } });
+    }
+    async uploadImages(assetId, files) {
+        await this.findById(assetId);
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const images = [];
+        for (const file of files) {
+            const url = `${baseUrl}/uploads/images/${file.filename}`;
+            const image = await this.prisma.assetImage.create({
+                data: {
+                    assetId,
+                    url,
+                    caption: file.originalname,
+                    order: 0,
+                },
+            });
+            images.push(image);
+        }
+        return {
+            message: `${images.length} image(s) uploaded successfully`,
+            images,
+        };
+    }
+    async uploadDocuments(assetId, files) {
+        await this.findById(assetId);
+        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
+        const documents = [];
+        for (const file of files) {
+            const url = `${baseUrl}/uploads/documents/${file.filename}`;
+            const document = await this.prisma.assetDocument.create({
+                data: {
+                    assetId,
+                    url,
+                    title: file.originalname,
+                    type: file.mimetype,
+                },
+            });
+            documents.push(document);
+        }
+        return {
+            message: `${documents.length} document(s) uploaded successfully`,
+            documents,
+        };
+    }
+};
+exports.AssetsService = AssetsService;
+exports.AssetsService = AssetsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
+], AssetsService);
+
 
 /***/ }),
-/* 10 */
+
+/***/ "./src/auth/auth.controller.ts":
+/*!*************************************!*\
+  !*** ./src/auth/auth.controller.ts ***!
+  \*************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -176,13 +1223,13 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthController = exports.RefreshTokenDto = exports.RegisterDto = exports.LoginDto = void 0;
-const common_1 = __webpack_require__(2);
-const auth_service_1 = __webpack_require__(11);
-const users_service_1 = __webpack_require__(28);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const class_validator_1 = __webpack_require__(30);
-const class_transformer_1 = __webpack_require__(31);
-const client_1 = __webpack_require__(13);
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const auth_service_1 = __webpack_require__(/*! ./auth.service */ "./src/auth/auth.service.ts");
+const users_service_1 = __webpack_require__(/*! ../users/users.service */ "./src/users/users.service.ts");
+const jwt_auth_guard_1 = __webpack_require__(/*! ./jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 class LoginDto {
 }
 exports.LoginDto = LoginDto;
@@ -371,7 +1418,58 @@ exports.AuthController = AuthController = __decorate([
 
 
 /***/ }),
-/* 11 */
+
+/***/ "./src/auth/auth.module.ts":
+/*!*********************************!*\
+  !*** ./src/auth/auth.module.ts ***!
+  \*********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.AuthModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
+const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
+const auth_controller_1 = __webpack_require__(/*! ./auth.controller */ "./src/auth/auth.controller.ts");
+const auth_service_1 = __webpack_require__(/*! ./auth.service */ "./src/auth/auth.service.ts");
+const jwt_strategy_1 = __webpack_require__(/*! ./jwt.strategy */ "./src/auth/jwt.strategy.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
+const users_service_1 = __webpack_require__(/*! src/users/users.service */ "./src/users/users.service.ts");
+let AuthModule = class AuthModule {
+};
+exports.AuthModule = AuthModule;
+exports.AuthModule = AuthModule = __decorate([
+    (0, common_1.Module)({
+        imports: [
+            prisma_module_1.PrismaModule,
+            passport_1.PassportModule,
+            notification_module_1.NotificationModule,
+            jwt_1.JwtModule.register({
+                secret: process.env.JWT_SECRET || 'buyops26',
+                signOptions: { expiresIn: '7d' },
+            }),
+        ],
+        controllers: [auth_controller_1.AuthController],
+        providers: [auth_service_1.AuthService, users_service_1.UsersService, jwt_strategy_1.JwtStrategy],
+        exports: [auth_service_1.AuthService],
+    })
+], AuthModule);
+
+
+/***/ }),
+
+/***/ "./src/auth/auth.service.ts":
+/*!**********************************!*\
+  !*** ./src/auth/auth.service.ts ***!
+  \**********************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -420,15 +1518,15 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.AuthService = void 0;
-const common_1 = __webpack_require__(2);
-const jwt_1 = __webpack_require__(7);
-const prisma_service_1 = __webpack_require__(12);
-const notification_service_1 = __webpack_require__(16);
-const bcrypt = __importStar(__webpack_require__(24));
-const speakeasy = __importStar(__webpack_require__(25));
-const QRCode = __importStar(__webpack_require__(26));
-const client_1 = __webpack_require__(13);
-const serial_id_helper_1 = __webpack_require__(27);
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const jwt_1 = __webpack_require__(/*! @nestjs/jwt */ "@nestjs/jwt");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
+const speakeasy = __importStar(__webpack_require__(/*! speakeasy */ "speakeasy"));
+const QRCode = __importStar(__webpack_require__(/*! qrcode */ "qrcode"));
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
 let AuthService = class AuthService {
     constructor(prisma, jwtService, notificationService) {
         this.prisma = prisma;
@@ -728,7 +1826,1018 @@ exports.AuthService = AuthService = __decorate([
 
 
 /***/ }),
-/* 12 */
+
+/***/ "./src/auth/jwt-auth.guard.ts":
+/*!************************************!*\
+  !*** ./src/auth/jwt-auth.guard.ts ***!
+  \************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JwtAuthGuard = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
+let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
+    canActivate(context) {
+        const request = context.switchToHttp().getRequest();
+        if (request.method === 'OPTIONS') {
+            return true;
+        }
+        return super.canActivate(context);
+    }
+};
+exports.JwtAuthGuard = JwtAuthGuard;
+exports.JwtAuthGuard = JwtAuthGuard = __decorate([
+    (0, common_1.Injectable)()
+], JwtAuthGuard);
+
+
+/***/ }),
+
+/***/ "./src/auth/jwt.strategy.ts":
+/*!**********************************!*\
+  !*** ./src/auth/jwt.strategy.ts ***!
+  \**********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.JwtStrategy = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
+const passport_jwt_1 = __webpack_require__(/*! passport-jwt */ "passport-jwt");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
+    constructor(prisma) {
+        super({
+            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
+            ignoreExpiration: false,
+            secretOrKey: process.env.JWT_SECRET,
+        });
+        this.prisma = prisma;
+    }
+    async validate(payload) {
+        const userId = payload?.sub;
+        if (!userId) {
+            throw new common_1.UnauthorizedException("Invalid token: missing user identifier");
+        }
+        const user = await this.prisma.user.findUnique({
+            where: { id: userId },
+            select: {
+                id: true,
+                serialId: true,
+                email: true,
+                name: true,
+                role: true,
+                status: true,
+                agentProfileId: true,
+                freelancerProfileId: true,
+            },
+        });
+        if (!user) {
+            throw new common_1.UnauthorizedException("User not found");
+        }
+        return user;
+    }
+};
+exports.JwtStrategy = JwtStrategy;
+exports.JwtStrategy = JwtStrategy = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], JwtStrategy);
+
+
+/***/ }),
+
+/***/ "./src/clusters/clusters.controller.ts":
+/*!*********************************************!*\
+  !*** ./src/clusters/clusters.controller.ts ***!
+  \*********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ClustersController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const clusters_service_1 = __webpack_require__(/*! ./clusters.service */ "./src/clusters/clusters.service.ts");
+const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
+class CreateClusterDto {
+}
+let ClustersController = class ClustersController {
+    constructor(clustersService) {
+        this.clustersService = clustersService;
+    }
+    async findAll() {
+        return this.clustersService.findAll();
+    }
+    async getStats() {
+        return this.clustersService.getStats();
+    }
+    async findOne(id) {
+        return this.clustersService.findById(id);
+    }
+    async create(dto) {
+        return this.clustersService.create(dto);
+    }
+    async update(id, dto) {
+        return this.clustersService.update(id, dto);
+    }
+    async remove(id) {
+        return this.clustersService.delete(id);
+    }
+};
+exports.ClustersController = ClustersController;
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ClustersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)("stats"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ClustersController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ClustersController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], ClustersController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_b = typeof Partial !== "undefined" && Partial) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], ClustersController.prototype, "update", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ClustersController.prototype, "remove", null);
+exports.ClustersController = ClustersController = __decorate([
+    (0, common_1.Controller)("clusters"),
+    __metadata("design:paramtypes", [typeof (_a = typeof clusters_service_1.ClustersService !== "undefined" && clusters_service_1.ClustersService) === "function" ? _a : Object])
+], ClustersController);
+
+
+/***/ }),
+
+/***/ "./src/clusters/clusters.module.ts":
+/*!*****************************************!*\
+  !*** ./src/clusters/clusters.module.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ClustersModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const clusters_controller_1 = __webpack_require__(/*! ./clusters.controller */ "./src/clusters/clusters.controller.ts");
+const clusters_service_1 = __webpack_require__(/*! ./clusters.service */ "./src/clusters/clusters.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let ClustersModule = class ClustersModule {
+};
+exports.ClustersModule = ClustersModule;
+exports.ClustersModule = ClustersModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [clusters_controller_1.ClustersController],
+        providers: [clusters_service_1.ClustersService],
+        exports: [clusters_service_1.ClustersService],
+    })
+], ClustersModule);
+
+
+/***/ }),
+
+/***/ "./src/clusters/clusters.service.ts":
+/*!******************************************!*\
+  !*** ./src/clusters/clusters.service.ts ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ClustersService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let ClustersService = class ClustersService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    normalizeClusterStatus(status) {
+        const normalized = (status || 'ACTIVE').toString().trim().toUpperCase();
+        if (!['ACTIVE', 'INACTIVE', 'PENDING'].includes(normalized)) {
+            throw new common_1.BadRequestException('Cluster status must be one of: ACTIVE, INACTIVE, PENDING');
+        }
+        return normalized.toLowerCase();
+    }
+    async resolveManagerId(teamLead) {
+        if (!teamLead)
+            return null;
+        const user = await this.prisma.user.findUnique({
+            where: { id: teamLead },
+            select: { id: true },
+        });
+        if (user)
+            return user.id;
+        const agent = await this.prisma.agent.findUnique({
+            where: { id: teamLead },
+            select: { userId: true },
+        });
+        if (agent?.userId)
+            return agent.userId;
+        throw new common_1.BadRequestException('Invalid teamLead: must be a valid User ID or Agent ID');
+    }
+    async findAll() {
+        const clusters = await this.prisma.cluster.findMany({
+            include: {
+                manager: { select: { id: true, name: true, email: true } },
+                agents: {
+                    include: {
+                        user: { select: { id: true, name: true } },
+                    },
+                },
+                freelancers: {
+                    include: { user: { select: { id: true, name: true } } },
+                },
+                _count: { select: { agents: true, freelancers: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+        return await Promise.all(clusters.map(async (cluster) => {
+            const teamLead = cluster.manager?.name ?? "";
+            const agents = cluster._count.agents;
+            const agentIds = cluster.agents.map(a => a.id);
+            const transactions = await this.prisma.transaction.findMany({
+                where: {
+                    OR: [
+                        { leadAgentId: { in: agentIds } },
+                        { closerAgentId: { in: agentIds } },
+                    ],
+                },
+                select: { assetId: true },
+                distinct: ['assetId'],
+            });
+            const activeAssets = transactions.length;
+            const totalCommission = await this.prisma.agent.aggregate({
+                where: { clusterId: cluster.id },
+                _sum: { totalCommission: true },
+            });
+            return {
+                id: cluster.id,
+                serialId: cluster.serialId ?? "",
+                name: cluster.name,
+                teamLead,
+                managerId: cluster.managerId,
+                agents,
+                activeAssets,
+                totalCommission: totalCommission._sum.totalCommission || 0,
+                status: cluster.status,
+                location: cluster.location,
+                code: cluster.code,
+                commissionType: cluster.commissionType ?? 'AGENT',
+            };
+        }));
+    }
+    async findById(id) {
+        const cluster = await this.prisma.cluster.findUnique({
+            where: { id },
+            include: {
+                manager: { select: { id: true, name: true, email: true } },
+                agents: {
+                    include: {
+                        user: { select: { id: true, name: true, email: true } },
+                        assignedLeads: true,
+                        leadTransactions: true,
+                        closerTransactions: true,
+                    },
+                },
+                freelancers: {
+                    include: { user: { select: { id: true, name: true, email: true } } },
+                },
+            },
+        });
+        if (!cluster)
+            throw new common_1.NotFoundException(`Cluster with ID ${id} not found`);
+        return cluster;
+    }
+    async create(data) {
+        if (!data.name)
+            throw new common_1.BadRequestException('Cluster name is required');
+        const existingByName = await this.prisma.cluster.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
+        if (existingByName)
+            throw new common_1.ConflictException('A cluster with this name already exists');
+        const managerId = await this.resolveManagerId(data.teamLead);
+        const status = this.normalizeClusterStatus(data.status);
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CLT');
+        return this.prisma.cluster.create({
+            data: {
+                serialId,
+                name: data.name,
+                code: data.code || null,
+                status,
+                location: data.location || null,
+                managerId,
+                commissionType: data.commissionType || 'AGENT',
+            },
+            include: {
+                manager: { select: { id: true, name: true } },
+            },
+        });
+    }
+    async update(id, data) {
+        await this.findById(id);
+        const updateData = {};
+        if (data.name !== undefined)
+            updateData.name = data.name;
+        if (data.code !== undefined)
+            updateData.code = data.code;
+        if (data.status !== undefined)
+            updateData.status = this.normalizeClusterStatus(data.status);
+        if (data.location !== undefined)
+            updateData.location = data.location;
+        if (data.teamLead !== undefined)
+            updateData.managerId = await this.resolveManagerId(data.teamLead);
+        if (data.commissionType !== undefined)
+            updateData.commissionType = data.commissionType;
+        return this.prisma.cluster.update({
+            where: { id },
+            data: updateData,
+            include: { manager: { select: { id: true, name: true } } },
+        });
+    }
+    async delete(id) {
+        await this.findById(id);
+        await this.prisma.cluster.delete({ where: { id } });
+        return { message: 'Cluster deleted successfully', id };
+    }
+    async getStats() {
+        const [total, active, agents, freelancers] = await Promise.all([
+            this.prisma.cluster.count(),
+            this.prisma.cluster.count({ where: { status: 'active' } }),
+            this.prisma.user.count({ where: { role: 'AGENT' } }),
+            this.prisma.freelancer.count(),
+        ]);
+        return { totalClusters: total, activeClusters: active, totalAgents: agents, totalFreelancers: freelancers };
+    }
+};
+exports.ClustersService = ClustersService;
+exports.ClustersService = ClustersService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], ClustersService);
+
+
+/***/ }),
+
+/***/ "./src/common/roles.decorator.ts":
+/*!***************************************!*\
+  !*** ./src/common/roles.decorator.ts ***!
+  \***************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Roles = exports.ROLES_KEY = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+exports.ROLES_KEY = "roles";
+const Roles = (...roles) => (0, common_1.SetMetadata)(exports.ROLES_KEY, roles);
+exports.Roles = Roles;
+
+
+/***/ }),
+
+/***/ "./src/common/roles.guard.ts":
+/*!***********************************!*\
+  !*** ./src/common/roles.guard.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.RolesGuard = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
+const roles_decorator_1 = __webpack_require__(/*! ./roles.decorator */ "./src/common/roles.decorator.ts");
+let RolesGuard = class RolesGuard {
+    constructor(reflector) {
+        this.reflector = reflector;
+    }
+    canActivate(context) {
+        const requiredRoles = this.reflector.getAllAndOverride(roles_decorator_1.ROLES_KEY, [
+            context.getHandler(),
+            context.getClass(),
+        ]);
+        if (!requiredRoles || requiredRoles.length === 0) {
+            return true;
+        }
+        const request = context.switchToHttp().getRequest();
+        const user = request.user;
+        if (!user)
+            return false;
+        return requiredRoles.includes(user.role);
+    }
+};
+exports.RolesGuard = RolesGuard;
+exports.RolesGuard = RolesGuard = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof core_1.Reflector !== "undefined" && core_1.Reflector) === "function" ? _a : Object])
+], RolesGuard);
+
+
+/***/ }),
+
+/***/ "./src/common/serial-id.helper.ts":
+/*!****************************************!*\
+  !*** ./src/common/serial-id.helper.ts ***!
+  \****************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.generateSerialId = generateSerialId;
+const MODEL_MAP = {
+    USR: 'user',
+    CMP: 'company',
+    AST: 'asset',
+    LED: 'lead',
+    AGT: 'agent',
+    FRL: 'freelancer',
+    CLT: 'cluster',
+    TRN: 'transaction',
+    IPL: 'installmentPlan',
+    INS: 'installment',
+    COM: 'commission',
+};
+async function generateSerialId(prisma, prefix) {
+    const model = MODEL_MAP[prefix];
+    const count = await prisma[model].count();
+    const serial = String(count + 1).padStart(4, '0');
+    return `BO-${prefix}-${serial}`;
+}
+
+
+/***/ }),
+
+/***/ "./src/common/upload.config.ts":
+/*!*************************************!*\
+  !*** ./src/common/upload.config.ts ***!
+  \*************************************/
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.documentFileFilter = exports.imageFileFilter = exports.multerConfig = void 0;
+const multer_1 = __webpack_require__(/*! multer */ "multer");
+const path_1 = __webpack_require__(/*! path */ "path");
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+exports.multerConfig = {
+    storage: (0, multer_1.diskStorage)({
+        destination: './uploads',
+        filename: (req, file, callback) => {
+            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
+            const ext = (0, path_1.extname)(file.originalname);
+            const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
+            callback(null, filename);
+        },
+    }),
+    fileFilter: (req, file, callback) => {
+        const allowedMimes = [
+            'image/jpeg',
+            'image/jpg',
+            'image/png',
+            'image/gif',
+            'image/webp',
+            'application/pdf',
+            'application/msword',
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'text/plain',
+        ];
+        if (allowedMimes.includes(file.mimetype)) {
+            callback(null, true);
+        }
+        else {
+            callback(new common_1.BadRequestException(`Invalid file type. Allowed types: ${allowedMimes.join(', ')}`), false);
+        }
+    },
+    limits: {
+        fileSize: 10 * 1024 * 1024,
+    },
+};
+const imageFileFilter = (req, file, callback) => {
+    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
+    if (allowedMimes.includes(file.mimetype)) {
+        callback(null, true);
+    }
+    else {
+        callback(new common_1.BadRequestException('Only image files are allowed (jpg, jpeg, png, gif, webp)'), false);
+    }
+};
+exports.imageFileFilter = imageFileFilter;
+const documentFileFilter = (req, file, callback) => {
+    const allowedMimes = [
+        'application/pdf',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'text/plain',
+    ];
+    if (allowedMimes.includes(file.mimetype)) {
+        callback(null, true);
+    }
+    else {
+        callback(new common_1.BadRequestException('Only document files are allowed (pdf, doc, docx, txt)'), false);
+    }
+};
+exports.documentFileFilter = documentFileFilter;
+
+
+/***/ }),
+
+/***/ "./src/companies/companies.controller.ts":
+/*!***********************************************!*\
+  !*** ./src/companies/companies.controller.ts ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b, _c;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompaniesController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const companies_service_1 = __webpack_require__(/*! ./companies.service */ "./src/companies/companies.service.ts");
+const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
+const create_company_dto_1 = __webpack_require__(/*! ./dto/create-company.dto */ "./src/companies/dto/create-company.dto.ts");
+let CompaniesController = class CompaniesController {
+    constructor(companiesService) {
+        this.companiesService = companiesService;
+    }
+    async findAll() {
+        return this.companiesService.findAll();
+    }
+    async findOne(id) {
+        return this.companiesService.findById(id);
+    }
+    async create(dto) {
+        return this.companiesService.create(dto);
+    }
+    async update(id, dto) {
+        return this.companiesService.update(id, dto);
+    }
+    async remove(id) {
+        return this.companiesService.delete(id);
+    }
+};
+exports.CompaniesController = CompaniesController;
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CompaniesController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CompaniesController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_b = typeof create_company_dto_1.CreateCompanyDto !== "undefined" && create_company_dto_1.CreateCompanyDto) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], CompaniesController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_c = typeof Partial !== "undefined" && Partial) === "function" ? _c : Object]),
+    __metadata("design:returntype", Promise)
+], CompaniesController.prototype, "update", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], CompaniesController.prototype, "remove", null);
+exports.CompaniesController = CompaniesController = __decorate([
+    (0, common_1.Controller)("companies"),
+    __metadata("design:paramtypes", [typeof (_a = typeof companies_service_1.CompaniesService !== "undefined" && companies_service_1.CompaniesService) === "function" ? _a : Object])
+], CompaniesController);
+
+
+/***/ }),
+
+/***/ "./src/companies/companies.module.ts":
+/*!*******************************************!*\
+  !*** ./src/companies/companies.module.ts ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompaniesModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const companies_controller_1 = __webpack_require__(/*! ./companies.controller */ "./src/companies/companies.controller.ts");
+const companies_service_1 = __webpack_require__(/*! ./companies.service */ "./src/companies/companies.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let CompaniesModule = class CompaniesModule {
+};
+exports.CompaniesModule = CompaniesModule;
+exports.CompaniesModule = CompaniesModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [companies_controller_1.CompaniesController],
+        providers: [companies_service_1.CompaniesService],
+        exports: [companies_service_1.CompaniesService],
+    })
+], CompaniesModule);
+
+
+/***/ }),
+
+/***/ "./src/companies/companies.service.ts":
+/*!********************************************!*\
+  !*** ./src/companies/companies.service.ts ***!
+  \********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CompaniesService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let CompaniesService = class CompaniesService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    normalizeStatus(status) {
+        const normalized = String(status || 'active').trim().toLowerCase();
+        if (!['active', 'pending', 'inactive', 'suspended'].includes(normalized)) {
+            throw new common_1.BadRequestException('Status must be one of: active, pending, inactive, suspended');
+        }
+        return normalized;
+    }
+    normalizeEmail(email) {
+        return email.toLowerCase().trim();
+    }
+    async enrichCompanyData(company) {
+        let activeAssets;
+        if (company.assets && Array.isArray(company.assets)) {
+            activeAssets = company.assets.filter((asset) => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length;
+        }
+        else {
+            const assets = await this.prisma.asset.findMany({
+                where: { companyId: company.id },
+                select: { status: true }
+            });
+            activeAssets = assets.filter(asset => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length;
+        }
+        const totalTransactions = company._count?.transactions ||
+            await this.prisma.transaction.count({ where: { companyId: company.id } });
+        return {
+            ...company,
+            activeAssets,
+            totalTransactions
+        };
+    }
+    async findAll() {
+        const companies = await this.prisma.company.findMany({
+            include: {
+                assets: { select: { id: true, name: true, type: true, status: true } },
+                _count: { select: { assets: true, transactions: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+        return companies.map(company => ({
+            ...company,
+            activeAssets: company.assets.filter(asset => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length,
+            totalTransactions: company._count.transactions,
+        }));
+    }
+    async findById(id) {
+        if (!id || id.trim() === '')
+            throw new common_1.BadRequestException('Company ID is required');
+        const company = await this.prisma.company.findUnique({
+            where: { id },
+            include: {
+                assets: { select: { id: true, name: true, type: true, status: true } },
+                transactions: { select: { id: true, totalAmount: true, status: true, date: true }, take: 10, orderBy: { date: 'desc' } },
+                _count: { select: { assets: true, transactions: true } },
+            },
+        });
+        if (!company)
+            throw new common_1.NotFoundException(`Company with ID ${id} not found`);
+        return this.enrichCompanyData(company);
+    }
+    async create(data) {
+        try {
+            if (!data.name || !data.name.trim())
+                throw new common_1.BadRequestException('Company name is required');
+            if (!data.email || !data.email.trim())
+                throw new common_1.BadRequestException('Email is required');
+            if (!data.type || !['developer', 'realtor', 'partner', 'consultant', 'investor'].includes(data.type)) {
+                throw new common_1.BadRequestException('Company type is required and must be one of: developer, realtor, partner, consultant, investor');
+            }
+            const existingByName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
+            if (existingByName)
+                throw new common_1.ConflictException('A company with this name already exists');
+            const existing = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email) } });
+            if (existing)
+                throw new common_1.ConflictException('A company with this email already exists');
+            if (data.phone?.trim()) {
+                const existingByPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim() } });
+                if (existingByPhone)
+                    throw new common_1.ConflictException('A company with this phone number already exists');
+            }
+            if (data.registrationNumber?.trim()) {
+                const existingByRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim() } });
+                if (existingByRegNo)
+                    throw new common_1.ConflictException('A company with this registration number already exists');
+            }
+            const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CMP');
+            const company = await this.prisma.company.create({
+                data: {
+                    serialId,
+                    name: data.name.trim(),
+                    type: data.type,
+                    email: this.normalizeEmail(data.email),
+                    phone: data.phone?.trim() || null,
+                    status: this.normalizeStatus(data.status),
+                    contactPerson: data.contactPerson?.trim() || null,
+                    address: data.address?.trim() || null,
+                    commissionRate: data.commissionRate ? parseFloat(data.commissionRate) : 0,
+                    paymentTerms: data.paymentTerms?.trim() || null,
+                    agreementStartDate: data.agreementStartDate ? new Date(data.agreementStartDate) : null,
+                    agreementExpiryDate: data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null,
+                    registrationNumber: data.registrationNumber?.trim() || null,
+                    notes: data.notes?.trim() || null,
+                    accountName: (data.accountName || data.bankAccountName)?.trim() || null,
+                    bankName: data.bankName?.trim() || null,
+                    accountNumber: data.accountNumber?.trim() || null,
+                },
+                include: {
+                    assets: { select: { id: true, name: true, type: true, status: true } },
+                    _count: { select: { assets: true, transactions: true } }
+                },
+            });
+            return this.enrichCompanyData(company);
+        }
+        catch (error) {
+            if (error.code === 'P2002') {
+                const rawField = error.meta?.target?.[0] || '';
+                const fieldLabels = {
+                    name: 'company name',
+                    email: 'email address',
+                    phone: 'phone number',
+                    registrationNumber: 'registration number',
+                    serialId: 'serial ID',
+                };
+                const label = fieldLabels[rawField] || rawField || 'a unique field';
+                throw new common_1.ConflictException(`A company with this ${label} already exists`);
+            }
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ConflictException)
+                throw error;
+            console.error('Company creation error:', error);
+            throw new common_1.InternalServerErrorException('Failed to create company');
+        }
+    }
+    async update(id, data) {
+        try {
+            if (!id || id.trim() === '')
+                throw new common_1.BadRequestException('Company ID is required');
+            const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+            if (!exists)
+                throw new common_1.NotFoundException(`Company with ID ${id} not found`);
+            if (data.name !== undefined && data.name.trim()) {
+                const dupName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' }, NOT: { id } } });
+                if (dupName)
+                    throw new common_1.ConflictException('A company with this name already exists');
+            }
+            if (data.email !== undefined && data.email.trim()) {
+                const dupEmail = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email), NOT: { id } } });
+                if (dupEmail)
+                    throw new common_1.ConflictException('A company with this email address already exists');
+            }
+            if (data.phone !== undefined && data.phone.trim()) {
+                const dupPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim(), NOT: { id } } });
+                if (dupPhone)
+                    throw new common_1.ConflictException('A company with this phone number already exists');
+            }
+            if (data.registrationNumber !== undefined && data.registrationNumber.trim()) {
+                const dupRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim(), NOT: { id } } });
+                if (dupRegNo)
+                    throw new common_1.ConflictException('A company with this registration number already exists');
+            }
+            const updateData = {};
+            if (data.name !== undefined)
+                updateData.name = data.name.trim();
+            if (data.type !== undefined)
+                updateData.type = data.type;
+            if (data.email !== undefined)
+                updateData.email = this.normalizeEmail(data.email);
+            if (data.phone !== undefined)
+                updateData.phone = data.phone?.trim();
+            if (data.status !== undefined)
+                updateData.status = this.normalizeStatus(data.status);
+            if (data.contactPerson !== undefined)
+                updateData.contactPerson = data.contactPerson?.trim();
+            if (data.address !== undefined)
+                updateData.address = data.address?.trim();
+            if (data.commissionRate !== undefined)
+                updateData.commissionRate = parseFloat(data.commissionRate);
+            if (data.paymentTerms !== undefined)
+                updateData.paymentTerms = data.paymentTerms?.trim();
+            if (data.agreementStartDate !== undefined)
+                updateData.agreementStartDate = data.agreementStartDate ? new Date(data.agreementStartDate) : null;
+            if (data.agreementExpiryDate !== undefined)
+                updateData.agreementExpiryDate = data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null;
+            if (data.registrationNumber !== undefined)
+                updateData.registrationNumber = data.registrationNumber?.trim();
+            if (data.notes !== undefined)
+                updateData.notes = data.notes?.trim();
+            if (data.accountName !== undefined || data.bankAccountName !== undefined) {
+                updateData.accountName = (data.accountName || data.bankAccountName)?.trim() || null;
+            }
+            if (data.bankName !== undefined)
+                updateData.bankName = data.bankName?.trim();
+            if (data.accountNumber !== undefined)
+                updateData.accountNumber = data.accountNumber?.trim();
+            const company = await this.prisma.company.update({
+                where: { id },
+                data: updateData,
+                include: {
+                    assets: { select: { id: true, name: true, type: true, status: true } },
+                    _count: { select: { assets: true, transactions: true } }
+                },
+            });
+            return this.enrichCompanyData(company);
+        }
+        catch (error) {
+            if (error.code === 'P2002') {
+                const rawField = error.meta?.target?.[0] || '';
+                const fieldLabels = {
+                    name: 'company name',
+                    email: 'email address',
+                    phone: 'phone number',
+                    registrationNumber: 'registration number',
+                    serialId: 'serial ID',
+                };
+                const label = fieldLabels[rawField] || rawField || 'a unique field';
+                throw new common_1.ConflictException(`A company with this ${label} already exists`);
+            }
+            if (error instanceof common_1.BadRequestException || error instanceof common_1.ConflictException || error instanceof common_1.NotFoundException)
+                throw error;
+            console.error('Company update error:', error);
+            throw new common_1.InternalServerErrorException('Failed to update company');
+        }
+    }
+    async delete(id) {
+        if (!id || id.trim() === '')
+            throw new common_1.BadRequestException('Company ID is required');
+        const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
+        if (!exists)
+            throw new common_1.NotFoundException(`Company with ID ${id} not found`);
+        const activeAssets = await this.prisma.asset.count({ where: { companyId: id, status: 'published' } });
+        if (activeAssets > 0)
+            throw new common_1.BadRequestException(`Cannot delete company with ${activeAssets} active assets.`);
+        const txCount = await this.prisma.transaction.count({ where: { companyId: id } });
+        if (txCount > 0)
+            throw new common_1.BadRequestException(`Cannot delete company with ${txCount} transactions.`);
+        await this.prisma.company.delete({ where: { id } });
+        return { message: 'Company deleted successfully', id };
+    }
+};
+exports.CompaniesService = CompaniesService;
+exports.CompaniesService = CompaniesService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], CompaniesService);
+
+
+/***/ }),
+
+/***/ "./src/companies/dto/create-company.dto.ts":
+/*!*************************************************!*\
+  !*** ./src/companies/dto/create-company.dto.ts ***!
+  \*************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -742,59 +2851,2752 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PrismaService = void 0;
-const common_1 = __webpack_require__(2);
-const client_1 = __webpack_require__(13);
-const adapter_pg_1 = __webpack_require__(14);
-const pg_1 = __webpack_require__(15);
-let PrismaService = class PrismaService extends client_1.PrismaClient {
-    constructor() {
-        const pool = new pg_1.Pool({
-            connectionString: process.env.DATABASE_URL,
-            ssl: { rejectUnauthorized: false },
-            max: 3,
-            min: 1,
-            idleTimeoutMillis: 10000,
-            connectionTimeoutMillis: 20000,
-            keepAlive: true,
-            keepAliveInitialDelayMillis: 5000,
-        });
-        super({
-            adapter: new adapter_pg_1.PrismaPg(pool),
-            log: ["error", "warn"],
-        });
+exports.FilterCompaniesDto = exports.UpdateCompanyDto = exports.CreateCompanyDto = exports.CompanyStatusEnum = exports.CompanyTypeEnum = void 0;
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
+var CompanyTypeEnum;
+(function (CompanyTypeEnum) {
+    CompanyTypeEnum["DEVELOPER"] = "developer";
+    CompanyTypeEnum["REALTOR"] = "realtor";
+    CompanyTypeEnum["PARTNER"] = "partner";
+    CompanyTypeEnum["CONSULTANT"] = "consultant";
+    CompanyTypeEnum["INVESTOR"] = "investor";
+})(CompanyTypeEnum || (exports.CompanyTypeEnum = CompanyTypeEnum = {}));
+var CompanyStatusEnum;
+(function (CompanyStatusEnum) {
+    CompanyStatusEnum["ACTIVE"] = "active";
+    CompanyStatusEnum["PENDING"] = "pending";
+    CompanyStatusEnum["INACTIVE"] = "inactive";
+    CompanyStatusEnum["SUSPENDED"] = "suspended";
+})(CompanyStatusEnum || (exports.CompanyStatusEnum = CompanyStatusEnum = {}));
+class CreateCompanyDto {
+}
+exports.CreateCompanyDto = CreateCompanyDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Company name is required' }),
+    (0, class_validator_1.MinLength)(2, { message: 'Company name must be at least 2 characters' }),
+    (0, class_validator_1.MaxLength)(200, { message: 'Company name must not exceed 200 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsEnum)(CompanyTypeEnum, {
+        message: 'Company type must be one of: developer, realtor, partner, consultant, investor'
+    }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Company type is required' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(50, { message: 'Registration number must not exceed 50 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "registrationNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(CompanyStatusEnum, {
+        message: 'Status must be one of: active, inactive, suspended'
+    }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Contact person name is required' }),
+    (0, class_validator_1.MinLength)(2, { message: 'Contact person name must be at least 2 characters' }),
+    (0, class_validator_1.MaxLength)(100, { message: 'Contact person name must not exceed 100 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "contactPerson", void 0);
+__decorate([
+    (0, class_transformer_1.Transform)(({ value }) => value?.trim().toLowerCase()),
+    (0, class_validator_1.IsEmail)({}, { message: 'Please provide a valid email address' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Email is required' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Phone number is required' }),
+    (0, class_validator_1.Matches)(/^[+]?[\d\s()-]+$/, {
+        message: 'Please provide a valid phone number (digits, spaces, +, -, () allowed)'
+    }),
+    (0, class_validator_1.MinLength)(10, { message: 'Phone number must be at least 10 characters' }),
+    (0, class_validator_1.MaxLength)(20, { message: 'Phone number must not exceed 20 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(500, { message: 'Address must not exceed 500 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "address", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)({}, { message: 'Agreement start date must be a valid date (YYYY-MM-DD)' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Agreement start date is required' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "agreementStartDate", void 0);
+__decorate([
+    (0, class_validator_1.IsDateString)({}, { message: 'Agreement expiry date must be a valid date (YYYY-MM-DD)' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Agreement expiry date is required' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "agreementExpiryDate", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)({}, { message: 'Commission rate must be a number' }),
+    (0, class_validator_1.Min)(0, { message: 'Commission rate cannot be negative' }),
+    (0, class_validator_1.Max)(100, { message: 'Commission rate cannot exceed 100' }),
+    (0, class_validator_1.IsNotEmpty)({ message: 'Commission rate is required' }),
+    __metadata("design:type", Number)
+], CreateCompanyDto.prototype, "commissionRate", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(500, { message: 'Payment terms must not exceed 500 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "paymentTerms", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(100, { message: 'Account name must not exceed 100 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "accountName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(100, { message: 'Bank name must not exceed 100 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "bankName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^[\d]+$/, { message: 'Account number must contain only digits' }),
+    (0, class_validator_1.MinLength)(10, { message: 'Account number must be at least 10 digits' }),
+    (0, class_validator_1.MaxLength)(20, { message: 'Account number must not exceed 20 digits' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "accountNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(1000, { message: 'Notes must not exceed 1000 characters' }),
+    __metadata("design:type", String)
+], CreateCompanyDto.prototype, "notes", void 0);
+class UpdateCompanyDto {
+}
+exports.UpdateCompanyDto = UpdateCompanyDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(2),
+    (0, class_validator_1.MaxLength)(200),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(CompanyTypeEnum, {
+        message: 'Company type must be one of: developer, realtor, partner, consultant, investor'
+    }),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(50),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "registrationNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(CompanyStatusEnum, {
+        message: 'Status must be one of: active, inactive, suspended'
+    }),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(2),
+    (0, class_validator_1.MaxLength)(100),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "contactPerson", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Transform)(({ value }) => value?.trim().toLowerCase()),
+    (0, class_validator_1.IsEmail)({}, { message: 'Please provide a valid email address' }),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^[+]?[\d\s()-]+$/, { message: 'Please provide a valid phone number' }),
+    (0, class_validator_1.MinLength)(10),
+    (0, class_validator_1.MaxLength)(20),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(500),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "address", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "agreementStartDate", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsDateString)(),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "agreementExpiryDate", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
+    (0, class_validator_1.Max)(100),
+    __metadata("design:type", Number)
+], UpdateCompanyDto.prototype, "commissionRate", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(500),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "paymentTerms", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(100),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "accountName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(100),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "bankName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^[\d]+$/),
+    (0, class_validator_1.MinLength)(10),
+    (0, class_validator_1.MaxLength)(20),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "accountNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MaxLength)(1000),
+    __metadata("design:type", String)
+], UpdateCompanyDto.prototype, "notes", void 0);
+class FilterCompaniesDto {
+}
+exports.FilterCompaniesDto = FilterCompaniesDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(CompanyTypeEnum),
+    __metadata("design:type", String)
+], FilterCompaniesDto.prototype, "type", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEnum)(CompanyStatusEnum),
+    __metadata("design:type", String)
+], FilterCompaniesDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], FilterCompaniesDto.prototype, "search", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], FilterCompaniesDto.prototype, "sortBy", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsIn)(['asc', 'desc']),
+    __metadata("design:type", String)
+], FilterCompaniesDto.prototype, "sortOrder", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
+    __metadata("design:type", Number)
+], FilterCompaniesDto.prototype, "page", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
+    (0, class_validator_1.Max)(100),
+    __metadata("design:type", Number)
+], FilterCompaniesDto.prototype, "limit", void 0);
+
+
+/***/ }),
+
+/***/ "./src/dashboard/dashboard.controller.ts":
+/*!***********************************************!*\
+  !*** ./src/dashboard/dashboard.controller.ts ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DashboardController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const dashboard_service_1 = __webpack_require__(/*! ./dashboard.service */ "./src/dashboard/dashboard.service.ts");
+const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
+let DashboardController = class DashboardController {
+    constructor(dashboardService) {
+        this.dashboardService = dashboardService;
     }
-    async onModuleDestroy() {
-        await this.$disconnect();
+    getOverview() {
+        return this.dashboardService.getOverview();
+    }
+    getRecentTransactions() {
+        return this.dashboardService.getRecentTransactions();
     }
 };
-exports.PrismaService = PrismaService;
-exports.PrismaService = PrismaService = __decorate([
+exports.DashboardController = DashboardController;
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)('overview'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], DashboardController.prototype, "getOverview", null);
+__decorate([
+    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
+    (0, common_1.Get)('recent-transactions'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], DashboardController.prototype, "getRecentTransactions", null);
+exports.DashboardController = DashboardController = __decorate([
+    (0, common_1.Controller)('dashboard'),
+    __metadata("design:paramtypes", [typeof (_a = typeof dashboard_service_1.DashboardService !== "undefined" && dashboard_service_1.DashboardService) === "function" ? _a : Object])
+], DashboardController);
+
+
+/***/ }),
+
+/***/ "./src/dashboard/dashboard.module.ts":
+/*!*******************************************!*\
+  !*** ./src/dashboard/dashboard.module.ts ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DashboardModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const dashboard_service_1 = __webpack_require__(/*! ./dashboard.service */ "./src/dashboard/dashboard.service.ts");
+const dashboard_controller_1 = __webpack_require__(/*! ./dashboard.controller */ "./src/dashboard/dashboard.controller.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let DashboardModule = class DashboardModule {
+};
+exports.DashboardModule = DashboardModule;
+exports.DashboardModule = DashboardModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        providers: [dashboard_service_1.DashboardService],
+        controllers: [dashboard_controller_1.DashboardController],
+    })
+], DashboardModule);
+
+
+/***/ }),
+
+/***/ "./src/dashboard/dashboard.service.ts":
+/*!********************************************!*\
+  !*** ./src/dashboard/dashboard.service.ts ***!
+  \********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.DashboardService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let DashboardService = class DashboardService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async getOverview() {
+        const [totalAgents, activeClusters, totalRevenue, totalCommissions, activeAssets, assetTypeCounts, salesVolume,] = await Promise.all([
+            this.prisma.user.count({ where: { role: 'AGENT' } }),
+            this.prisma.cluster.count({ where: { status: 'active' } }),
+            this.prisma.transaction.aggregate({
+                where: { status: 'COMPLETED' },
+                _sum: { totalAmount: true },
+            }),
+            this.prisma.transaction.aggregate({
+                where: { status: 'COMPLETED' },
+                _sum: { totalCommission: true },
+            }),
+            this.prisma.asset.count({ where: { status: 'published' } }),
+            this.prisma.asset.groupBy({
+                by: ['type'],
+                _count: { type: true },
+                where: { type: { not: null } },
+            }),
+            this.prisma.$queryRawUnsafe(`
+        SELECT 
+          TO_CHAR("createdAt", 'YYYY-MM') AS month,
+          COUNT(*) AS sales,
+          SUM("totalAmount") AS revenue
+        FROM "Transaction"
+        WHERE status = 'COMPLETED'
+        GROUP BY month
+        ORDER BY month
+        LIMIT 12
+      `),
+        ]);
+        function calcChange(current, previous) {
+            if (previous === undefined || previous === null)
+                return 'N/A';
+            if (previous === 0)
+                return current > 0 ? '+100.0%' : '0.0%';
+            const change = ((current - previous) / previous) * 100;
+            return `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
+        }
+        const prevAgents = 0;
+        const prevClusters = 0;
+        const prevRevenue = 0;
+        const prevCommissions = 0;
+        const kpis = [
+            {
+                title: "Total Agents",
+                value: totalAgents,
+                icon: "building",
+                trend: "up",
+                change: calcChange(totalAgents, prevAgents),
+            },
+            {
+                title: "Active Clusters",
+                value: activeClusters,
+                icon: "trendingUp",
+                trend: "up",
+                change: calcChange(activeClusters, prevClusters),
+            },
+            {
+                title: "Total Revenue",
+                value: `₦${(totalRevenue._sum.totalAmount || 0).toLocaleString()}`,
+                icon: "dollarSign",
+                trend: "up",
+                change: calcChange(Number(totalRevenue._sum.totalAmount || 0), prevRevenue),
+            },
+            {
+                title: "Total Commissions",
+                value: `₦${(totalCommissions._sum.totalCommission || 0).toLocaleString()}`,
+                icon: "receipt",
+                trend: "up",
+                change: calcChange(Number(totalCommissions._sum.totalCommission || 0), prevCommissions),
+            },
+        ];
+        const colors = ["#4c51bf", "#10b981", "#f59e42", "#e53e3e", "#6b7280"];
+        const assetDistribution = assetTypeCounts.map((item, idx) => ({
+            name: item.type || "Other",
+            value: item._count.type,
+            color: colors[idx % colors.length],
+        }));
+        const salesVolumeData = salesVolume.map((row) => ({
+            month: row.month,
+            sales: Number(row.sales),
+            revenue: Number(row.revenue) / 1000,
+        }));
+        return {
+            kpis,
+            assetDistribution,
+            salesVolume: salesVolumeData,
+        };
+    }
+    async getRecentTransactions() {
+        return this.prisma.transaction.findMany({
+            take: 10,
+            orderBy: { date: 'desc' },
+            include: {
+                asset: { select: { id: true, name: true, type: true } },
+                buyer: { select: { id: true, name: true } },
+                company: { select: { id: true, name: true } },
+                leadAgent: { include: { user: { select: { id: true, name: true } } } },
+                closerAgent: { include: { user: { select: { id: true, name: true } } } },
+            },
+        });
+    }
+};
+exports.DashboardService = DashboardService;
+exports.DashboardService = DashboardService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], DashboardService);
+
+
+/***/ }),
+
+/***/ "./src/freelancers/freelancers.controller.ts":
+/*!***************************************************!*\
+  !*** ./src/freelancers/freelancers.controller.ts ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FreelancersController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const freelancers_service_1 = __webpack_require__(/*! ./freelancers.service */ "./src/freelancers/freelancers.service.ts");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+class CreateFreelancerDto {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "registeredBy", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "registrarName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "registrarType", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "cluster", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateFreelancerDto.prototype, "status", void 0);
+let FreelancersController = class FreelancersController {
+    constructor(freelancersService) {
+        this.freelancersService = freelancersService;
+    }
+    async findAll() {
+        return this.freelancersService.findAll();
+    }
+    async getStats() {
+        return this.freelancersService.getStats();
+    }
+    async getByRegistrar(registrarId) {
+        return this.freelancersService.getFreelancersByRegistrar(registrarId);
+    }
+    async findOne(id) {
+        return this.freelancersService.findById(id);
+    }
+    async create(dto) {
+        return this.freelancersService.create(dto);
+    }
+    async update(id, dto) {
+        return this.freelancersService.update(id, dto);
+    }
+    async remove(id) {
+        return this.freelancersService.delete(id);
+    }
+};
+exports.FreelancersController = FreelancersController;
+__decorate([
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FreelancersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("stats"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], FreelancersController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Get)("by-registrar/:registrarId"),
+    __param(0, (0, common_1.Param)("registrarId")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FreelancersController.prototype, "getByRegistrar", null);
+__decorate([
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FreelancersController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [CreateFreelancerDto]),
+    __metadata("design:returntype", Promise)
+], FreelancersController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_b = typeof Partial !== "undefined" && Partial) === "function" ? _b : Object]),
+    __metadata("design:returntype", Promise)
+], FreelancersController.prototype, "update", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], FreelancersController.prototype, "remove", null);
+exports.FreelancersController = FreelancersController = __decorate([
+    (0, common_1.Controller)("freelancers"),
+    __metadata("design:paramtypes", [typeof (_a = typeof freelancers_service_1.FreelancersService !== "undefined" && freelancers_service_1.FreelancersService) === "function" ? _a : Object])
+], FreelancersController);
+
+
+/***/ }),
+
+/***/ "./src/freelancers/freelancers.module.ts":
+/*!***********************************************!*\
+  !*** ./src/freelancers/freelancers.module.ts ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FreelancersModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const freelancers_controller_1 = __webpack_require__(/*! ./freelancers.controller */ "./src/freelancers/freelancers.controller.ts");
+const freelancers_service_1 = __webpack_require__(/*! ./freelancers.service */ "./src/freelancers/freelancers.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let FreelancersModule = class FreelancersModule {
+};
+exports.FreelancersModule = FreelancersModule;
+exports.FreelancersModule = FreelancersModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [freelancers_controller_1.FreelancersController],
+        providers: [freelancers_service_1.FreelancersService],
+        exports: [freelancers_service_1.FreelancersService],
+    })
+], FreelancersModule);
+
+
+/***/ }),
+
+/***/ "./src/freelancers/freelancers.service.ts":
+/*!************************************************!*\
+  !*** ./src/freelancers/freelancers.service.ts ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.FreelancersService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const bcrypt = __importStar(__webpack_require__(/*! bcrypt */ "bcrypt"));
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let FreelancersService = class FreelancersService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async findAll() {
+        const freelancers = await this.prisma.freelancer.findMany({
+            include: {
+                user: { select: { id: true, email: true, name: true } },
+                cluster: { select: { id: true, name: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+        return freelancers.map(freelancer => ({
+            id: freelancer.id,
+            serialId: freelancer.serialId ?? "",
+            name: freelancer.user?.name ?? "",
+            email: freelancer.user?.email ?? "",
+            registeredBy: freelancer.registeredBy ?? "",
+            registrarName: freelancer.registrarName ?? "",
+            registrarType: freelancer.registrarType ?? "",
+            cluster: freelancer.cluster?.name ?? "",
+            clusterId: freelancer.cluster?.id ?? "",
+            activeDeals: freelancer.activeDeals ?? 0,
+            closedDeals: freelancer.closedDeals ?? 0,
+            totalCommission: freelancer.totalCommission ?? 0,
+            performance: freelancer.closedDeals > 0 ? Math.min(100, Math.round((freelancer.closedDeals / 10) * 100)) : 0,
+            status: freelancer.status?.toLowerCase() ?? "pending",
+        }));
+    }
+    async findById(id) {
+        const freelancer = await this.prisma.freelancer.findUnique({
+            where: { id },
+            include: {
+                user: { select: { id: true, email: true, name: true } },
+                cluster: true,
+            },
+        });
+        if (!freelancer)
+            throw new common_1.NotFoundException(`Freelancer with ID ${id} not found`);
+        return freelancer;
+    }
+    async create(data) {
+        let user = await this.prisma.user.findUnique({ where: { email: data.email } });
+        if (user) {
+            const existing = await this.prisma.freelancer.findUnique({ where: { userId: user.id } });
+            if (existing)
+                throw new common_1.ConflictException('User is already registered as a freelancer');
+        }
+        else {
+            const hashedPassword = await bcrypt.hash('password123', 10);
+            const userSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'USR');
+            user = await this.prisma.user.create({
+                data: { serialId: userSerialId, email: data.email, password: hashedPassword, name: data.name, role: 'FREELANCER' },
+            });
+        }
+        const freelancerSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'FRL');
+        return this.prisma.freelancer.create({
+            data: {
+                serialId: freelancerSerialId,
+                userId: user.id,
+                clusterId: data.cluster || null,
+                status: data.status ? data.status.toUpperCase() : 'PENDING',
+                registeredBy: data.registeredBy || null,
+                registrarName: data.registrarName || null,
+                registrarType: data.registrarType || null,
+                activeDeals: 0,
+                closedDeals: 0,
+                totalCommission: 0,
+            },
+            include: {
+                user: { select: { id: true, email: true, name: true } },
+                cluster: { select: { id: true, name: true } },
+            },
+        });
+    }
+    async update(id, data) {
+        const freelancer = await this.findById(id);
+        if (data.name || data.email) {
+            await this.prisma.user.update({
+                where: { id: freelancer.userId },
+                data: {
+                    ...(data.name ? { name: data.name } : {}),
+                    ...(data.email ? { email: data.email } : {}),
+                },
+            });
+        }
+        const updateData = {};
+        if (data.cluster)
+            updateData.clusterId = data.cluster;
+        if (data.status)
+            updateData.status = data.status.toUpperCase();
+        if (data.registeredBy !== undefined)
+            updateData.registeredBy = data.registeredBy;
+        if (data.registrarName !== undefined)
+            updateData.registrarName = data.registrarName;
+        if (data.registrarType !== undefined)
+            updateData.registrarType = data.registrarType;
+        return this.prisma.freelancer.update({
+            where: { id },
+            data: updateData,
+            include: {
+                user: { select: { id: true, email: true, name: true } },
+                cluster: { select: { id: true, name: true } },
+            },
+        });
+    }
+    async delete(id) {
+        await this.findById(id);
+        await this.prisma.freelancer.delete({ where: { id } });
+        return { message: 'Freelancer deleted successfully', id };
+    }
+    async getStats() {
+        const [total, active, agg] = await Promise.all([
+            this.prisma.freelancer.count(),
+            this.prisma.freelancer.count({ where: { status: 'ACTIVE' } }),
+            this.prisma.freelancer.aggregate({
+                _sum: { totalCommission: true, activeDeals: true, closedDeals: true },
+            }),
+        ]);
+        return {
+            totalFreelancers: total,
+            activeFreelancers: active,
+            totalActiveDeals: agg._sum.activeDeals || 0,
+            totalClosedDeals: agg._sum.closedDeals || 0,
+            totalCommission: agg._sum.totalCommission || 0,
+        };
+    }
+    async getFreelancersByRegistrar(registrarId) {
+        return this.prisma.freelancer.findMany({
+            where: { registeredBy: registrarId },
+            include: {
+                user: { select: { id: true, name: true, email: true } },
+                cluster: { select: { id: true, name: true } },
+            },
+        });
+    }
+};
+exports.FreelancersService = FreelancersService;
+exports.FreelancersService = FreelancersService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], FreelancersService);
+
+
+/***/ }),
+
+/***/ "./src/installments/installments.controller.ts":
+/*!*****************************************************!*\
+  !*** ./src/installments/installments.controller.ts ***!
+  \*****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InstallmentsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const installments_service_1 = __webpack_require__(/*! ./installments.service */ "./src/installments/installments.service.ts");
+class CreateInstallmentPlanDto {
+}
+class SendReminderDto {
+}
+let InstallmentsController = class InstallmentsController {
+    constructor(installmentsService) {
+        this.installmentsService = installmentsService;
+    }
+    async findAll(status) {
+        return this.installmentsService.findAll({ status });
+    }
+    async getStats() {
+        return this.installmentsService.getStats();
+    }
+    async findOne(id) {
+        return this.installmentsService.findById(id);
+    }
+    async getSchedule(id) {
+        return this.installmentsService.getInstallmentSchedule(id);
+    }
+    async create(dto) {
+        return this.installmentsService.create(dto);
+    }
+    async sendReminder(dto) {
+        return this.installmentsService.sendPaymentReminder(dto);
+    }
+    async recordPayment(id, installmentId, body) {
+        return this.installmentsService.recordPayment(id, installmentId, body);
+    }
+    async getUpcoming() {
+        return this.installmentsService.findAll({ status: "upcoming" });
+    }
+    async getOverdue() {
+        return this.installmentsService.findAll({ status: "overdue" });
+    }
+};
+exports.InstallmentsController = InstallmentsController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)("status")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("stats"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)(":id/schedule"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "getSchedule", null);
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [CreateInstallmentPlanDto]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)("reminders/send"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [SendReminderDto]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "sendReminder", null);
+__decorate([
+    (0, common_1.Put)(":id/installments/:installmentId/pay"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Param)("installmentId")),
+    __param(2, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "recordPayment", null);
+__decorate([
+    (0, common_1.Get)("upcoming"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "getUpcoming", null);
+__decorate([
+    (0, common_1.Get)("overdue"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "getOverdue", null);
+exports.InstallmentsController = InstallmentsController = __decorate([
+    (0, common_1.Controller)("installments"),
+    __metadata("design:paramtypes", [typeof (_a = typeof installments_service_1.InstallmentsService !== "undefined" && installments_service_1.InstallmentsService) === "function" ? _a : Object])
+], InstallmentsController);
+
+
+/***/ }),
+
+/***/ "./src/installments/installments.module.ts":
+/*!*************************************************!*\
+  !*** ./src/installments/installments.module.ts ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InstallmentsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const installments_controller_1 = __webpack_require__(/*! ./installments.controller */ "./src/installments/installments.controller.ts");
+const installments_service_1 = __webpack_require__(/*! ./installments.service */ "./src/installments/installments.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
+let InstallmentsModule = class InstallmentsModule {
+};
+exports.InstallmentsModule = InstallmentsModule;
+exports.InstallmentsModule = InstallmentsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
+        controllers: [installments_controller_1.InstallmentsController],
+        providers: [installments_service_1.InstallmentsService],
+        exports: [installments_service_1.InstallmentsService],
+    })
+], InstallmentsModule);
+
+
+/***/ }),
+
+/***/ "./src/installments/installments.service.ts":
+/*!**************************************************!*\
+  !*** ./src/installments/installments.service.ts ***!
+  \**************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InstallmentsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let InstallmentsService = class InstallmentsService {
+    constructor(prisma, notificationService) {
+        this.prisma = prisma;
+        this.notificationService = notificationService;
+    }
+    async findAll(filters) {
+        const where = {};
+        if (filters?.status && filters.status !== 'all') {
+            where.status = filters.status.toUpperCase();
+        }
+        const plans = await this.prisma.installmentPlan.findMany({
+            where,
+            include: {
+                asset: { select: { name: true } },
+                company: { select: { name: true } },
+                leadAgent: { include: { user: { select: { name: true } } } },
+                closerAgent: { include: { user: { select: { name: true } } } },
+                installments: { orderBy: { dueDate: 'asc' } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+        return plans.map(plan => ({
+            id: plan.id,
+            serialId: plan.serialId ?? "",
+            asset: plan.asset?.name ?? "",
+            buyer: plan.buyerName ?? "",
+            buyerEmail: plan.buyerEmail ?? "",
+            buyerPhone: plan.buyerPhone ?? "",
+            totalAmount: plan.totalAmount,
+            downPayment: plan.downPayment,
+            paidAmount: plan.paidAmount,
+            remainingBalance: plan.remainingBalance,
+            numberOfInstallments: plan.numberOfInstallments,
+            completedInstallments: plan.completedInstallments,
+            installmentAmount: plan.installmentAmount,
+            frequency: plan.frequency,
+            startDate: plan.startDate?.toISOString().split("T")[0] ?? "",
+            nextDueDate: plan.nextDueDate?.toISOString().split("T")[0] ?? "",
+            status: plan.status?.toLowerCase(),
+            company: plan.company?.name ?? "",
+            leadAgent: plan.leadAgent?.user?.name ?? "",
+            closerAgent: plan.closerAgent?.user?.name ?? "",
+            installments: plan.installments.map(inst => ({
+                id: inst.id,
+                serialId: inst.serialId ?? "",
+                dueDate: inst.dueDate?.toISOString().split("T")[0] ?? "",
+                amount: inst.amount,
+                paidAmount: inst.paidAmount,
+                status: inst.status?.toLowerCase(),
+                paidDate: inst.paidDate ? inst.paidDate.toISOString().split("T")[0] : null,
+                paymentMethod: inst.paymentMethod ?? "",
+            })),
+        }));
+    }
+    async create(dto) {
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'IPL');
+        return this.prisma.installmentPlan.create({
+            data: {
+                ...dto,
+                serialId,
+                companyId: dto.companyId,
+                remainingBalance: dto.totalAmount - (dto.downPayment || 0),
+                paidAmount: 0,
+                installmentAmount: dto.totalAmount / dto.numberOfInstallments,
+            },
+        });
+    }
+    async findById(id) {
+        const plan = await this.prisma.installmentPlan.findUnique({
+            where: { id },
+            include: {
+                asset: true,
+                leadAgent: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                email: true,
+                            },
+                        },
+                    },
+                },
+                closerAgent: {
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                email: true,
+                            },
+                        },
+                    },
+                },
+                installments: {
+                    orderBy: {
+                        dueDate: "asc",
+                    },
+                },
+            },
+        });
+        if (!plan) {
+            throw new common_1.NotFoundException(`Installment plan with ID ${id} not found`);
+        }
+        return plan;
+    }
+    async getInstallmentSchedule(planId) {
+        const plan = await this.findById(planId);
+        return plan.installments;
+    }
+    async recordPayment(planId, installmentId, data) {
+        const plan = await this.findById(planId);
+        const installment = await this.prisma.installment.findUnique({
+            where: { id: installmentId },
+        });
+        if (!installment) {
+            throw new common_1.NotFoundException(`Installment with ID ${installmentId} not found`);
+        }
+        const updatedInstallment = await this.prisma.installment.update({
+            where: { id: installmentId },
+            data: {
+                paidAmount: installment.paidAmount + data.amount,
+                status: installment.paidAmount + data.amount >= installment.amount ? "PAID" : "PARTIAL",
+                paidDate: new Date(),
+                paymentMethod: data.paymentMethod,
+            },
+        });
+        const newPaidAmount = plan.paidAmount + data.amount;
+        const completedInstallments = await this.prisma.installment.count({
+            where: {
+                installmentPlanId: planId,
+                status: "PAID",
+            },
+        });
+        const nextInstallment = await this.prisma.installment.findFirst({
+            where: {
+                installmentPlanId: planId,
+                status: { in: ["PENDING", "UPCOMING", "OVERDUE"] },
+            },
+            orderBy: {
+                dueDate: "asc",
+            },
+        });
+        const isCompleted = newPaidAmount >= plan.remainingBalance;
+        await this.prisma.installmentPlan.update({
+            where: { id: planId },
+            data: {
+                paidAmount: newPaidAmount,
+                completedInstallments,
+                nextDueDate: nextInstallment?.dueDate || null,
+                status: isCompleted ? "COMPLETED" : "ACTIVE",
+            },
+        });
+        await this.notificationService.notifyInstallmentPaymentRecorded({
+            planId,
+            installmentId,
+            paidAmount: data.amount,
+            paymentMethod: data.paymentMethod,
+            buyerName: plan.buyerName,
+            assetName: plan.asset?.name,
+        });
+        return updatedInstallment;
+    }
+    async sendPaymentReminder(data) {
+        const installment = await this.prisma.installment.findUnique({
+            where: { id: data.installmentId },
+            include: {
+                installmentPlan: {
+                    include: {
+                        asset: { select: { name: true } },
+                        leadAgent: { include: { user: { select: { name: true, email: true } } } },
+                    },
+                },
+            },
+        });
+        if (!installment) {
+            throw new common_1.NotFoundException(`Installment with ID ${data.installmentId} not found`);
+        }
+        const agentEmail = installment.installmentPlan?.leadAgent?.user?.email || 'unknown';
+        console.log(`Sending ${data.method} reminder for asset "${installment.installmentPlan?.asset?.name}" to agent ${agentEmail}`);
+        return {
+            message: "Reminder sent successfully",
+            installmentId: data.installmentId,
+            method: data.method,
+            sentAt: new Date(),
+        };
+    }
+    async getStats() {
+        const [activePlans, completedPlans, totalOutstanding, totalCollected, overduePayments,] = await Promise.all([
+            this.prisma.installmentPlan.count({ where: { status: "ACTIVE" } }),
+            this.prisma.installmentPlan.count({ where: { status: "COMPLETED" } }),
+            this.prisma.installmentPlan.aggregate({
+                where: { status: "ACTIVE" },
+                _sum: {
+                    remainingBalance: true,
+                    paidAmount: true,
+                },
+            }),
+            this.prisma.installmentPlan.aggregate({
+                _sum: {
+                    paidAmount: true,
+                },
+            }),
+            this.prisma.installment.count({
+                where: { status: "OVERDUE" },
+            }),
+        ]);
+        const outstanding = (totalOutstanding._sum.remainingBalance || 0) -
+            (totalOutstanding._sum.paidAmount || 0);
+        return {
+            activePlans,
+            completedPlans,
+            totalOutstanding: outstanding,
+            totalCollected: totalCollected._sum.paidAmount || 0,
+            overduePayments,
+        };
+    }
+    async updateInstallmentStatuses() {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        await this.prisma.installment.updateMany({
+            where: {
+                dueDate: { lt: today },
+                status: { in: ["PENDING", "UPCOMING"] },
+            },
+            data: {
+                status: "OVERDUE",
+            },
+        });
+        const weekFromNow = new Date(today);
+        weekFromNow.setDate(weekFromNow.getDate() + 7);
+        await this.prisma.installment.updateMany({
+            where: {
+                dueDate: { lte: weekFromNow, gte: today },
+                status: "UPCOMING",
+            },
+            data: {
+                status: "PENDING",
+            },
+        });
+    }
+    async generateInstallmentSchedule(planId, data) {
+        const installments = [];
+        const { numberOfInstallments, installmentAmount, frequency, startDate } = data;
+        for (let i = 0; i < numberOfInstallments; i++) {
+            const dueDate = this.calculateDueDate(startDate, frequency, i);
+            installments.push({
+                installmentPlanId: planId,
+                dueDate,
+                amount: installmentAmount,
+                paidAmount: 0,
+                status: i === 0 ? "PENDING" : "UPCOMING",
+            });
+        }
+        await this.prisma.installment.createMany({
+            data: installments,
+        });
+    }
+    calculateDueDate(startDate, frequency, index) {
+        const dueDate = new Date(startDate);
+        switch (frequency.toLowerCase()) {
+            case "weekly":
+                dueDate.setDate(dueDate.getDate() + (index * 7));
+                break;
+            case "bi-weekly":
+                dueDate.setDate(dueDate.getDate() + (index * 14));
+                break;
+            case "monthly":
+                dueDate.setMonth(dueDate.getMonth() + index);
+                break;
+            case "quarterly":
+                dueDate.setMonth(dueDate.getMonth() + (index * 3));
+                break;
+            default:
+                dueDate.setMonth(dueDate.getMonth() + index);
+        }
+        return dueDate;
+    }
+};
+exports.InstallmentsService = InstallmentsService;
+exports.InstallmentsService = InstallmentsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
+], InstallmentsService);
+
+
+/***/ }),
+
+/***/ "./src/investments/investments.controller.ts":
+/*!***************************************************!*\
+  !*** ./src/investments/investments.controller.ts ***!
+  \***************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InvestmentsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const investments_service_1 = __webpack_require__(/*! ./investments.service */ "./src/investments/investments.service.ts");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
+const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
+let InvestmentsController = class InvestmentsController {
+    constructor(svc) {
+        this.svc = svc;
+    }
+    async myInvestments(req) {
+        if (!req.user?.id) {
+            throw new common_1.UnauthorizedException('Missing or invalid auth token.');
+        }
+        return this.svc.findByUser(req.user.id);
+    }
+    async summary(req) {
+        if (!req.user?.id) {
+            throw new common_1.UnauthorizedException('Missing or invalid auth token.');
+        }
+        return this.svc.getInvestmentSummary(req.user.id);
+    }
+    async createInvestment(req, body) {
+        if (!req.user?.id) {
+            throw new common_1.UnauthorizedException('Missing or invalid auth token.');
+        }
+        return this.svc.createInvestorPurchase(req.user.id, body);
+    }
+    async all() {
+        return this.svc.findAll();
+    }
+};
+exports.InvestmentsController = InvestmentsController;
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('me'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], InvestmentsController.prototype, "myInvestments", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Get)('summary'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], InvestmentsController.prototype, "summary", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], InvestmentsController.prototype, "createInvestment", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)('ADMIN'),
+    (0, common_1.Get)(),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], InvestmentsController.prototype, "all", null);
+exports.InvestmentsController = InvestmentsController = __decorate([
+    (0, common_1.Controller)('investments'),
+    __metadata("design:paramtypes", [typeof (_a = typeof investments_service_1.InvestmentsService !== "undefined" && investments_service_1.InvestmentsService) === "function" ? _a : Object])
+], InvestmentsController);
+
+
+/***/ }),
+
+/***/ "./src/investments/investments.module.ts":
+/*!***********************************************!*\
+  !*** ./src/investments/investments.module.ts ***!
+  \***********************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InvestmentsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const investments_controller_1 = __webpack_require__(/*! ./investments.controller */ "./src/investments/investments.controller.ts");
+const investments_service_1 = __webpack_require__(/*! ./investments.service */ "./src/investments/investments.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let InvestmentsModule = class InvestmentsModule {
+};
+exports.InvestmentsModule = InvestmentsModule;
+exports.InvestmentsModule = InvestmentsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [investments_controller_1.InvestmentsController],
+        providers: [investments_service_1.InvestmentsService],
+    })
+], InvestmentsModule);
+
+
+/***/ }),
+
+/***/ "./src/investments/investments.service.ts":
+/*!************************************************!*\
+  !*** ./src/investments/investments.service.ts ***!
+  \************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.InvestmentsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let InvestmentsService = class InvestmentsService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async findByUser(userId) {
+        try {
+            return this.prisma.transaction.findMany({
+                where: { buyerId: userId },
+                include: {
+                    asset: { select: { id: true, name: true, type: true, location: true, images: true } },
+                    company: { select: { id: true, name: true } },
+                    installments: { orderBy: { dueDate: 'asc' } },
+                    installmentPlans: true,
+                },
+                orderBy: { date: 'desc' },
+            });
+        }
+        catch (error) {
+            return this.prisma.transaction.findMany({
+                where: { buyerId: userId },
+                include: {
+                    asset: { select: { id: true, name: true, type: true, location: true, images: true } },
+                    company: { select: { id: true, name: true } },
+                },
+                orderBy: { date: 'desc' },
+            });
+        }
+    }
+    async findAll() {
+        return this.prisma.transaction.findMany({
+            include: {
+                asset: { select: { id: true, name: true, type: true } },
+                buyer: { select: { id: true, name: true, email: true } },
+                company: { select: { id: true, name: true } },
+            },
+            orderBy: { date: 'desc' },
+        });
+    }
+    async getInvestmentSummary(userId) {
+        const agg = await this.prisma.transaction.aggregate({
+            where: { buyerId: userId },
+            _sum: { totalAmount: true },
+            _count: true,
+        });
+        return {
+            totalInvestments: agg._count,
+            totalInvested: agg._sum.totalAmount || 0,
+        };
+    }
+    async createInvestorPurchase(userId, data) {
+        if (!data.amount || data.amount <= 0) {
+            throw new common_1.BadRequestException('Amount must be a positive number.');
+        }
+        if (!data.assetId) {
+            throw new common_1.BadRequestException('assetId is required to record an investment.');
+        }
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'TRN');
+        const transaction = await this.prisma.transaction.create({
+            data: {
+                serialId,
+                buyerId: userId,
+                assetId: data.assetId,
+                totalAmount: data.amount,
+                paymentType: 'OUTRIGHT',
+                leadCommission: 0,
+                closerCommission: 0,
+                totalCommission: 0,
+                ownershipType: 'Full',
+            },
+            include: {
+                asset: { select: { id: true, name: true, type: true, location: true } },
+            },
+        });
+        return transaction;
+    }
+};
+exports.InvestmentsService = InvestmentsService;
+exports.InvestmentsService = InvestmentsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], InvestmentsService);
+
+
+/***/ }),
+
+/***/ "./src/leads/leads.controller.ts":
+/*!***************************************!*\
+  !*** ./src/leads/leads.controller.ts ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b, _c, _d;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LeadsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const leads_service_1 = __webpack_require__(/*! ./leads.service */ "./src/leads/leads.service.ts");
+class CreateLeadDto {
+}
+class AssignLeadsDto {
+}
+class AssignSingleLeadDto {
+}
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AssignSingleLeadDto.prototype, "assignedToId", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], AssignSingleLeadDto.prototype, "clusterId", void 0);
+let LeadsController = class LeadsController {
+    constructor(leadsService) {
+        this.leadsService = leadsService;
+    }
+    async findAll(source, status) {
+        return this.leadsService.findAll({ source, status });
+    }
+    async getStats() {
+        return this.leadsService.getStats();
+    }
+    async findOne(id) {
+        return this.leadsService.findById(id);
+    }
+    async create(dto, req) {
+        const createdById = req?.user?.id;
+        return this.leadsService.create(dto, createdById);
+    }
+    async assignLeads(dto) {
+        return this.leadsService.assignLeads(dto);
+    }
+    async assignSingleLead(id, dto) {
+        return this.leadsService.assignSingleLead(id, dto);
+    }
+    async bulkImport(file, req) {
+        const createdById = req?.user?.id;
+        return this.leadsService.bulkImport(file, createdById);
+    }
+    async updateLeadStatus(id, body) {
+        return this.leadsService.updateLeadStatus(id, body.status);
+    }
+    async update(id, dto) {
+        return this.leadsService.update(id, dto);
+    }
+};
+exports.LeadsController = LeadsController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)("source")),
+    __param(1, (0, common_1.Query)("status")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("stats"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "getStats", null);
+__decorate([
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [CreateLeadDto, Object]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "create", null);
+__decorate([
+    (0, common_1.Post)("assign"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [AssignLeadsDto]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "assignLeads", null);
+__decorate([
+    (0, common_1.Post)(":id/assign"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, AssignSingleLeadDto]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "assignSingleLead", null);
+__decorate([
+    (0, common_1.Post)("bulk-import"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
+    __param(0, (0, common_1.UploadedFile)()),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_c = typeof Express !== "undefined" && (_b = Express.Multer) !== void 0 && _b.File) === "function" ? _c : Object, Object]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "bulkImport", null);
+__decorate([
+    (0, common_1.Put)(":id/status"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "updateLeadStatus", null);
+__decorate([
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_d = typeof Partial !== "undefined" && Partial) === "function" ? _d : Object]),
+    __metadata("design:returntype", Promise)
+], LeadsController.prototype, "update", null);
+exports.LeadsController = LeadsController = __decorate([
+    (0, common_1.Controller)("leads"),
+    __metadata("design:paramtypes", [typeof (_a = typeof leads_service_1.LeadsService !== "undefined" && leads_service_1.LeadsService) === "function" ? _a : Object])
+], LeadsController);
+
+
+/***/ }),
+
+/***/ "./src/leads/leads.module.ts":
+/*!***********************************!*\
+  !*** ./src/leads/leads.module.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LeadsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const leads_controller_1 = __webpack_require__(/*! ./leads.controller */ "./src/leads/leads.controller.ts");
+const leads_service_1 = __webpack_require__(/*! ./leads.service */ "./src/leads/leads.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
+let LeadsModule = class LeadsModule {
+};
+exports.LeadsModule = LeadsModule;
+exports.LeadsModule = LeadsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
+        controllers: [leads_controller_1.LeadsController],
+        providers: [leads_service_1.LeadsService],
+        exports: [leads_service_1.LeadsService],
+    })
+], LeadsModule);
+
+
+/***/ }),
+
+/***/ "./src/leads/leads.service.ts":
+/*!************************************!*\
+  !*** ./src/leads/leads.service.ts ***!
+  \************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LeadsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+const ExcelJS = __importStar(__webpack_require__(/*! exceljs */ "exceljs"));
+let LeadsService = class LeadsService {
+    constructor(prisma, notificationService) {
+        this.prisma = prisma;
+        this.notificationService = notificationService;
+    }
+    async assignLeads(dto) {
+        if (dto.assignmentType === 'all') {
+            await this.prisma.lead.updateMany({
+                where: { id: { in: dto.leadIds } },
+                data: { status: 'available', assignedCluster: null, assignedToId: null },
+            });
+            await this.notificationService.notifyLeadAvailableToAll(dto.leadIds);
+        }
+        else if (dto.assignmentType === 'cluster' && dto.clusterId) {
+            await this.prisma.lead.updateMany({
+                where: { id: { in: dto.leadIds } },
+                data: { status: 'assigned', assignedCluster: dto.clusterId },
+            });
+            await this.notificationService.notifyLeadAssignedToCluster(dto.leadIds, dto.clusterId);
+        }
+        else {
+            throw new common_1.BadRequestException('Invalid assignment type or missing clusterId');
+        }
+        return { message: 'Leads assigned', ...dto };
+    }
+    async findAll(filters) {
+        const where = {};
+        if (filters?.status)
+            where.status = filters.status;
+        if (filters?.assetId)
+            where.assetId = filters.assetId;
+        if (filters?.assignedToId)
+            where.assignedToId = filters.assignedToId;
+        if (filters?.source)
+            where.source = filters.source;
+        return this.prisma.lead.findMany({
+            where,
+            include: {
+                asset: { select: { id: true, name: true, type: true, location: true } },
+                assignedTo: { include: { user: { select: { id: true, name: true } } } },
+                createdBy: { select: { id: true, name: true } },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+    async findById(id) {
+        const lead = await this.prisma.lead.findUnique({
+            where: { id },
+            include: {
+                asset: true,
+                assignedTo: { include: { user: true, cluster: true } },
+                createdBy: { select: { id: true, name: true, email: true } },
+            },
+        });
+        if (!lead)
+            throw new common_1.NotFoundException(`Lead with ID ${id} not found`);
+        return lead;
+    }
+    async create(data, createdById) {
+        if (!data.email)
+            throw new common_1.BadRequestException('Email is required');
+        const resolvedName = (data.name && data.name.trim()) || data.email.split('@')[0];
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'LED');
+        const createdLead = await this.prisma.lead.create({
+            data: {
+                serialId,
+                name: resolvedName,
+                email: data.email,
+                phone: data.phone || null,
+                assetInterest: data.assetInterest || null,
+                budget: data.budget ? parseFloat(data.budget) : null,
+                source: data.source || null,
+                leadSource: data.leadSource || "investor-app",
+                location: data.location || null,
+                notes: data.notes || null,
+                status: data.status || "pending",
+                assignedToId: data.assignedToId || null,
+                assignedCluster: data.assignedCluster || null,
+                createdById,
+                dateReceived: data.dateReceived ? new Date(data.dateReceived) : new Date(),
+            },
+            include: {
+                asset: { select: { id: true, name: true } },
+                assignedTo: { include: { user: { select: { id: true, name: true } } } },
+                createdBy: { select: { id: true, name: true } },
+            },
+        });
+        const source = String(createdLead.leadSource || createdLead.source || '').toLowerCase();
+        if (source.includes('investor')) {
+            await this.notificationService.notifyNewLeadFromInvestor(createdLead.id);
+        }
+        return createdLead;
+    }
+    async update(id, data) {
+        await this.findById(id);
+        const updateData = {};
+        if (data.name !== undefined)
+            updateData.name = data.name;
+        if (data.email !== undefined)
+            updateData.email = data.email;
+        if (data.phone !== undefined)
+            updateData.phone = data.phone;
+        if (data.status !== undefined)
+            updateData.status = data.status;
+        if (data.budget !== undefined)
+            updateData.budget = parseFloat(data.budget);
+        if (data.source !== undefined)
+            updateData.source = data.source;
+        if (data.leadSource !== undefined)
+            updateData.leadSource = data.leadSource;
+        if (data.location !== undefined)
+            updateData.location = data.location;
+        if (data.notes !== undefined)
+            updateData.notes = data.notes;
+        if (data.assetInterest !== undefined)
+            updateData.assetInterest = data.assetInterest;
+        if (data.assignedToId !== undefined)
+            updateData.assignedToId = data.assignedToId;
+        if (data.assignedCluster !== undefined)
+            updateData.assignedCluster = data.assignedCluster;
+        return this.prisma.lead.update({
+            where: { id },
+            data: updateData,
+            include: {
+                asset: { select: { id: true, name: true } },
+                assignedTo: { include: { user: { select: { id: true, name: true } } } },
+            },
+        });
+    }
+    async delete(id) {
+        await this.findById(id);
+        await this.prisma.lead.delete({ where: { id } });
+        return { message: 'Lead deleted successfully', id };
+    }
+    async getStats() {
+        const [total, byStatus] = await Promise.all([
+            this.prisma.lead.count(),
+            this.prisma.lead.groupBy({
+                by: ['status'],
+                _count: true,
+            }),
+        ]);
+        return {
+            total,
+            byStatus: byStatus.map((s) => ({ status: s.status, count: s._count })),
+        };
+    }
+    async assignSingleLead(leadId, dto) {
+        if (!leadId)
+            throw new common_1.BadRequestException('Missing leadId');
+        const updateData = {};
+        if (dto.assignedToId) {
+            updateData.assignedToId = dto.assignedToId;
+            updateData.status = 'assigned';
+        }
+        if (dto.clusterId) {
+            updateData.assignedCluster = dto.clusterId;
+            updateData.status = 'assigned';
+        }
+        if (!updateData.assignedToId && !updateData.assignedCluster) {
+            throw new common_1.BadRequestException('Must provide assignedToId or clusterId');
+        }
+        const lead = await this.prisma.lead.update({
+            where: { id: leadId },
+            data: updateData,
+        });
+        if (dto.clusterId) {
+            await this.notificationService.notifyLeadAssignedToCluster([leadId], dto.clusterId);
+        }
+        return { message: 'Lead assigned', lead };
+    }
+    async updateLeadStatus(id, status) {
+        if (!id)
+            throw new common_1.BadRequestException('Missing leadId');
+        if (!status)
+            throw new common_1.BadRequestException('Missing status');
+        const lead = await this.prisma.lead.update({
+            where: { id },
+            data: { status },
+        });
+        return { message: 'Lead status updated', lead };
+    }
+    async bulkImport(file, createdById) {
+        if (!file)
+            throw new common_1.BadRequestException('No file uploaded');
+        const workbook = new ExcelJS.Workbook();
+        await workbook.xlsx.load(file.buffer);
+        const worksheet = workbook.worksheets[0];
+        if (!worksheet)
+            throw new common_1.BadRequestException('Excel file contains no worksheets');
+        const results = { created: 0, skipped: 0, errors: [] };
+        const headerRow = worksheet.getRow(1);
+        const headers = {};
+        headerRow.eachCell((cell, colNumber) => {
+            headers[colNumber] = String(cell.value || '').trim().toLowerCase();
+        });
+        const getCol = (row, names) => {
+            for (const [colStr, header] of Object.entries(headers)) {
+                if (names.some(n => header.includes(n))) {
+                    const val = row.getCell(parseInt(colStr)).value;
+                    return val ? String(val).trim() : '';
+                }
+            }
+            return '';
+        };
+        for (let rowNum = 2; rowNum <= worksheet.rowCount; rowNum++) {
+            const row = worksheet.getRow(rowNum);
+            if (row.cellCount === 0)
+                continue;
+            const email = getCol(row, ['email']);
+            if (!email) {
+                results.skipped++;
+                continue;
+            }
+            const name = getCol(row, ['name', 'full name']) || email.split('@')[0];
+            const phone = getCol(row, ['phone', 'telephone', 'mobile']);
+            const budget = getCol(row, ['budget']);
+            const location = getCol(row, ['location', 'city', 'address']);
+            const assetInterest = getCol(row, ['asset', 'interest', 'property']);
+            const source = getCol(row, ['source']);
+            const notes = getCol(row, ['notes', 'comment', 'remark']);
+            try {
+                await this.create({ name, email, phone, budget, location, assetInterest, source, leadSource: 'bulk-import', notes }, createdById || '');
+                results.created++;
+            }
+            catch (err) {
+                results.errors.push(`Row ${rowNum}: ${err?.message || 'Unknown error'}`);
+                results.skipped++;
+            }
+        }
+        return { message: `Bulk import complete`, ...results };
+    }
+};
+exports.LeadsService = LeadsService;
+exports.LeadsService = LeadsService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
+], LeadsService);
+
+
+/***/ }),
+
+/***/ "./src/notification/cron.service.ts":
+/*!******************************************!*\
+  !*** ./src/notification/cron.service.ts ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.CronService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const schedule_1 = __webpack_require__(/*! @nestjs/schedule */ "@nestjs/schedule");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const notification_service_1 = __webpack_require__(/*! ./notification.service */ "./src/notification/notification.service.ts");
+let CronService = class CronService {
+    constructor(prisma, notificationService) {
+        this.prisma = prisma;
+        this.notificationService = notificationService;
+    }
+    async sendInstallmentReminders() {
+        const threeDaysFromNow = new Date();
+        threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
+        const upcomingInstallments = await this.prisma.installment.findMany({
+            where: {
+                dueDate: {
+                    gte: new Date(),
+                    lte: threeDaysFromNow,
+                },
+                status: 'PENDING',
+            },
+        });
+        for (const installment of upcomingInstallments) {
+            await this.notificationService.notifyInstallmentDue(installment.id);
+        }
+    }
+    async sendOverdueNotifications() {
+        const overdueInstallments = await this.prisma.installment.findMany({
+            where: {
+                dueDate: { lt: new Date() },
+                status: 'PENDING',
+            },
+        });
+        for (const installment of overdueInstallments) {
+            await this.notificationService.notifyInstallmentOverdue(installment.id);
+            await this.prisma.installment.update({
+                where: { id: installment.id },
+                data: { status: 'OVERDUE' },
+            });
+        }
+    }
+};
+exports.CronService = CronService;
+__decorate([
+    (0, schedule_1.Cron)('0 9 * * *'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CronService.prototype, "sendInstallmentReminders", null);
+__decorate([
+    (0, schedule_1.Cron)('0 10 * * *'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], CronService.prototype, "sendOverdueNotifications", null);
+exports.CronService = CronService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
+], CronService);
+
+
+/***/ }),
+
+/***/ "./src/notification/email-templates.ts":
+/*!*********************************************!*\
+  !*** ./src/notification/email-templates.ts ***!
+  \*********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EmailTemplates = void 0;
+exports.EmailTemplates = {
+    PASSWORD_RESET: {
+        subject: () => 'Reset Your BuyOps Password',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Reset Your BuyOps Password</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>You requested a password reset for your BuyOps account.</p>
+        <p>Click the link below to create a new password:</p>
+        <p>
+          <a href="${data.resetLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Reset Password
+          </a>
+        </p>
+        <p>If you did not request this, please ignore this email.</p>
+        <p>For security reasons, this link will expire shortly.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    NEW_DEVICE_LOGIN: {
+        subject: () => 'New Login Detected on Your BuyOps Account',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Login Detected</h2>
+        <p>We noticed a successful login to your BuyOps account from a new device.</p>
+        <p><strong>Device:</strong> ${data.device || 'Unknown'}<br/>
+           <strong>Location:</strong> ${data.location || 'Unknown'}<br/>
+           <strong>Time:</strong> ${data.timestamp || new Date().toLocaleString()}</p>
+        <p>If this was you, no action is required.</p>
+        <p>If you do not recognise this activity, please reset your password immediately or contact support.</p>
+        <p>Your security matters to us.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    ASSET_PUBLISHED: {
+        subject: (data) => 'Asset Successfully Published',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Asset Successfully Published</h2>
+        <p>This is to confirm that a new asset has been published on BuyOps.</p>
+        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
+           <strong>Company:</strong> ${data.companyName}</p>
+        <p>The asset is now available according to its visibility and distribution settings.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    ASSET_UPDATED: {
+        subject: () => 'Asset Information Updated',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Asset Information Updated</h2>
+        <p>An asset on BuyOps has been updated.</p>
+        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
+           <strong>Updated Fields:</strong> ${data.updatedFields}</p>
+        <p>Please review the changes to ensure accuracy and alignment with current terms.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    NEW_LEAD_FROM_INVESTOR: {
+        subject: () => 'New Lead Assigned to You',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Lead Assigned to You</h2>
+        <p>A new lead has been onboarded and assigned to you.</p>
+        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
+           <strong>Asset Interest:</strong> ${data.assetName}<br/>
+           <strong>Budget:</strong> ₦${(data.budget || 0).toLocaleString()}</p>
+        <p>Please follow up promptly to progress the opportunity.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    LEAD_ASSIGNED_TO_CLUSTER: {
+        subject: () => 'Lead Assigned to Your Cluster',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Lead Assigned to Your Cluster</h2>
+        <p>A lead has been assigned to your cluster.</p>
+        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
+           <strong>Assigned Cluster:</strong> ${data.clusterName}</p>
+        <p>Kindly coordinate follow-up with your team.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    LEAD_AVAILABLE_TO_ALL: {
+        subject: () => 'New Lead Available',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Lead Available</h2>
+        <p>A new lead has been made available to all clusters.</p>
+        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
+           <strong>Asset Interest:</strong> ${data.assetName}</p>
+        <p>Agents may engage based on availability and fit.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    DEAL_CREATED: {
+        subject: () => 'New Deal Created',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>New Deal Created</h2>
+        <p>A new deal has been created on BuyOps.</p>
+        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
+           <strong>Agent:</strong> ${data.agentName}<br/>
+           <strong>Asset:</strong> ${data.assetName}</p>
+        <p>This notification is for administrative oversight.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    DEAL_PAYMENT_READY: {
+        subject: () => 'Deal Ready for Payment Processing',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Deal Ready for Payment Processing</h2>
+        <p>A deal has been marked as Payment Ready.</p>
+        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
+           <strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Payment Type:</strong> ${data.paymentType}</p>
+        <p>Please proceed with payment verification and processing.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    DEAL_CLOSED: {
+        subject: () => 'Deal Successfully Closed',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Deal Successfully Closed</h2>
+        <p>A deal has been successfully closed.</p>
+        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
+           <strong>Asset:</strong> ${data.assetName}<br/>
+           <strong>Commission Status:</strong> ${data.commissionStatus}</p>
+        <p>This transaction will now reflect in reporting and commissions.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    INSTALLMENT_DUE: {
+        subject: () => 'Upcoming Installment Payment Due',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Upcoming Installment Payment Due</h2>
+        <p>This is a reminder that an installment payment is due.</p>
+        <p><strong>Amount Due:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
+        <p>Please ensure payment is completed on or before the due date to avoid penalties.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    INSTALLMENT_OVERDUE: {
+        subject: () => 'Overdue Installment Payment',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Overdue Installment Payment</h2>
+        <p>Your installment payment is now overdue.</p>
+        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Original Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
+        <p style="color: #e53e3e;">Please make payment as soon as possible or contact support if you need assistance.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    PAYMENT_RECEIVED: {
+        subject: () => 'Payment Received Confirmation',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Payment Received Confirmation</h2>
+        <p>We confirm receipt of your recent payment.</p>
+        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
+           <strong>Transaction Reference:</strong> ${data.reference}</p>
+        <p>Thank you for your payment.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    INSTALLMENT_COMPLETED: {
+        subject: () => 'Installment Plan Completed',
+        body: (data) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Installment Plan Completed</h2>
+        <p>Congratulations! Your installment payment plan has been fully completed.</p>
+        <p><strong>Asset:</strong> ${data.assetName}<br/>
+           <strong>Total Paid:</strong> ₦${(data.totalPaid || 0).toLocaleString()}</p>
+        <p>Thank you for completing your investment journey with BuyOps.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    AGENT_INVITATION: {
+        subject: () => 'Welcome to BuyOps - Agent Invitation',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Welcome to BuyOps!</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>You have been invited to join BuyOps as a Sales Agent.</p>
+        <p><strong>Login Credentials:</strong><br/>
+           <strong>Email:</strong> ${recipient.email}<br/>
+           <strong>Temporary Password:</strong> ${data.tempPassword}</p>
+        <p>Please use the credentials above to log in to your account. We recommend changing your password immediately upon first login for security purposes.</p>
+        <p>
+          <a href="${data.loginLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Log In to BuyOps
+          </a>
+        </p>
+        <p>If you have any questions or need assistance, please contact our support team.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+    EMAIL_VERIFICATION: {
+        subject: () => 'Verify Your BuyOps Email Address',
+        body: (data, recipient) => `
+      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+        <h2>Verify Your Email Address</h2>
+        <p>Dear ${recipient.name},</p>
+        <p>Thank you for registering with BuyOps. Please verify your email address by clicking the link below:</p>
+        <p>
+          <a href="${data.verificationLink}" 
+             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
+            Verify Email
+          </a>
+        </p>
+        <p>This verification link will expire in 24 hours.</p>
+        <p>If you did not create this account, please ignore this email.</p>
+        <hr />
+        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
+      </div>
+    `,
+    },
+};
+
+
+/***/ }),
+
+/***/ "./src/notification/email.service.ts":
+/*!*******************************************!*\
+  !*** ./src/notification/email.service.ts ***!
+  \*******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __importStar = (this && this.__importStar) || (function () {
+    var ownKeys = function(o) {
+        ownKeys = Object.getOwnPropertyNames || function (o) {
+            var ar = [];
+            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
+            return ar;
+        };
+        return ownKeys(o);
+    };
+    return function (mod) {
+        if (mod && mod.__esModule) return mod;
+        var result = {};
+        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
+        __setModuleDefault(result, mod);
+        return result;
+    };
+})();
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.EmailService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const nodemailer = __importStar(__webpack_require__(/*! nodemailer */ "nodemailer"));
+let EmailService = class EmailService {
+    constructor() {
+        this.transporter = nodemailer.createTransport({
+            host: process.env.SMTP_HOST,
+            port: parseInt(process.env.SMTP_PORT),
+            auth: {
+                user: process.env.SMTP_USER,
+                pass: process.env.SMTP_PASSWORD,
+            },
+        });
+    }
+    async sendEmail(options) {
+        await this.transporter.sendMail({
+            from: process.env.EMAIL_FROM,
+            to: options.to,
+            subject: options.subject,
+            html: options.html,
+        });
+    }
+};
+exports.EmailService = EmailService;
+exports.EmailService = EmailService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [])
-], PrismaService);
+], EmailService);
 
 
 /***/ }),
-/* 13 */
-/***/ ((module) => {
 
-module.exports = require("@prisma/client");
+/***/ "./src/notification/in-app-templates.ts":
+/*!**********************************************!*\
+  !*** ./src/notification/in-app-templates.ts ***!
+  \**********************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getInAppTemplate = getInAppTemplate;
+function getInAppTemplate(type, data) {
+    switch (type) {
+        case 'deal_created':
+            return {
+                title: 'New Deal Created',
+                message: `A new deal for "${data.assetName || 'an asset'}" worth ₦${(data.totalAmount || 0).toLocaleString()} has been created.`,
+            };
+        case 'payment_ready':
+            return {
+                title: 'Payment Due',
+                message: `Your next installment of ₦${(data.installmentAmount || 0).toLocaleString()} is due on ${data.dueDate || 'the next due date'}.`,
+            };
+        case 'deal_closed':
+            return {
+                title: 'Deal Closed',
+                message: `The deal for "${data.assetName || 'an asset'}" has been successfully closed.`,
+            };
+        default:
+            return {
+                title: 'Notification',
+                message: data.message || 'You have a new notification.',
+            };
+    }
+}
+
 
 /***/ }),
-/* 14 */
-/***/ ((module) => {
 
-module.exports = require("@prisma/adapter-pg");
+/***/ "./src/notification/notification.controller.ts":
+/*!*****************************************************!*\
+  !*** ./src/notification/notification.controller.ts ***!
+  \*****************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotificationController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let NotificationController = class NotificationController {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async getNotifications(req) {
+        return this.prisma.notification.findMany({
+            where: { userId: req.user.id },
+            orderBy: { createdAt: 'desc' },
+            take: 50,
+        });
+    }
+    async getUnreadCount(req) {
+        const count = await this.prisma.notification.count({
+            where: { userId: req.user.id, read: false },
+        });
+        return { count };
+    }
+    async markAsRead(id) {
+        return this.prisma.notification.update({
+            where: { id },
+            data: { read: true },
+        });
+    }
+    async markAllAsRead(req) {
+        return this.prisma.notification.updateMany({
+            where: { userId: req.user.id, read: false },
+            data: { read: true },
+        });
+    }
+    async notifyAdmins(body, req) {
+        const admins = await this.prisma.user.findMany({
+            where: { role: client_1.UserRole.ADMIN },
+            select: { id: true },
+        });
+        if (!admins.length)
+            return { message: 'No admin users found', count: 0 };
+        const validTypes = Object.values(client_1.NotificationType);
+        const notifType = body.type && validTypes.includes(body.type.toUpperCase())
+            ? body.type.toUpperCase()
+            : client_1.NotificationType.INFO;
+        await this.prisma.notification.createMany({
+            data: admins.map((admin) => ({
+                userId: admin.id,
+                title: body.title,
+                message: body.message,
+                type: notifType,
+            })),
+        });
+        return { message: 'Admin(s) notified successfully', count: admins.length };
+    }
+    async deleteNotification(id, req) {
+        await this.prisma.notification.deleteMany({
+            where: { id, userId: req.user.id },
+        });
+        return { message: 'Notification deleted' };
+    }
+    async deleteAllNotifications(req) {
+        await this.prisma.notification.deleteMany({
+            where: { userId: req.user.id },
+        });
+        return { message: 'All notifications deleted' };
+    }
+};
+exports.NotificationController = NotificationController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "getNotifications", null);
+__decorate([
+    (0, common_1.Get)('unread'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "getUnreadCount", null);
+__decorate([
+    (0, common_1.Put)(':id/read'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "markAsRead", null);
+__decorate([
+    (0, common_1.Put)('read-all'),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "markAllAsRead", null);
+__decorate([
+    (0, common_1.Post)('admin'),
+    __param(0, (0, common_1.Body)()),
+    __param(1, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, Object]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "notifyAdmins", null);
+__decorate([
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __param(1, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "deleteNotification", null);
+__decorate([
+    (0, common_1.Delete)(),
+    __param(0, (0, common_1.Request)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationController.prototype, "deleteAllNotifications", null);
+exports.NotificationController = NotificationController = __decorate([
+    (0, common_1.Controller)('notifications'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], NotificationController);
+
 
 /***/ }),
-/* 15 */
-/***/ ((module) => {
 
-module.exports = require("pg");
+/***/ "./src/notification/notification.module.ts":
+/*!*************************************************!*\
+  !*** ./src/notification/notification.module.ts ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotificationModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const notification_controller_1 = __webpack_require__(/*! ./notification.controller */ "./src/notification/notification.controller.ts");
+const notification_service_1 = __webpack_require__(/*! ./notification.service */ "./src/notification/notification.service.ts");
+const sms_service_1 = __webpack_require__(/*! ./sms.service */ "./src/notification/sms.service.ts");
+const email_service_1 = __webpack_require__(/*! ./email.service */ "./src/notification/email.service.ts");
+const cron_service_1 = __webpack_require__(/*! ./cron.service */ "./src/notification/cron.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let NotificationModule = class NotificationModule {
+};
+exports.NotificationModule = NotificationModule;
+exports.NotificationModule = NotificationModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule, config_1.ConfigModule],
+        controllers: [notification_controller_1.NotificationController],
+        providers: [notification_service_1.NotificationService, sms_service_1.SmsService, email_service_1.EmailService, cron_service_1.CronService],
+        exports: [notification_service_1.NotificationService],
+    })
+], NotificationModule);
+
 
 /***/ }),
-/* 16 */
+
+/***/ "./src/notification/notification.service.ts":
+/*!**************************************************!*\
+  !*** ./src/notification/notification.service.ts ***!
+  \**************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -811,13 +5613,13 @@ var NotificationService_1;
 var _a, _b, _c;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.NotificationService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const sms_service_1 = __webpack_require__(17);
-const email_service_1 = __webpack_require__(19);
-const sms_templates_1 = __webpack_require__(21);
-const in_app_templates_1 = __webpack_require__(22);
-const email_templates_1 = __webpack_require__(23);
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const sms_service_1 = __webpack_require__(/*! ./sms.service */ "./src/notification/sms.service.ts");
+const email_service_1 = __webpack_require__(/*! ./email.service */ "./src/notification/email.service.ts");
+const sms_templates_1 = __webpack_require__(/*! ./sms-templates */ "./src/notification/sms-templates.ts");
+const in_app_templates_1 = __webpack_require__(/*! ./in-app-templates */ "./src/notification/in-app-templates.ts");
+const email_templates_1 = __webpack_require__(/*! ./email-templates */ "./src/notification/email-templates.ts");
 const ADMIN_AND_SALES_ROLES = ['ADMIN', 'TEAM_LEAD', 'AGENT'];
 let NotificationService = NotificationService_1 = class NotificationService {
     constructor(prisma, smsService, emailService) {
@@ -1637,7 +6439,36 @@ exports.NotificationService = NotificationService = NotificationService_1 = __de
 
 
 /***/ }),
-/* 17 */
+
+/***/ "./src/notification/sms-templates.ts":
+/*!*******************************************!*\
+  !*** ./src/notification/sms-templates.ts ***!
+  \*******************************************/
+/***/ ((__unused_webpack_module, exports) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.getSmsTemplate = getSmsTemplate;
+function getSmsTemplate(type, data) {
+    switch (type) {
+        case 'deal_created':
+            return `BuyOps: A new deal for ${data.assetName || 'an asset'} has been created. Amount: ₦${(data.totalAmount || 0).toLocaleString()}`;
+        case 'payment_ready':
+            return `BuyOps: Payment of ₦${(data.installmentAmount || 0).toLocaleString()} is due on ${data.dueDate || 'the next due date'}.`;
+        case 'deal_closed':
+            return `BuyOps: The deal for ${data.assetName || 'an asset'} has been closed successfully.`;
+        default:
+            return `BuyOps Notification: ${data.message || 'You have a new notification.'}`;
+    }
+}
+
+
+/***/ }),
+
+/***/ "./src/notification/sms.service.ts":
+/*!*****************************************!*\
+  !*** ./src/notification/sms.service.ts ***!
+  \*****************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -1657,9 +6488,9 @@ var SmsService_1;
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.SmsService = void 0;
-const common_1 = __webpack_require__(2);
-const config_1 = __webpack_require__(6);
-const twilio_1 = __importDefault(__webpack_require__(18));
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const twilio_1 = __importDefault(__webpack_require__(/*! twilio */ "twilio"));
 let SmsService = SmsService_1 = class SmsService {
     constructor(configService) {
         this.configService = configService;
@@ -1705,461 +6536,11 @@ exports.SmsService = SmsService = SmsService_1 = __decorate([
 
 
 /***/ }),
-/* 18 */
-/***/ ((module) => {
 
-module.exports = require("twilio");
-
-/***/ }),
-/* 19 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EmailService = void 0;
-const common_1 = __webpack_require__(2);
-const nodemailer = __importStar(__webpack_require__(20));
-let EmailService = class EmailService {
-    constructor() {
-        this.transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: parseInt(process.env.SMTP_PORT),
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASSWORD,
-            },
-        });
-    }
-    async sendEmail(options) {
-        await this.transporter.sendMail({
-            from: process.env.EMAIL_FROM,
-            to: options.to,
-            subject: options.subject,
-            html: options.html,
-        });
-    }
-};
-exports.EmailService = EmailService;
-exports.EmailService = EmailService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [])
-], EmailService);
-
-
-/***/ }),
-/* 20 */
-/***/ ((module) => {
-
-module.exports = require("nodemailer");
-
-/***/ }),
-/* 21 */
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getSmsTemplate = getSmsTemplate;
-function getSmsTemplate(type, data) {
-    switch (type) {
-        case 'deal_created':
-            return `BuyOps: A new deal for ${data.assetName || 'an asset'} has been created. Amount: ₦${(data.totalAmount || 0).toLocaleString()}`;
-        case 'payment_ready':
-            return `BuyOps: Payment of ₦${(data.installmentAmount || 0).toLocaleString()} is due on ${data.dueDate || 'the next due date'}.`;
-        case 'deal_closed':
-            return `BuyOps: The deal for ${data.assetName || 'an asset'} has been closed successfully.`;
-        default:
-            return `BuyOps Notification: ${data.message || 'You have a new notification.'}`;
-    }
-}
-
-
-/***/ }),
-/* 22 */
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getInAppTemplate = getInAppTemplate;
-function getInAppTemplate(type, data) {
-    switch (type) {
-        case 'deal_created':
-            return {
-                title: 'New Deal Created',
-                message: `A new deal for "${data.assetName || 'an asset'}" worth ₦${(data.totalAmount || 0).toLocaleString()} has been created.`,
-            };
-        case 'payment_ready':
-            return {
-                title: 'Payment Due',
-                message: `Your next installment of ₦${(data.installmentAmount || 0).toLocaleString()} is due on ${data.dueDate || 'the next due date'}.`,
-            };
-        case 'deal_closed':
-            return {
-                title: 'Deal Closed',
-                message: `The deal for "${data.assetName || 'an asset'}" has been successfully closed.`,
-            };
-        default:
-            return {
-                title: 'Notification',
-                message: data.message || 'You have a new notification.',
-            };
-    }
-}
-
-
-/***/ }),
-/* 23 */
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.EmailTemplates = void 0;
-exports.EmailTemplates = {
-    PASSWORD_RESET: {
-        subject: () => 'Reset Your BuyOps Password',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Reset Your BuyOps Password</h2>
-        <p>Dear ${recipient.name},</p>
-        <p>You requested a password reset for your BuyOps account.</p>
-        <p>Click the link below to create a new password:</p>
-        <p>
-          <a href="${data.resetLink}" 
-             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Reset Password
-          </a>
-        </p>
-        <p>If you did not request this, please ignore this email.</p>
-        <p>For security reasons, this link will expire shortly.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    NEW_DEVICE_LOGIN: {
-        subject: () => 'New Login Detected on Your BuyOps Account',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Login Detected</h2>
-        <p>We noticed a successful login to your BuyOps account from a new device.</p>
-        <p><strong>Device:</strong> ${data.device || 'Unknown'}<br/>
-           <strong>Location:</strong> ${data.location || 'Unknown'}<br/>
-           <strong>Time:</strong> ${data.timestamp || new Date().toLocaleString()}</p>
-        <p>If this was you, no action is required.</p>
-        <p>If you do not recognise this activity, please reset your password immediately or contact support.</p>
-        <p>Your security matters to us.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    ASSET_PUBLISHED: {
-        subject: (data) => 'Asset Successfully Published',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Asset Successfully Published</h2>
-        <p>This is to confirm that a new asset has been published on BuyOps.</p>
-        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
-           <strong>Company:</strong> ${data.companyName}</p>
-        <p>The asset is now available according to its visibility and distribution settings.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    ASSET_UPDATED: {
-        subject: () => 'Asset Information Updated',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Asset Information Updated</h2>
-        <p>An asset on BuyOps has been updated.</p>
-        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
-           <strong>Updated Fields:</strong> ${data.updatedFields}</p>
-        <p>Please review the changes to ensure accuracy and alignment with current terms.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    NEW_LEAD_FROM_INVESTOR: {
-        subject: () => 'New Lead Assigned to You',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Lead Assigned to You</h2>
-        <p>A new lead has been onboarded and assigned to you.</p>
-        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
-           <strong>Asset Interest:</strong> ${data.assetName}<br/>
-           <strong>Budget:</strong> ₦${(data.budget || 0).toLocaleString()}</p>
-        <p>Please follow up promptly to progress the opportunity.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    LEAD_ASSIGNED_TO_CLUSTER: {
-        subject: () => 'Lead Assigned to Your Cluster',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Lead Assigned to Your Cluster</h2>
-        <p>A lead has been assigned to your cluster.</p>
-        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
-           <strong>Assigned Cluster:</strong> ${data.clusterName}</p>
-        <p>Kindly coordinate follow-up with your team.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    LEAD_AVAILABLE_TO_ALL: {
-        subject: () => 'New Lead Available',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Lead Available</h2>
-        <p>A new lead has been made available to all clusters.</p>
-        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
-           <strong>Asset Interest:</strong> ${data.assetName}</p>
-        <p>Agents may engage based on availability and fit.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    DEAL_CREATED: {
-        subject: () => 'New Deal Created',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Deal Created</h2>
-        <p>A new deal has been created on BuyOps.</p>
-        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
-           <strong>Agent:</strong> ${data.agentName}<br/>
-           <strong>Asset:</strong> ${data.assetName}</p>
-        <p>This notification is for administrative oversight.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    DEAL_PAYMENT_READY: {
-        subject: () => 'Deal Ready for Payment Processing',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Deal Ready for Payment Processing</h2>
-        <p>A deal has been marked as Payment Ready.</p>
-        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
-           <strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Payment Type:</strong> ${data.paymentType}</p>
-        <p>Please proceed with payment verification and processing.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    DEAL_CLOSED: {
-        subject: () => 'Deal Successfully Closed',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Deal Successfully Closed</h2>
-        <p>A deal has been successfully closed.</p>
-        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
-           <strong>Asset:</strong> ${data.assetName}<br/>
-           <strong>Commission Status:</strong> ${data.commissionStatus}</p>
-        <p>This transaction will now reflect in reporting and commissions.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    INSTALLMENT_DUE: {
-        subject: () => 'Upcoming Installment Payment Due',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Upcoming Installment Payment Due</h2>
-        <p>This is a reminder that an installment payment is due.</p>
-        <p><strong>Amount Due:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
-        <p>Please ensure payment is completed on or before the due date to avoid penalties.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    INSTALLMENT_OVERDUE: {
-        subject: () => 'Overdue Installment Payment',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Overdue Installment Payment</h2>
-        <p>Your installment payment is now overdue.</p>
-        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Original Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
-        <p style="color: #e53e3e;">Please make payment as soon as possible or contact support if you need assistance.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    PAYMENT_RECEIVED: {
-        subject: () => 'Payment Received Confirmation',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Payment Received Confirmation</h2>
-        <p>We confirm receipt of your recent payment.</p>
-        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Transaction Reference:</strong> ${data.reference}</p>
-        <p>Thank you for your payment.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    INSTALLMENT_COMPLETED: {
-        subject: () => 'Installment Plan Completed',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Installment Plan Completed</h2>
-        <p>Congratulations! Your installment payment plan has been fully completed.</p>
-        <p><strong>Asset:</strong> ${data.assetName}<br/>
-           <strong>Total Paid:</strong> ₦${(data.totalPaid || 0).toLocaleString()}</p>
-        <p>Thank you for completing your investment journey with BuyOps.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    AGENT_INVITATION: {
-        subject: () => 'Welcome to BuyOps - Agent Invitation',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Welcome to BuyOps!</h2>
-        <p>Dear ${recipient.name},</p>
-        <p>You have been invited to join BuyOps as a Sales Agent.</p>
-        <p><strong>Login Credentials:</strong><br/>
-           <strong>Email:</strong> ${recipient.email}<br/>
-           <strong>Temporary Password:</strong> ${data.tempPassword}</p>
-        <p>Please use the credentials above to log in to your account. We recommend changing your password immediately upon first login for security purposes.</p>
-        <p>
-          <a href="${data.loginLink}" 
-             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Log In to BuyOps
-          </a>
-        </p>
-        <p>If you have any questions or need assistance, please contact our support team.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-    EMAIL_VERIFICATION: {
-        subject: () => 'Verify Your BuyOps Email Address',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Verify Your Email Address</h2>
-        <p>Dear ${recipient.name},</p>
-        <p>Thank you for registering with BuyOps. Please verify your email address by clicking the link below:</p>
-        <p>
-          <a href="${data.verificationLink}" 
-             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Verify Email
-          </a>
-        </p>
-        <p>This verification link will expire in 24 hours.</p>
-        <p>If you did not create this account, please ignore this email.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
-    },
-};
-
-
-/***/ }),
-/* 24 */
-/***/ ((module) => {
-
-module.exports = require("bcrypt");
-
-/***/ }),
-/* 25 */
-/***/ ((module) => {
-
-module.exports = require("speakeasy");
-
-/***/ }),
-/* 26 */
-/***/ ((module) => {
-
-module.exports = require("qrcode");
-
-/***/ }),
-/* 27 */
-/***/ ((__unused_webpack_module, exports) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.generateSerialId = generateSerialId;
-const MODEL_MAP = {
-    USR: 'user',
-    CMP: 'company',
-    AST: 'asset',
-    LED: 'lead',
-    AGT: 'agent',
-    FRL: 'freelancer',
-    CLT: 'cluster',
-    TRN: 'transaction',
-    IPL: 'installmentPlan',
-    INS: 'installment',
-    COM: 'commission',
-};
-async function generateSerialId(prisma, prefix) {
-    const model = MODEL_MAP[prefix];
-    const count = await prisma[model].count();
-    const serial = String(count + 1).padStart(4, '0');
-    return `BO-${prefix}-${serial}`;
-}
-
-
-/***/ }),
-/* 28 */
+/***/ "./src/payments/payments.controller.ts":
+/*!*********************************************!*\
+  !*** ./src/payments/payments.controller.ts ***!
+  \*********************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -2172,432 +6553,323 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b, _c, _d;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PaymentsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const payments_service_1 = __webpack_require__(/*! ./payments.service */ "./src/payments/payments.service.ts");
+class InitializePaymentDto {
+}
+__decorate([
+    (0, class_validator_1.IsIn)(['paystack', 'flutterwave']),
+    __metadata("design:type", typeof (_a = typeof payments_service_1.PaymentProvider !== "undefined" && payments_service_1.PaymentProvider) === "function" ? _a : Object)
+], InitializePaymentDto.prototype, "provider", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(1),
+    __metadata("design:type", Number)
+], InitializePaymentDto.prototype, "amount", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "currency", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "callbackUrl", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "reference", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsObject)(),
+    __metadata("design:type", typeof (_b = typeof Record !== "undefined" && Record) === "function" ? _b : Object)
+], InitializePaymentDto.prototype, "metadata", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], InitializePaymentDto.prototype, "title", void 0);
+let PaymentsController = class PaymentsController {
+    constructor(paymentsService) {
+        this.paymentsService = paymentsService;
+    }
+    getProviders() {
+        return this.paymentsService.getProviderConfig();
+    }
+    initializePayment(payload) {
+        return this.paymentsService.initializePayment(payload);
+    }
+    verifyPayment(provider, reference) {
+        return this.paymentsService.verifyPayment(provider, reference);
+    }
+};
+exports.PaymentsController = PaymentsController;
+__decorate([
+    (0, common_1.Get)('providers'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "getProviders", null);
+__decorate([
+    (0, common_1.Post)('initialize'),
+    __param(0, (0, common_1.Body)(new common_1.ValidationPipe({ transform: true }))),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [InitializePaymentDto]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "initializePayment", null);
+__decorate([
+    (0, common_1.Get)('verify'),
+    __param(0, (0, common_1.Query)('provider')),
+    __param(1, (0, common_1.Query)('reference')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_d = typeof payments_service_1.PaymentProvider !== "undefined" && payments_service_1.PaymentProvider) === "function" ? _d : Object, String]),
+    __metadata("design:returntype", void 0)
+], PaymentsController.prototype, "verifyPayment", null);
+exports.PaymentsController = PaymentsController = __decorate([
+    (0, common_1.Controller)('payments'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:paramtypes", [typeof (_c = typeof payments_service_1.PaymentsService !== "undefined" && payments_service_1.PaymentsService) === "function" ? _c : Object])
+], PaymentsController);
+
+
+/***/ }),
+
+/***/ "./src/payments/payments.module.ts":
+/*!*****************************************!*\
+  !*** ./src/payments/payments.module.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PaymentsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+const payments_controller_1 = __webpack_require__(/*! ./payments.controller */ "./src/payments/payments.controller.ts");
+const payments_service_1 = __webpack_require__(/*! ./payments.service */ "./src/payments/payments.service.ts");
+let PaymentsModule = class PaymentsModule {
+};
+exports.PaymentsModule = PaymentsModule;
+exports.PaymentsModule = PaymentsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [config_1.ConfigModule],
+        controllers: [payments_controller_1.PaymentsController],
+        providers: [payments_service_1.PaymentsService],
+        exports: [payments_service_1.PaymentsService],
+    })
+], PaymentsModule);
+
+
+/***/ }),
+
+/***/ "./src/payments/payments.service.ts":
+/*!******************************************!*\
+  !*** ./src/payments/payments.service.ts ***!
+  \******************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var PaymentsService_1;
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UsersService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const client_1 = __webpack_require__(13);
-let UsersService = class UsersService {
-    constructor(prisma) {
-        this.prisma = prisma;
+exports.PaymentsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
+let PaymentsService = PaymentsService_1 = class PaymentsService {
+    constructor(configService) {
+        this.configService = configService;
+        this.logger = new common_1.Logger(PaymentsService_1.name);
     }
-    async findAll({ role, status, search } = {}) {
-        let where = {};
-        if (role && Object.values(client_1.UserRole).includes(role)) {
-            where.role = role;
-        }
-        if (status) {
-            where.status = status;
-        }
-        if (search) {
-            where.name = { contains: search, mode: 'insensitive' };
-        }
-        return this.prisma.user.findMany({
-            where,
-            select: {
-                id: true,
-                serialId: true,
-                email: true,
-                name: true,
-                role: true,
-                status: true,
-                phone: true,
-                createdAt: true,
-                agentProfile: {
-                    select: {
-                        id: true,
-                        closedDeals: true,
-                        totalCommission: true,
-                        status: true,
-                        cluster: {
-                            select: {
-                                id: true,
-                                name: true,
-                            },
-                        },
-                    },
-                },
-                freelancerProfile: {
-                    select: {
-                        id: true,
-                        activeDeals: true,
-                        closedDeals: true,
-                        totalCommission: true,
-                        registrarName: true,
-                        registrarType: true,
-                        status: true,
-                        cluster: {
-                            select: {
-                                id: true,
-                                name: true,
-                            },
-                        },
-                    },
-                },
-                managedClusters: {
-                    select: {
-                        id: true,
-                        name: true,
-                        code: true,
-                        status: true,
-                        location: true,
-                    },
-                },
-                transactions: {
-                    select: {
-                        id: true,
-                        totalAmount: true,
-                        status: true,
-                        date: true,
-                        asset: {
-                            select: {
-                                id: true,
-                                name: true,
-                                type: true,
-                                location: true,
-                            },
-                        },
-                    },
-                    orderBy: { date: 'desc' },
-                    take: 5,
-                },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-    }
-    async findById(id) {
-        const user = await this.prisma.user.findUnique({
-            where: { id },
-            include: {
-                agentProfile: {
-                    include: {
-                        cluster: true,
-                        assignedLeads: {
-                            orderBy: { createdAt: 'desc' },
-                            take: 50,
-                        },
-                        leadTransactions: {
-                            orderBy: { date: 'desc' },
-                            take: 20,
-                        },
-                        closerTransactions: {
-                            orderBy: { date: 'desc' },
-                            take: 20,
-                        },
-                    },
-                },
-                freelancerProfile: {
-                    include: { cluster: true },
-                },
-                notifications: { orderBy: { createdAt: 'desc' }, take: 10 },
-            },
-        });
-        if (!user) {
-            throw new common_1.NotFoundException(`User with ID ${id} not found`);
-        }
-        return user;
-    }
-    async getUserTransactions(userId) {
-        return this.prisma.transaction.findMany({
-            where: { buyerId: userId },
-            include: {
-                asset: {
-                    select: { id: true, name: true, type: true, location: true },
-                },
-                leadAgent: { include: { user: { select: { id: true, name: true } } } },
-                closerAgent: { include: { user: { select: { id: true, name: true } } } },
-                installments: true,
-            },
-            orderBy: { date: 'desc' },
-        });
-    }
-    async getUserStats(userId) {
-        const user = await this.prisma.user.findUnique({ where: { id: userId } });
-        if (!user)
-            throw new common_1.NotFoundException('User not found');
-        if (user.role === 'AGENT') {
-            const agent = await this.prisma.agent.findUnique({ where: { userId } });
-            if (!agent)
-                return { closedDeals: 0, totalCommission: 0, assignedLeads: 0 };
-            const [leadCount, leadTxCount, closerTxCount] = await Promise.all([
-                this.prisma.lead.count({ where: { assignedToId: agent.id } }),
-                this.prisma.transaction.count({ where: { leadAgentId: agent.id, status: 'COMPLETED' } }),
-                this.prisma.transaction.count({ where: { closerAgentId: agent.id, status: 'COMPLETED' } }),
-            ]);
-            return {
-                assignedLeads: leadCount,
-                closedDeals: leadTxCount + closerTxCount,
-                totalCommission: agent.totalCommission,
-            };
-        }
-        if (user.role === 'INVESTOR') {
-            const stats = await this.prisma.transaction.aggregate({
-                where: { buyerId: userId },
-                _sum: { totalAmount: true },
-                _count: true,
-            });
-            return {
-                totalInvested: stats._sum.totalAmount || 0,
-                totalTransactions: stats._count,
-            };
-        }
-        const [totalUsers, totalTransactions, revenueAgg] = await Promise.all([
-            this.prisma.user.count(),
-            this.prisma.transaction.count({ where: { status: 'COMPLETED' } }),
-            this.prisma.transaction.aggregate({
-                where: { status: 'COMPLETED' },
-                _sum: { totalAmount: true },
-            }),
-        ]);
+    getProviderConfig() {
+        const paystackConfigured = Boolean(this.configService.get('PAYSTACK_SECRET_KEY'));
+        const flutterwaveConfigured = Boolean(this.configService.get('FLUTTERWAVE_SECRET_KEY'));
         return {
-            totalUsers,
-            totalTransactions,
-            totalRevenue: revenueAgg._sum.totalAmount || 0,
+            paystack: {
+                configured: paystackConfigured,
+                publicKey: this.configService.get('PAYSTACK_PUBLIC_KEY') || null,
+            },
+            flutterwave: {
+                configured: flutterwaveConfigured,
+                publicKey: this.configService.get('FLUTTERWAVE_PUBLIC_KEY') || null,
+            },
         };
     }
-    async updateUser(id, dto) {
-        const updateData = {};
-        if (dto.name !== undefined)
-            updateData.name = dto.name;
-        if (dto.email !== undefined)
-            updateData.email = dto.email;
-        if (dto.phone !== undefined)
-            updateData.phone = dto.phone;
-        if (dto.role !== undefined)
-            updateData.role = dto.role;
-        if (dto.timezone !== undefined)
-            updateData.timezone = dto.timezone;
-        if (dto.dateFormat !== undefined)
-            updateData.dateFormat = dto.dateFormat;
-        if (dto.currency !== undefined)
-            updateData.currency = dto.currency;
-        if (dto.emailNotifications !== undefined)
-            updateData.emailNotifications = dto.emailNotifications;
-        if (dto.pushNotifications !== undefined)
-            updateData.pushNotifications = dto.pushNotifications;
-        if (dto.transactionAlerts !== undefined)
-            updateData.transactionAlerts = dto.transactionAlerts;
-        if (dto.weeklyReports !== undefined)
-            updateData.weeklyReports = dto.weeklyReports;
-        if (dto.agentUpdates !== undefined)
-            updateData.agentUpdates = dto.agentUpdates;
-        if (dto.gender !== undefined)
-            updateData.gender = dto.gender;
-        if (dto.dateOfBirth !== undefined)
-            updateData.dateOfBirth = dto.dateOfBirth ? new Date(dto.dateOfBirth) : null;
-        if (dto.homeAddress !== undefined)
-            updateData.homeAddress = dto.homeAddress;
-        if (dto.nin !== undefined)
-            updateData.nin = dto.nin;
-        if (dto.stateOfOrigin !== undefined)
-            updateData.stateOfOrigin = dto.stateOfOrigin;
-        if (dto.dateOfRecruitment !== undefined)
-            updateData.dateOfRecruitment = dto.dateOfRecruitment ? new Date(dto.dateOfRecruitment) : null;
-        if (dto.kinFullName !== undefined)
-            updateData.kinFullName = dto.kinFullName;
-        if (dto.kinPhoneNumber !== undefined)
-            updateData.kinPhoneNumber = dto.kinPhoneNumber;
-        if (dto.kinRelationship !== undefined)
-            updateData.kinRelationship = dto.kinRelationship;
-        if (dto.kinAddress !== undefined)
-            updateData.kinAddress = dto.kinAddress;
-        if (dto.bankName !== undefined)
-            updateData.bankName = dto.bankName;
-        if (dto.accountNumber !== undefined)
-            updateData.accountNumber = dto.accountNumber;
-        if (dto.beneficiaryName !== undefined)
-            updateData.beneficiaryName = dto.beneficiaryName;
-        return this.prisma.user.update({ where: { id }, data: updateData });
-    }
-    async findByEmail(email) {
-        return this.prisma.user.findUnique({ where: { email } });
-    }
-    async getUserActivity(id, limit) {
-        return this.prisma.notification.findMany({ where: { userId: id }, take: limit, orderBy: { createdAt: 'desc' } });
-    }
-    async getUserLeads(id) {
-        return this.prisma.lead.findMany({ where: { assignedToId: id } });
-    }
-    async createUser(dto) {
-        if (!dto.status || !['ACTIVE', 'INACTIVE', 'PENDING'].includes(dto.status.toUpperCase())) {
-            throw new Error('User status is required and must be one of: ACTIVE, INACTIVE, PENDING');
+    async initializePayment(payload) {
+        if (payload.provider === 'paystack') {
+            return this.initializePaystackPayment(payload);
         }
-        return this.prisma.user.create({ data: { ...dto, status: dto.status.toUpperCase() } });
+        return this.initializeFlutterwavePayment(payload);
     }
-    async updateUserRole(id, role) {
-        if (!Object.values(client_1.UserRole).includes(role)) {
-            throw new Error('Invalid role');
+    async verifyPayment(provider, reference) {
+        if (provider === 'paystack') {
+            return this.verifyPaystackPayment(reference);
         }
-        return this.prisma.user.update({ where: { id }, data: { role: role } });
+        return this.verifyFlutterwavePayment(reference);
     }
-    async updateUserPassword(id, newPassword) {
-        return this.prisma.user.update({ where: { id }, data: { password: newPassword } });
-    }
-    async deactivateUser(id) {
-        throw new Error('User model does not have a status field');
-    }
-    async reactivateUser(id) {
-        throw new Error('User model does not have a status field');
-    }
-    async deleteUser(id) {
-        return this.prisma.user.delete({ where: { id } });
-    }
-    async getUsersByRole(role) {
-        if (!Object.values(client_1.UserRole).includes(role)) {
-            throw new Error('Invalid role');
+    async initializePaystackPayment(payload) {
+        const secretKey = this.configService.get('PAYSTACK_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('PAYSTACK_SECRET_KEY is not configured');
         }
-        return this.prisma.user.findMany({ where: { role: role } });
-    }
-    async getUserDashboard(id) {
-        return { userId: id, dashboard: 'stub' };
-    }
-    async getAllAgents() {
-        return this.prisma.user.findMany({ where: { role: client_1.UserRole.AGENT } });
-    }
-    async getAllInvestors() {
-        return this.prisma.user.findMany({ where: { role: client_1.UserRole.INVESTOR } });
-    }
-    async searchUsers(query, role) {
-        let where = {
-            OR: [
-                { name: { contains: query, mode: 'insensitive' } },
-                { email: { contains: query, mode: 'insensitive' } },
-            ],
-        };
-        if (role && Object.values(client_1.UserRole).includes(role)) {
-            where.role = role;
-        }
-        return this.prisma.user.findMany({ where });
-    }
-    async getUserCountByRole() {
-        return this.prisma.user.groupBy({ by: ['role'], _count: { role: true } });
-    }
-    async bulkCreateUsers(users) {
-        return this.prisma.user.createMany({ data: users });
-    }
-    async delete(id) {
-        return this.prisma.user.delete({ where: { id } });
-    }
-};
-exports.UsersService = UsersService;
-exports.UsersService = UsersService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], UsersService);
-
-
-/***/ }),
-/* 29 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.JwtAuthGuard = void 0;
-const common_1 = __webpack_require__(2);
-const passport_1 = __webpack_require__(9);
-let JwtAuthGuard = class JwtAuthGuard extends (0, passport_1.AuthGuard)('jwt') {
-    canActivate(context) {
-        const request = context.switchToHttp().getRequest();
-        if (request.method === 'OPTIONS') {
-            return true;
-        }
-        return super.canActivate(context);
-    }
-};
-exports.JwtAuthGuard = JwtAuthGuard;
-exports.JwtAuthGuard = JwtAuthGuard = __decorate([
-    (0, common_1.Injectable)()
-], JwtAuthGuard);
-
-
-/***/ }),
-/* 30 */
-/***/ ((module) => {
-
-module.exports = require("class-validator");
-
-/***/ }),
-/* 31 */
-/***/ ((module) => {
-
-module.exports = require("class-transformer");
-
-/***/ }),
-/* 32 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.JwtStrategy = void 0;
-const common_1 = __webpack_require__(2);
-const passport_1 = __webpack_require__(9);
-const passport_jwt_1 = __webpack_require__(33);
-const prisma_service_1 = __webpack_require__(12);
-let JwtStrategy = class JwtStrategy extends (0, passport_1.PassportStrategy)(passport_jwt_1.Strategy) {
-    constructor(prisma) {
-        super({
-            jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
-            ignoreExpiration: false,
-            secretOrKey: process.env.JWT_SECRET,
+        const response = await this.requestJson('https://api.paystack.co/transaction/initialize', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                email: payload.email,
+                amount: Math.round(payload.amount * 100),
+                currency: payload.currency || 'NGN',
+                callback_url: payload.callbackUrl || this.configService.get('PAYMENT_CALLBACK_URL'),
+                reference: payload.reference,
+                metadata: payload.metadata || {},
+            }),
         });
-        this.prisma = prisma;
+        return {
+            provider: 'paystack',
+            reference: response?.data?.reference,
+            authorizationUrl: response?.data?.authorization_url,
+            accessCode: response?.data?.access_code,
+            raw: response,
+        };
     }
-    async validate(payload) {
-        const userId = payload?.sub;
-        if (!userId) {
-            throw new common_1.UnauthorizedException("Invalid token: missing user identifier");
+    async initializeFlutterwavePayment(payload) {
+        const secretKey = this.configService.get('FLUTTERWAVE_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('FLUTTERWAVE_SECRET_KEY is not configured');
         }
-        const user = await this.prisma.user.findUnique({
-            where: { id: userId },
-            select: {
-                id: true,
-                serialId: true,
-                email: true,
-                name: true,
-                role: true,
-                status: true,
-                agentProfileId: true,
-                freelancerProfileId: true,
+        const txRef = payload.reference || `buyops-${Date.now()}`;
+        const response = await this.requestJson('https://api.flutterwave.com/v3/payments', {
+            method: 'POST',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                tx_ref: txRef,
+                amount: payload.amount,
+                currency: payload.currency || 'NGN',
+                redirect_url: payload.callbackUrl || this.configService.get('PAYMENT_CALLBACK_URL') || 'http://localhost:5173',
+                customer: {
+                    email: payload.email,
+                },
+                customizations: {
+                    title: payload.title || 'BuyOps Payment',
+                },
+                meta: payload.metadata || {},
+            }),
+        });
+        return {
+            provider: 'flutterwave',
+            reference: txRef,
+            authorizationUrl: response?.data?.link,
+            raw: response,
+        };
+    }
+    async verifyPaystackPayment(reference) {
+        const secretKey = this.configService.get('PAYSTACK_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('PAYSTACK_SECRET_KEY is not configured');
+        }
+        const response = await this.requestJson(`https://api.paystack.co/transaction/verify/${reference}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
             },
         });
-        if (!user) {
-            throw new common_1.UnauthorizedException("User not found");
+        return {
+            provider: 'paystack',
+            reference,
+            status: response?.data?.status,
+            paidAt: response?.data?.paid_at,
+            amount: response?.data?.amount ? response.data.amount / 100 : undefined,
+            currency: response?.data?.currency,
+            customerEmail: response?.data?.customer?.email,
+            raw: response,
+        };
+    }
+    async verifyFlutterwavePayment(reference) {
+        const secretKey = this.configService.get('FLUTTERWAVE_SECRET_KEY');
+        if (!secretKey) {
+            throw new common_1.InternalServerErrorException('FLUTTERWAVE_SECRET_KEY is not configured');
         }
-        return user;
+        const response = await this.requestJson(`https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=${encodeURIComponent(reference)}`, {
+            method: 'GET',
+            headers: {
+                Authorization: `Bearer ${secretKey}`,
+            },
+        });
+        return {
+            provider: 'flutterwave',
+            reference,
+            status: response?.data?.status,
+            paidAt: response?.data?.created_at,
+            amount: response?.data?.amount,
+            currency: response?.data?.currency,
+            customerEmail: response?.data?.customer?.email,
+            raw: response,
+        };
+    }
+    async requestJson(url, init) {
+        const response = await fetch(url, init);
+        const text = await response.text();
+        let json;
+        try {
+            json = text ? JSON.parse(text) : {};
+        }
+        catch {
+            json = { message: text };
+        }
+        if (!response.ok) {
+            this.logger.error(`Payment provider request failed (${response.status}): ${JSON.stringify(json)}`);
+            throw new common_1.InternalServerErrorException(json?.message || json?.error || 'Payment provider request failed');
+        }
+        return json;
     }
 };
-exports.JwtStrategy = JwtStrategy;
-exports.JwtStrategy = JwtStrategy = __decorate([
+exports.PaymentsService = PaymentsService;
+exports.PaymentsService = PaymentsService = PaymentsService_1 = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], JwtStrategy);
+    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
+], PaymentsService);
 
 
 /***/ }),
-/* 33 */
-/***/ ((module) => {
 
-module.exports = require("passport-jwt");
-
-/***/ }),
-/* 34 */
+/***/ "./src/prisma/prisma.module.ts":
+/*!*************************************!*\
+  !*** ./src/prisma/prisma.module.ts ***!
+  \*************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -2609,8 +6881,8 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.PrismaModule = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ./prisma.service */ "./src/prisma/prisma.service.ts");
 let PrismaModule = class PrismaModule {
 };
 exports.PrismaModule = PrismaModule;
@@ -2624,41 +6896,11 @@ exports.PrismaModule = PrismaModule = __decorate([
 
 
 /***/ }),
-/* 35 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotificationModule = void 0;
-const common_1 = __webpack_require__(2);
-const config_1 = __webpack_require__(6);
-const notification_controller_1 = __webpack_require__(36);
-const notification_service_1 = __webpack_require__(16);
-const sms_service_1 = __webpack_require__(17);
-const email_service_1 = __webpack_require__(19);
-const cron_service_1 = __webpack_require__(37);
-const prisma_module_1 = __webpack_require__(34);
-let NotificationModule = class NotificationModule {
-};
-exports.NotificationModule = NotificationModule;
-exports.NotificationModule = NotificationModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, config_1.ConfigModule],
-        controllers: [notification_controller_1.NotificationController],
-        providers: [notification_service_1.NotificationService, sms_service_1.SmsService, email_service_1.EmailService, cron_service_1.CronService],
-        exports: [notification_service_1.NotificationService],
-    })
-], NotificationModule);
-
-
-/***/ }),
-/* 36 */
+/***/ "./src/prisma/prisma.service.ts":
+/*!**************************************!*\
+  !*** ./src/prisma/prisma.service.ts ***!
+  \**************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -2671,5005 +6913,46 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.NotificationController = void 0;
-const common_1 = __webpack_require__(2);
-const client_1 = __webpack_require__(13);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const prisma_service_1 = __webpack_require__(12);
-let NotificationController = class NotificationController {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async getNotifications(req) {
-        return this.prisma.notification.findMany({
-            where: { userId: req.user.id },
-            orderBy: { createdAt: 'desc' },
-            take: 50,
+exports.PrismaService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const adapter_pg_1 = __webpack_require__(/*! @prisma/adapter-pg */ "@prisma/adapter-pg");
+const pg_1 = __webpack_require__(/*! pg */ "pg");
+let PrismaService = class PrismaService extends client_1.PrismaClient {
+    constructor() {
+        const pool = new pg_1.Pool({
+            connectionString: process.env.DATABASE_URL,
+            ssl: { rejectUnauthorized: false },
+            max: 3,
+            min: 1,
+            idleTimeoutMillis: 10000,
+            connectionTimeoutMillis: 20000,
+            keepAlive: true,
+            keepAliveInitialDelayMillis: 5000,
+        });
+        super({
+            adapter: new adapter_pg_1.PrismaPg(pool),
+            log: ["error", "warn"],
         });
     }
-    async getUnreadCount(req) {
-        const count = await this.prisma.notification.count({
-            where: { userId: req.user.id, read: false },
-        });
-        return { count };
-    }
-    async markAsRead(id) {
-        return this.prisma.notification.update({
-            where: { id },
-            data: { read: true },
-        });
-    }
-    async markAllAsRead(req) {
-        return this.prisma.notification.updateMany({
-            where: { userId: req.user.id, read: false },
-            data: { read: true },
-        });
-    }
-    async notifyAdmins(body, req) {
-        const admins = await this.prisma.user.findMany({
-            where: { role: client_1.UserRole.ADMIN },
-            select: { id: true },
-        });
-        if (!admins.length)
-            return { message: 'No admin users found', count: 0 };
-        const validTypes = Object.values(client_1.NotificationType);
-        const notifType = body.type && validTypes.includes(body.type.toUpperCase())
-            ? body.type.toUpperCase()
-            : client_1.NotificationType.INFO;
-        await this.prisma.notification.createMany({
-            data: admins.map((admin) => ({
-                userId: admin.id,
-                title: body.title,
-                message: body.message,
-                type: notifType,
-            })),
-        });
-        return { message: 'Admin(s) notified successfully', count: admins.length };
-    }
-    async deleteNotification(id, req) {
-        await this.prisma.notification.deleteMany({
-            where: { id, userId: req.user.id },
-        });
-        return { message: 'Notification deleted' };
-    }
-    async deleteAllNotifications(req) {
-        await this.prisma.notification.deleteMany({
-            where: { userId: req.user.id },
-        });
-        return { message: 'All notifications deleted' };
+    async onModuleDestroy() {
+        await this.$disconnect();
     }
 };
-exports.NotificationController = NotificationController;
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Request)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], NotificationController.prototype, "getNotifications", null);
-__decorate([
-    (0, common_1.Get)('unread'),
-    __param(0, (0, common_1.Request)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], NotificationController.prototype, "getUnreadCount", null);
-__decorate([
-    (0, common_1.Put)(':id/read'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], NotificationController.prototype, "markAsRead", null);
-__decorate([
-    (0, common_1.Put)('read-all'),
-    __param(0, (0, common_1.Request)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], NotificationController.prototype, "markAllAsRead", null);
-__decorate([
-    (0, common_1.Post)('admin'),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Request)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], NotificationController.prototype, "notifyAdmins", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Request)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], NotificationController.prototype, "deleteNotification", null);
-__decorate([
-    (0, common_1.Delete)(),
-    __param(0, (0, common_1.Request)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], NotificationController.prototype, "deleteAllNotifications", null);
-exports.NotificationController = NotificationController = __decorate([
-    (0, common_1.Controller)('notifications'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], NotificationController);
-
-
-/***/ }),
-/* 37 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CronService = void 0;
-const common_1 = __webpack_require__(2);
-const schedule_1 = __webpack_require__(38);
-const prisma_service_1 = __webpack_require__(12);
-const notification_service_1 = __webpack_require__(16);
-let CronService = class CronService {
-    constructor(prisma, notificationService) {
-        this.prisma = prisma;
-        this.notificationService = notificationService;
-    }
-    async sendInstallmentReminders() {
-        const threeDaysFromNow = new Date();
-        threeDaysFromNow.setDate(threeDaysFromNow.getDate() + 3);
-        const upcomingInstallments = await this.prisma.installment.findMany({
-            where: {
-                dueDate: {
-                    gte: new Date(),
-                    lte: threeDaysFromNow,
-                },
-                status: 'PENDING',
-            },
-        });
-        for (const installment of upcomingInstallments) {
-            await this.notificationService.notifyInstallmentDue(installment.id);
-        }
-    }
-    async sendOverdueNotifications() {
-        const overdueInstallments = await this.prisma.installment.findMany({
-            where: {
-                dueDate: { lt: new Date() },
-                status: 'PENDING',
-            },
-        });
-        for (const installment of overdueInstallments) {
-            await this.notificationService.notifyInstallmentOverdue(installment.id);
-            await this.prisma.installment.update({
-                where: { id: installment.id },
-                data: { status: 'OVERDUE' },
-            });
-        }
-    }
-};
-exports.CronService = CronService;
-__decorate([
-    (0, schedule_1.Cron)('0 9 * * *'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], CronService.prototype, "sendInstallmentReminders", null);
-__decorate([
-    (0, schedule_1.Cron)('0 10 * * *'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], CronService.prototype, "sendOverdueNotifications", null);
-exports.CronService = CronService = __decorate([
+exports.PrismaService = PrismaService;
+exports.PrismaService = PrismaService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
-], CronService);
+    __metadata("design:paramtypes", [])
+], PrismaService);
 
 
 /***/ }),
-/* 38 */
-/***/ ((module) => {
 
-module.exports = require("@nestjs/schedule");
-
-/***/ }),
-/* 39 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UsersModule = void 0;
-const common_1 = __webpack_require__(2);
-const users_controller_1 = __webpack_require__(40);
-const users_service_1 = __webpack_require__(28);
-const prisma_module_1 = __webpack_require__(34);
-let UsersModule = class UsersModule {
-};
-exports.UsersModule = UsersModule;
-exports.UsersModule = UsersModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [users_controller_1.UsersController],
-        providers: [users_service_1.UsersService],
-        exports: [users_service_1.UsersService],
-    })
-], UsersModule);
-
-
-/***/ }),
-/* 40 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.UsersController = exports.CreateUserDto = exports.UpdatePasswordDto = exports.UpdateUserDto = void 0;
-const common_1 = __webpack_require__(2);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const users_service_1 = __webpack_require__(28);
-const roles_guard_1 = __webpack_require__(41);
-const class_validator_1 = __webpack_require__(30);
-class UpdateUserDto {
-}
-exports.UpdateUserDto = UpdateUserDto;
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "phone", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "role", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "timezone", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "dateFormat", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "currency", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "emailNotifications", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "pushNotifications", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "transactionAlerts", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "weeklyReports", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsBoolean)(),
-    __metadata("design:type", Boolean)
-], UpdateUserDto.prototype, "agentUpdates", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "gender", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "dateOfBirth", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "homeAddress", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "nin", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "stateOfOrigin", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "dateOfRecruitment", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "kinFullName", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "kinPhoneNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "kinRelationship", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "kinAddress", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "bankName", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "accountNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], UpdateUserDto.prototype, "beneficiaryName", void 0);
-class UpdatePasswordDto {
-}
-exports.UpdatePasswordDto = UpdatePasswordDto;
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(6),
-    __metadata("design:type", String)
-], UpdatePasswordDto.prototype, "newPassword", void 0);
-class CreateUserDto {
-}
-exports.CreateUserDto = CreateUserDto;
-__decorate([
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(8, { message: 'Password must be at least 8 characters' }),
-    (0, class_validator_1.Matches)(/^(?=.*[0-9])(?=.*[!@#$%^&*])/, {
-        message: 'Password must include at least one number and one special character',
-    }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "password", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^(ADMIN|TEAM_LEAD|AGENT|FREELANCER|INVESTOR|USER)$/i, {
-        message: 'Role must be one of: ADMIN, TEAM_LEAD, AGENT, FREELANCER, INVESTOR, USER',
-    }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "role", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^(ACTIVE|INACTIVE|PENDING)$/i, {
-        message: 'Status must be one of: ACTIVE, INACTIVE, PENDING',
-    }),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "status", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateUserDto.prototype, "phone", void 0);
-let UsersController = class UsersController {
-    constructor(usersService) {
-        this.usersService = usersService;
-    }
-    async findAll(role, status, search) {
-        return this.usersService.findAll({ role, status, search });
-    }
-    async getProfile(req) {
-        return this.usersService.findById(req.user.id);
-    }
-    async updateProfile(req, dto) {
-        return this.usersService.updateUser(req.user.id, dto);
-    }
-    async findOne(id, req) {
-        if (req.user.role !== "ADMIN" && req.user.id !== id) {
-            throw new Error("Unauthorized to view this profile");
-        }
-        return this.usersService.findById(id);
-    }
-    async findByEmail(email) {
-        return this.usersService.findByEmail(email);
-    }
-    async getUserStats(id, req) {
-        if (req.user.role !== "ADMIN" && req.user.id !== id) {
-            throw new Error("Unauthorized to view these statistics");
-        }
-        return this.usersService.getUserStats(id);
-    }
-    async getUserActivity(id, limit, req) {
-        if (req.user.role !== "ADMIN" && req.user.id !== id) {
-            throw new Error("Unauthorized to view this activity");
-        }
-        const activityLimit = limit ? parseInt(limit) : 20;
-        return this.usersService.getUserActivity(id, activityLimit);
-    }
-    async getUserTransactions(id, req) {
-        if (req.user.role !== "ADMIN" && req.user.id !== id) {
-            throw new Error("Unauthorized to view these transactions");
-        }
-        return this.usersService.getUserTransactions(id);
-    }
-    async getUserLeads(id, req) {
-        if (req.user.role !== "ADMIN" && req.user.id !== id) {
-            throw new Error("Unauthorized to view these leads");
-        }
-        return this.usersService.getUserLeads(id);
-    }
-    async create(dto) {
-        return this.usersService.createUser(dto);
-    }
-    async update(id, dto, req) {
-        if (req.user.role !== "ADMIN") {
-            if (req.user.id !== id) {
-                throw new Error("Unauthorized to update this profile");
-            }
-            delete dto.role;
-        }
-        return this.usersService.updateUser(id, dto);
-    }
-    async updateRole(id, role) {
-        return this.usersService.updateUserRole(id, role);
-    }
-    async updatePassword(id, dto) {
-        return this.usersService.updateUserPassword(id, dto.newPassword);
-    }
-    async deactivate(id) {
-        return this.usersService.deactivateUser(id);
-    }
-    async reactivate(id) {
-        return this.usersService.reactivateUser(id);
-    }
-    async remove(id) {
-        return this.usersService.deleteUser(id);
-    }
-    async getUsersByRole(role) {
-        return this.usersService.getUsersByRole(role);
-    }
-    async getUserDashboard(id, req) {
-        if (req.user.role !== "ADMIN" && req.user.id !== id) {
-            throw new Error("Unauthorized to view this dashboard");
-        }
-        return this.usersService.getUserDashboard(id);
-    }
-    async getAllAgents() {
-        return this.usersService.getAllAgents();
-    }
-    async getAllInvestors() {
-        return this.usersService.getAllInvestors();
-    }
-    async searchUsers(query, role) {
-        return this.usersService.searchUsers(query, role);
-    }
-    async getUserCountByRole() {
-        return this.usersService.getUserCountByRole();
-    }
-    async bulkCreate(users) {
-        return this.usersService.bulkCreateUsers(users);
-    }
-};
-exports.UsersController = UsersController;
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("role")),
-    __param(1, (0, common_1.Query)("status")),
-    __param(2, (0, common_1.Query)("search")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)("me"),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getProfile", null);
-__decorate([
-    (0, common_1.Put)("me"),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, UpdateUserDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "updateProfile", null);
-__decorate([
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Get)("email/:email"),
-    __param(0, (0, common_1.Param)("email")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "findByEmail", null);
-__decorate([
-    (0, common_1.Get)(":id/stats"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUserStats", null);
-__decorate([
-    (0, common_1.Get)(":id/activity"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Query)("limit")),
-    __param(2, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUserActivity", null);
-__decorate([
-    (0, common_1.Get)(":id/transactions"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUserTransactions", null);
-__decorate([
-    (0, common_1.Get)(":id/leads"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUserLeads", null);
-__decorate([
-    (0, common_1.Post)(),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateUserDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "create", null);
-__decorate([
-    (0, common_1.Put)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __param(2, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, UpdateUserDto, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "update", null);
-__decorate([
-    (0, common_1.Put)(":id/role"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)("role")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "updateRole", null);
-__decorate([
-    (0, common_1.Put)(":id/password"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, UpdatePasswordDto]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "updatePassword", null);
-__decorate([
-    (0, common_1.Post)(":id/deactivate"),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "deactivate", null);
-__decorate([
-    (0, common_1.Post)(":id/reactivate"),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "reactivate", null);
-__decorate([
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "remove", null);
-__decorate([
-    (0, common_1.Get)("by-role/:role"),
-    __param(0, (0, common_1.Param)("role")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUsersByRole", null);
-__decorate([
-    (0, common_1.Get)(":id/dashboard"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUserDashboard", null);
-__decorate([
-    (0, common_1.Get)("agents/all"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getAllAgents", null);
-__decorate([
-    (0, common_1.Get)("investors/all"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getAllInvestors", null);
-__decorate([
-    (0, common_1.Get)("search/query"),
-    __param(0, (0, common_1.Query)("q")),
-    __param(1, (0, common_1.Query)("role")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "searchUsers", null);
-__decorate([
-    (0, common_1.Get)("count/by-role"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "getUserCountByRole", null);
-__decorate([
-    (0, common_1.Post)("bulk-create"),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    __param(0, (0, common_1.Body)("users")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Array]),
-    __metadata("design:returntype", Promise)
-], UsersController.prototype, "bulkCreate", null);
-exports.UsersController = UsersController = __decorate([
-    (0, common_1.Controller)("users"),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    __metadata("design:paramtypes", [typeof (_a = typeof users_service_1.UsersService !== "undefined" && users_service_1.UsersService) === "function" ? _a : Object])
-], UsersController);
-
-
-/***/ }),
-/* 41 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.RolesGuard = void 0;
-const common_1 = __webpack_require__(2);
-const core_1 = __webpack_require__(3);
-const roles_decorator_1 = __webpack_require__(42);
-let RolesGuard = class RolesGuard {
-    constructor(reflector) {
-        this.reflector = reflector;
-    }
-    canActivate(context) {
-        const requiredRoles = this.reflector.getAllAndOverride(roles_decorator_1.ROLES_KEY, [
-            context.getHandler(),
-            context.getClass(),
-        ]);
-        if (!requiredRoles || requiredRoles.length === 0) {
-            return true;
-        }
-        const request = context.switchToHttp().getRequest();
-        const user = request.user;
-        if (!user)
-            return false;
-        return requiredRoles.includes(user.role);
-    }
-};
-exports.RolesGuard = RolesGuard;
-exports.RolesGuard = RolesGuard = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof core_1.Reflector !== "undefined" && core_1.Reflector) === "function" ? _a : Object])
-], RolesGuard);
-
-
-/***/ }),
-/* 42 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.Roles = exports.ROLES_KEY = void 0;
-const common_1 = __webpack_require__(2);
-exports.ROLES_KEY = "roles";
-const Roles = (...roles) => (0, common_1.SetMetadata)(exports.ROLES_KEY, roles);
-exports.Roles = Roles;
-
-
-/***/ }),
-/* 43 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AssetsModule = void 0;
-const common_1 = __webpack_require__(2);
-const assets_controller_1 = __webpack_require__(44);
-const assets_service_1 = __webpack_require__(47);
-const prisma_module_1 = __webpack_require__(34);
-const notification_module_1 = __webpack_require__(35);
-let AssetsModule = class AssetsModule {
-};
-exports.AssetsModule = AssetsModule;
-exports.AssetsModule = AssetsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
-        controllers: [assets_controller_1.AssetsController],
-        providers: [assets_service_1.AssetsService],
-        exports: [assets_service_1.AssetsService],
-    })
-], AssetsModule);
-
-
-/***/ }),
-/* 44 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AssetsController = void 0;
-const common_1 = __webpack_require__(2);
-const passport_1 = __webpack_require__(9);
-const platform_express_1 = __webpack_require__(45);
-const multer_1 = __webpack_require__(46);
-const path_1 = __webpack_require__(4);
-const assets_service_1 = __webpack_require__(47);
-const upload_config_1 = __webpack_require__(48);
-let AssetsController = class AssetsController {
-    constructor(assetsService) {
-        this.assetsService = assetsService;
-    }
-    async findAll(query) {
-        return this.assetsService.findAll(query);
-    }
-    async getOverviewStats() {
-        return this.assetsService.getOverviewStats();
-    }
-    async findOne(id) {
-        return this.assetsService.findById(id);
-    }
-    async create(createAssetDto) {
-        return this.assetsService.create(createAssetDto);
-    }
-    async update(id, updateAssetDto) {
-        return this.assetsService.update(id, updateAssetDto);
-    }
-    async delete(id) {
-        return this.assetsService.delete(id);
-    }
-    async publish(id) {
-        return this.assetsService.publish(id);
-    }
-    async unpublish(id) {
-        return this.assetsService.unpublish(id);
-    }
-    async uploadImages(id, files) {
-        return this.assetsService.uploadImages(id, files);
-    }
-    async addImage(id, imageData) {
-        return this.assetsService.addImage(id, imageData);
-    }
-    async deleteImage(id, imageId) {
-        return this.assetsService.deleteImage(id, imageId);
-    }
-    async uploadDocuments(id, files) {
-        return this.assetsService.uploadDocuments(id, files);
-    }
-    async addDocument(id, documentData) {
-        return this.assetsService.addDocument(id, documentData);
-    }
-    async deleteDocument(id, documentId) {
-        return this.assetsService.deleteDocument(id, documentId);
-    }
-};
-exports.AssetsController = AssetsController;
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)('stats/overview'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "getOverviewStats", null);
-__decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Post)(),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "create", null);
-__decorate([
-    (0, common_1.Put)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "delete", null);
-__decorate([
-    (0, common_1.Put)(':id/publish'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "publish", null);
-__decorate([
-    (0, common_1.Put)(':id/unpublish'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "unpublish", null);
-__decorate([
-    (0, common_1.Post)(':id/images/upload'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('images', 10, {
-        storage: (0, multer_1.diskStorage)({
-            destination: './uploads/images',
-            filename: (req, file, callback) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                const ext = (0, path_1.extname)(file.originalname);
-                callback(null, `image-${uniqueSuffix}${ext}`);
-            },
-        }),
-        fileFilter: upload_config_1.imageFileFilter,
-        limits: { fileSize: 10 * 1024 * 1024 },
-    })),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.UploadedFiles)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Array]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "uploadImages", null);
-__decorate([
-    (0, common_1.Post)(':id/images'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "addImage", null);
-__decorate([
-    (0, common_1.Delete)(':id/images/:imageId'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Param)('imageId')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "deleteImage", null);
-__decorate([
-    (0, common_1.Post)(':id/documents/upload'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FilesInterceptor)('documents', 10, {
-        storage: (0, multer_1.diskStorage)({
-            destination: './uploads/documents',
-            filename: (req, file, callback) => {
-                const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-                const ext = (0, path_1.extname)(file.originalname);
-                callback(null, `doc-${uniqueSuffix}${ext}`);
-            },
-        }),
-        fileFilter: upload_config_1.documentFileFilter,
-        limits: { fileSize: 10 * 1024 * 1024 },
-    })),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.UploadedFiles)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Array]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "uploadDocuments", null);
-__decorate([
-    (0, common_1.Post)(':id/documents'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "addDocument", null);
-__decorate([
-    (0, common_1.Delete)(':id/documents/:documentId'),
-    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Param)('documentId')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], AssetsController.prototype, "deleteDocument", null);
-exports.AssetsController = AssetsController = __decorate([
-    (0, common_1.Controller)('assets'),
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    __metadata("design:paramtypes", [typeof (_a = typeof assets_service_1.AssetsService !== "undefined" && assets_service_1.AssetsService) === "function" ? _a : Object])
-], AssetsController);
-
-
-/***/ }),
-/* 45 */
-/***/ ((module) => {
-
-module.exports = require("@nestjs/platform-express");
-
-/***/ }),
-/* 46 */
-/***/ ((module) => {
-
-module.exports = require("multer");
-
-/***/ }),
-/* 47 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AssetsService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const notification_service_1 = __webpack_require__(16);
-const serial_id_helper_1 = __webpack_require__(27);
-let AssetsService = class AssetsService {
-    constructor(prisma, notificationService) {
-        this.prisma = prisma;
-        this.notificationService = notificationService;
-    }
-    async publish(id) {
-        await this.findById(id);
-        const published = await this.prisma.asset.update({
-            where: { id },
-            data: { status: 'published' },
-        });
-        await this.notificationService.notifyAssetPublished(id);
-        return published;
-    }
-    async unpublish(id) {
-        await this.findById(id);
-        return this.prisma.asset.update({
-            where: { id },
-            data: { status: 'draft' },
-        });
-    }
-    async deleteImage(assetId, imageId) {
-        await this.findById(assetId);
-        return this.prisma.assetImage.delete({ where: { id: imageId } });
-    }
-    async deleteDocument(assetId, documentId) {
-        await this.findById(assetId);
-        return this.prisma.assetDocument.delete({ where: { id: documentId } });
-    }
-    async findAll(filters) {
-        const where = {};
-        if (filters?.status)
-            where.status = filters.status;
-        if (filters?.type)
-            where.type = filters.type;
-        if (filters?.companyId)
-            where.companyId = filters.companyId;
-        const assets = await this.prisma.asset.findMany({
-            where,
-            include: {
-                company: true,
-                images: { orderBy: { order: 'asc' } },
-                documents: true,
-                leads: { orderBy: { createdAt: 'desc' }, take: 10 },
-                transactions: { orderBy: { date: 'desc' }, take: 10 },
-                installmentPlans: true,
-                _count: { select: { leads: true, transactions: true } },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-        return assets.map(asset => {
-            const finalPrice = asset.price
-                ? parseFloat(asset.price)
-                : asset.fractionCost
-                    ? parseFloat(asset.fractionCost)
-                    : 0;
-            const rentalYield = asset.rentalYield
-                ? parseFloat(asset.rentalYield)
-                : asset.rentalYieldMax
-                    ? asset.rentalYieldMax
-                    : 0;
-            const capAppreciation = asset.capitalAppreciation
-                ? parseFloat(asset.capitalAppreciation)
-                : asset.capitalAppreciationMax
-                    ? asset.capitalAppreciationMax
-                    : 0;
-            const totalAnnualReturn = rentalYield + capAppreciation;
-            return {
-                ...asset,
-                facilities: asset.facilities ?? [],
-                ownershipOptions: asset.ownershipOptions ?? [],
-                paymentOptions: asset.paymentOptions ?? [],
-                installmentPeriods: asset.installmentPeriods ?? [],
-                riskFactors: asset.riskFactors ?? [],
-                finalPrice,
-                totalAnnualReturn,
-                projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
-                virtualTours: asset.virtualTours ?? 0,
-            };
-        });
-    }
-    async getOverviewStats() {
-        const assets = await this.prisma.asset.findMany({
-            select: { status: true, price: true, fractionCost: true },
-        });
-        const statusCounts = {};
-        let totalValue = 0;
-        for (const asset of assets) {
-            const statusKey = (asset.status || 'unknown').toLowerCase();
-            statusCounts[statusKey] = (statusCounts[statusKey] || 0) + 1;
-            const rawValue = asset.price || asset.fractionCost || '0';
-            const numericValue = Number.parseFloat(rawValue);
-            if (!Number.isNaN(numericValue)) {
-                totalValue += numericValue;
-            }
-        }
-        return {
-            totalAssets: assets.length,
-            totalValue,
-            statusCounts,
-        };
-    }
-    async findById(id) {
-        const asset = await this.prisma.asset.findUnique({
-            where: { id },
-            include: {
-                company: true,
-                images: { orderBy: { order: 'asc' } },
-                documents: true,
-                leads: { orderBy: { createdAt: 'desc' }, take: 10 },
-                transactions: { orderBy: { date: 'desc' }, take: 10 },
-                installmentPlans: true,
-                _count: { select: { leads: true, transactions: true } },
-            },
-        });
-        if (!asset)
-            throw new common_1.NotFoundException(`Asset with ID ${id} not found`);
-        const finalPrice = asset.price
-            ? parseFloat(asset.price)
-            : asset.fractionCost
-                ? parseFloat(asset.fractionCost)
-                : 0;
-        const rentalYield = asset.rentalYield
-            ? parseFloat(asset.rentalYield)
-            : asset.rentalYieldMax
-                ? asset.rentalYieldMax
-                : 0;
-        const capAppreciation = asset.capitalAppreciation
-            ? parseFloat(asset.capitalAppreciation)
-            : asset.capitalAppreciationMax
-                ? asset.capitalAppreciationMax
-                : 0;
-        const totalAnnualReturn = rentalYield + capAppreciation;
-        return {
-            ...asset,
-            facilities: asset.facilities ?? [],
-            ownershipOptions: asset.ownershipOptions ?? [],
-            paymentOptions: asset.paymentOptions ?? [],
-            installmentPeriods: asset.installmentPeriods ?? [],
-            riskFactors: asset.riskFactors ?? [],
-            finalPrice,
-            totalAnnualReturn,
-            projectedRentalIncome: Number(asset.projectedRentalIncome) || 0,
-            virtualTours: asset.virtualTours ?? 0,
-        };
-    }
-    async create(data) {
-        if (!data.name)
-            throw new common_1.BadRequestException('Asset name is required');
-        if (!data.companyId)
-            throw new common_1.BadRequestException('Company ID is required');
-        const company = await this.prisma.company.findUnique({ where: { id: data.companyId } });
-        if (!company)
-            throw new common_1.NotFoundException('Company not found');
-        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'AST');
-        const newAsset = await this.prisma.asset.create({
-            data: {
-                serialId,
-                name: data.name,
-                company: { connect: { id: data.companyId } },
-                title: data.title || data.name,
-                referenceCode: data.referenceCode || null,
-                type: data.type || null,
-                status: data.status || 'draft',
-                projectStatus: data.projectStatus || null,
-                location: data.location || null,
-                address: data.address || null,
-                description: data.description || null,
-                landSize: data.landSize ? parseFloat(data.landSize) : null,
-                builtSize: data.builtSize ? parseFloat(data.builtSize) : null,
-                constructionStart: data.constructionStart ? new Date(data.constructionStart) : null,
-                constructionEnd: data.constructionEnd ? new Date(data.constructionEnd) : null,
-                propertyCategory: data.propertyCategory || null,
-                unitConfiguration: data.unitConfiguration || null,
-                facilityManagement: data.facilityManagement ?? null,
-                units: data.units ? parseInt(data.units) : null,
-                totalUnits: data.totalUnits ? parseInt(data.totalUnits) : null,
-                availableUnits: data.availableUnits ? parseInt(data.availableUnits) : null,
-                bedrooms: data.bedrooms ? parseInt(data.bedrooms) : null,
-                bathrooms: data.bathrooms ? parseInt(data.bathrooms) : null,
-                area: data.area ? parseFloat(data.area) : null,
-                parking: data.parking || null,
-                furnished: data.furnished || null,
-                facilities: data.facilities || data.sharedFacilities || [],
-                ownershipOptions: data.ownershipOptions || [],
-                ownershipType: data.ownershipType || null,
-                fractionTotal: data.fractionTotal ? parseInt(data.fractionTotal) : null,
-                landUnitType: data.landUnitType || null,
-                landUnitCount: data.landUnitCount ? parseInt(data.landUnitCount) : null,
-                price: data.price || null,
-                priceRange: data.priceRange || null,
-                markup: data.markup || null,
-                fractionCost: data.fractionCost || data.costPerFraction || null,
-                fundingStatus: data.fundingStatus ? parseInt(data.fundingStatus) : null,
-                paymentOptions: data.paymentOptions || [],
-                installmentPeriods: data.installmentPeriods || [],
-                downPaymentAmount: data.downPaymentAmount || null,
-                offPlanDiscount: data.offPlanDiscount ? parseFloat(data.offPlanDiscount) : null,
-                stageBasedDiscount: data.stageBasedDiscount ? parseFloat(data.stageBasedDiscount) : null,
-                commission: data.commission || null,
-                commissionRate: data.commissionRate || null,
-                leadCommission: data.leadCommission ? parseFloat(data.leadCommission) : null,
-                closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : null,
-                projectedRentalIncome: data.projectedRentalIncome ? parseFloat(data.projectedRentalIncome) : null,
-                rentalFrequency: data.rentalFrequency || null,
-                operatingCost: data.operatingCost ? parseFloat(data.operatingCost) : null,
-                firstPayoutDate: data.firstPayoutDate ? new Date(data.firstPayoutDate) : null,
-                rentalYield: data.rentalYield || null,
-                rentalYieldMin: data.rentalYieldMin ? parseFloat(data.rentalYieldMin) : null,
-                rentalYieldMax: data.rentalYieldMax ? parseFloat(data.rentalYieldMax) : null,
-                capitalAppreciation: data.capitalAppreciation ? parseFloat(data.capitalAppreciation) : null,
-                capitalAppreciationMin: data.capitalAppreciationMin ? parseFloat(data.capitalAppreciationMin) : null,
-                capitalAppreciationMax: data.capitalAppreciationMax ? parseFloat(data.capitalAppreciationMax) : null,
-                totalReturns: data.totalReturns || null,
-                totalReturnsMin: data.totalReturnsMin ? parseFloat(data.totalReturnsMin) : null,
-                totalReturnsMax: data.totalReturnsMax ? parseFloat(data.totalReturnsMax) : null,
-                riskLevel: data.riskLevel || null,
-                riskFactors: data.riskFactors || [],
-                constructionStage: data.constructionStage || data.constructionProgress || null,
-                offPlanSecurity: data.offPlanSecurity || null,
-                exitLiquidity: data.exitLiquidity || null,
-                managementMode: data.managementMode || null,
-                virtualTours: data.virtualTours ? parseInt(data.virtualTours) : null,
-            },
-        });
-        return this.findById(newAsset.id);
-    }
-    async update(id, data) {
-        const existingAsset = await this.findById(id);
-        const updateData = {};
-        if (data.name !== undefined)
-            updateData.name = data.name;
-        if (data.title !== undefined)
-            updateData.title = data.title;
-        if (data.referenceCode !== undefined)
-            updateData.referenceCode = data.referenceCode;
-        if (data.type !== undefined)
-            updateData.type = data.type;
-        if (data.status !== undefined)
-            updateData.status = data.status;
-        if (data.projectStatus !== undefined)
-            updateData.projectStatus = data.projectStatus;
-        if (data.location !== undefined)
-            updateData.location = data.location;
-        if (data.address !== undefined)
-            updateData.address = data.address;
-        if (data.description !== undefined)
-            updateData.description = data.description;
-        if (data.companyId !== undefined)
-            updateData.companyId = data.companyId;
-        if (data.landSize !== undefined && data.landSize !== '' && data.landSize !== null)
-            updateData.landSize = parseFloat(data.landSize);
-        if (data.builtSize !== undefined && data.builtSize !== '' && data.builtSize !== null)
-            updateData.builtSize = parseFloat(data.builtSize);
-        if (data.constructionStart !== undefined)
-            updateData.constructionStart = data.constructionStart ? new Date(data.constructionStart) : null;
-        if (data.constructionEnd !== undefined)
-            updateData.constructionEnd = data.constructionEnd ? new Date(data.constructionEnd) : null;
-        if (data.propertyCategory !== undefined)
-            updateData.propertyCategory = data.propertyCategory;
-        if (data.unitConfiguration !== undefined)
-            updateData.unitConfiguration = data.unitConfiguration;
-        if (data.facilityManagement !== undefined)
-            updateData.facilityManagement = data.facilityManagement;
-        if (data.units !== undefined && data.units !== '' && data.units !== null)
-            updateData.units = parseInt(data.units);
-        if (data.totalUnits !== undefined && data.totalUnits !== '' && data.totalUnits !== null)
-            updateData.totalUnits = parseInt(data.totalUnits);
-        if (data.availableUnits !== undefined && data.availableUnits !== '' && data.availableUnits !== null)
-            updateData.availableUnits = parseInt(data.availableUnits);
-        if (data.bedrooms !== undefined && data.bedrooms !== '' && data.bedrooms !== null)
-            updateData.bedrooms = parseInt(data.bedrooms);
-        if (data.bathrooms !== undefined && data.bathrooms !== '' && data.bathrooms !== null)
-            updateData.bathrooms = parseInt(data.bathrooms);
-        if (data.area !== undefined && data.area !== '' && data.area !== null)
-            updateData.area = parseFloat(data.area);
-        if (data.parking !== undefined)
-            updateData.parking = data.parking;
-        if (data.furnished !== undefined)
-            updateData.furnished = data.furnished;
-        if (data.facilities !== undefined)
-            updateData.facilities = data.facilities;
-        if (data.sharedFacilities !== undefined)
-            updateData.facilities = data.sharedFacilities;
-        if (data.ownershipOptions !== undefined)
-            updateData.ownershipOptions = data.ownershipOptions;
-        if (data.ownershipType !== undefined)
-            updateData.ownershipType = data.ownershipType;
-        if (data.fractionTotal !== undefined && data.fractionTotal !== '' && data.fractionTotal !== null)
-            updateData.fractionTotal = parseInt(data.fractionTotal);
-        if (data.landUnitType !== undefined)
-            updateData.landUnitType = data.landUnitType;
-        if (data.landUnitCount !== undefined && data.landUnitCount !== '' && data.landUnitCount !== null)
-            updateData.landUnitCount = parseInt(data.landUnitCount);
-        if (data.price !== undefined)
-            updateData.price = data.price;
-        if (data.priceRange !== undefined)
-            updateData.priceRange = data.priceRange;
-        if (data.markup !== undefined)
-            updateData.markup = data.markup;
-        if (data.fractionCost !== undefined)
-            updateData.fractionCost = data.fractionCost;
-        if (data.costPerFraction !== undefined)
-            updateData.fractionCost = data.costPerFraction;
-        if (data.fundingStatus !== undefined && data.fundingStatus !== '' && data.fundingStatus !== null)
-            updateData.fundingStatus = parseInt(data.fundingStatus);
-        if (data.paymentOptions !== undefined)
-            updateData.paymentOptions = data.paymentOptions;
-        if (data.installmentPeriods !== undefined)
-            updateData.installmentPeriods = data.installmentPeriods;
-        if (data.downPaymentAmount !== undefined)
-            updateData.downPaymentAmount = data.downPaymentAmount;
-        if (data.offPlanDiscount !== undefined && data.offPlanDiscount !== '' && data.offPlanDiscount !== null)
-            updateData.offPlanDiscount = parseFloat(data.offPlanDiscount);
-        if (data.stageBasedDiscount !== undefined && data.stageBasedDiscount !== '' && data.stageBasedDiscount !== null)
-            updateData.stageBasedDiscount = parseFloat(data.stageBasedDiscount);
-        if (data.commission !== undefined)
-            updateData.commission = data.commission;
-        if (data.commissionRate !== undefined)
-            updateData.commissionRate = data.commissionRate;
-        if (data.leadCommission !== undefined && data.leadCommission !== '' && data.leadCommission !== null)
-            updateData.leadCommission = parseFloat(data.leadCommission);
-        if (data.closerCommission !== undefined && data.closerCommission !== '' && data.closerCommission !== null)
-            updateData.closerCommission = parseFloat(data.closerCommission);
-        if (data.projectedRentalIncome !== undefined && data.projectedRentalIncome !== '' && data.projectedRentalIncome !== null)
-            updateData.projectedRentalIncome = parseFloat(data.projectedRentalIncome);
-        if (data.rentalFrequency !== undefined)
-            updateData.rentalFrequency = data.rentalFrequency;
-        if (data.operatingCost !== undefined && data.operatingCost !== '' && data.operatingCost !== null)
-            updateData.operatingCost = parseFloat(data.operatingCost);
-        if (data.firstPayoutDate !== undefined)
-            updateData.firstPayoutDate = data.firstPayoutDate ? new Date(data.firstPayoutDate) : null;
-        if (data.rentalYield !== undefined)
-            updateData.rentalYield = data.rentalYield;
-        if (data.rentalYieldMin !== undefined && data.rentalYieldMin !== '' && data.rentalYieldMin !== null)
-            updateData.rentalYieldMin = parseFloat(data.rentalYieldMin);
-        if (data.rentalYieldMax !== undefined && data.rentalYieldMax !== '' && data.rentalYieldMax !== null)
-            updateData.rentalYieldMax = parseFloat(data.rentalYieldMax);
-        if (data.capitalAppreciation !== undefined && data.capitalAppreciation !== '' && data.capitalAppreciation !== null)
-            updateData.capitalAppreciation = parseFloat(data.capitalAppreciation);
-        if (data.capitalAppreciationMin !== undefined && data.capitalAppreciationMin !== '' && data.capitalAppreciationMin !== null)
-            updateData.capitalAppreciationMin = parseFloat(data.capitalAppreciationMin);
-        if (data.capitalAppreciationMax !== undefined && data.capitalAppreciationMax !== '' && data.capitalAppreciationMax !== null)
-            updateData.capitalAppreciationMax = parseFloat(data.capitalAppreciationMax);
-        if (data.totalReturns !== undefined)
-            updateData.totalReturns = data.totalReturns;
-        if (data.totalReturnsMin !== undefined && data.totalReturnsMin !== '' && data.totalReturnsMin !== null)
-            updateData.totalReturnsMin = parseFloat(data.totalReturnsMin);
-        if (data.totalReturnsMax !== undefined && data.totalReturnsMax !== '' && data.totalReturnsMax !== null)
-            updateData.totalReturnsMax = parseFloat(data.totalReturnsMax);
-        if (data.riskLevel !== undefined)
-            updateData.riskLevel = data.riskLevel;
-        if (data.riskFactors !== undefined)
-            updateData.riskFactors = data.riskFactors;
-        if (data.constructionStage !== undefined)
-            updateData.constructionStage = data.constructionStage;
-        if (data.constructionProgress !== undefined)
-            updateData.constructionStage = data.constructionProgress;
-        if (data.offPlanSecurity !== undefined)
-            updateData.offPlanSecurity = data.offPlanSecurity;
-        if (data.exitLiquidity !== undefined)
-            updateData.exitLiquidity = data.exitLiquidity;
-        if (data.managementMode !== undefined)
-            updateData.managementMode = data.managementMode;
-        if (data.virtualTours !== undefined && data.virtualTours !== '' && data.virtualTours !== null)
-            updateData.virtualTours = parseInt(data.virtualTours);
-        await this.prisma.asset.update({
-            where: { id },
-            data: updateData,
-        });
-        const changedFields = Object.keys(updateData);
-        if (changedFields.length) {
-            await this.notificationService.notifyAssetUpdated(existingAsset.id, changedFields);
-        }
-        return this.findById(id);
-    }
-    async delete(id) {
-        await this.findById(id);
-        const savedByCount = await this.prisma.savedProperty.count({ where: { assetId: id } });
-        if (savedByCount > 0) {
-            throw new common_1.BadRequestException(`Cannot delete asset. It is saved by ${savedByCount} user(s). Please ask them to unsave it first.`);
-        }
-        const leadsCount = await this.prisma.lead.count({ where: { assetInterest: id } });
-        if (leadsCount > 0) {
-            throw new common_1.BadRequestException(`Cannot delete asset. It has ${leadsCount} associated lead(s).`);
-        }
-        const transactionsCount = await this.prisma.transaction.count({ where: { assetId: id } });
-        if (transactionsCount > 0) {
-            throw new common_1.BadRequestException(`Cannot delete asset. It has ${transactionsCount} associated transaction(s).`);
-        }
-        await this.prisma.asset.delete({ where: { id } });
-        return { message: 'Asset deleted successfully', id };
-    }
-    async addImage(assetId, imageData) {
-        await this.findById(assetId);
-        return this.prisma.assetImage.create({
-            data: {
-                assetId,
-                url: imageData.url,
-                caption: imageData.caption || null,
-                order: imageData.order || 0,
-            },
-        });
-    }
-    async removeImage(imageId) {
-        return this.prisma.assetImage.delete({ where: { id: imageId } });
-    }
-    async addDocument(assetId, docData) {
-        await this.findById(assetId);
-        return this.prisma.assetDocument.create({
-            data: {
-                assetId,
-                url: docData.url,
-                title: docData.title || null,
-                type: docData.type || null,
-            },
-        });
-    }
-    async removeDocument(docId) {
-        return this.prisma.assetDocument.delete({ where: { id: docId } });
-    }
-    async uploadImages(assetId, files) {
-        await this.findById(assetId);
-        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
-        const images = [];
-        for (const file of files) {
-            const url = `${baseUrl}/uploads/images/${file.filename}`;
-            const image = await this.prisma.assetImage.create({
-                data: {
-                    assetId,
-                    url,
-                    caption: file.originalname,
-                    order: 0,
-                },
-            });
-            images.push(image);
-        }
-        return {
-            message: `${images.length} image(s) uploaded successfully`,
-            images,
-        };
-    }
-    async uploadDocuments(assetId, files) {
-        await this.findById(assetId);
-        const baseUrl = process.env.BASE_URL || 'http://localhost:3000';
-        const documents = [];
-        for (const file of files) {
-            const url = `${baseUrl}/uploads/documents/${file.filename}`;
-            const document = await this.prisma.assetDocument.create({
-                data: {
-                    assetId,
-                    url,
-                    title: file.originalname,
-                    type: file.mimetype,
-                },
-            });
-            documents.push(document);
-        }
-        return {
-            message: `${documents.length} document(s) uploaded successfully`,
-            documents,
-        };
-    }
-};
-exports.AssetsService = AssetsService;
-exports.AssetsService = AssetsService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
-], AssetsService);
-
-
-/***/ }),
-/* 48 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
-
-
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.documentFileFilter = exports.imageFileFilter = exports.multerConfig = void 0;
-const multer_1 = __webpack_require__(46);
-const path_1 = __webpack_require__(4);
-const common_1 = __webpack_require__(2);
-exports.multerConfig = {
-    storage: (0, multer_1.diskStorage)({
-        destination: './uploads',
-        filename: (req, file, callback) => {
-            const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-            const ext = (0, path_1.extname)(file.originalname);
-            const filename = `${file.fieldname}-${uniqueSuffix}${ext}`;
-            callback(null, filename);
-        },
-    }),
-    fileFilter: (req, file, callback) => {
-        const allowedMimes = [
-            'image/jpeg',
-            'image/jpg',
-            'image/png',
-            'image/gif',
-            'image/webp',
-            'application/pdf',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'text/plain',
-        ];
-        if (allowedMimes.includes(file.mimetype)) {
-            callback(null, true);
-        }
-        else {
-            callback(new common_1.BadRequestException(`Invalid file type. Allowed types: ${allowedMimes.join(', ')}`), false);
-        }
-    },
-    limits: {
-        fileSize: 10 * 1024 * 1024,
-    },
-};
-const imageFileFilter = (req, file, callback) => {
-    const allowedMimes = ['image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp'];
-    if (allowedMimes.includes(file.mimetype)) {
-        callback(null, true);
-    }
-    else {
-        callback(new common_1.BadRequestException('Only image files are allowed (jpg, jpeg, png, gif, webp)'), false);
-    }
-};
-exports.imageFileFilter = imageFileFilter;
-const documentFileFilter = (req, file, callback) => {
-    const allowedMimes = [
-        'application/pdf',
-        'application/msword',
-        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        'text/plain',
-    ];
-    if (allowedMimes.includes(file.mimetype)) {
-        callback(null, true);
-    }
-    else {
-        callback(new common_1.BadRequestException('Only document files are allowed (pdf, doc, docx, txt)'), false);
-    }
-};
-exports.documentFileFilter = documentFileFilter;
-
-
-/***/ }),
-/* 49 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CompaniesModule = void 0;
-const common_1 = __webpack_require__(2);
-const companies_controller_1 = __webpack_require__(50);
-const companies_service_1 = __webpack_require__(51);
-const prisma_module_1 = __webpack_require__(34);
-let CompaniesModule = class CompaniesModule {
-};
-exports.CompaniesModule = CompaniesModule;
-exports.CompaniesModule = CompaniesModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [companies_controller_1.CompaniesController],
-        providers: [companies_service_1.CompaniesService],
-        exports: [companies_service_1.CompaniesService],
-    })
-], CompaniesModule);
-
-
-/***/ }),
-/* 50 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b, _c;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CompaniesController = void 0;
-const common_1 = __webpack_require__(2);
-const companies_service_1 = __webpack_require__(51);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const roles_guard_1 = __webpack_require__(41);
-const create_company_dto_1 = __webpack_require__(52);
-let CompaniesController = class CompaniesController {
-    constructor(companiesService) {
-        this.companiesService = companiesService;
-    }
-    async findAll() {
-        return this.companiesService.findAll();
-    }
-    async findOne(id) {
-        return this.companiesService.findById(id);
-    }
-    async create(dto) {
-        return this.companiesService.create(dto);
-    }
-    async update(id, dto) {
-        return this.companiesService.update(id, dto);
-    }
-    async remove(id) {
-        return this.companiesService.delete(id);
-    }
-};
-exports.CompaniesController = CompaniesController;
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], CompaniesController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], CompaniesController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_b = typeof create_company_dto_1.CreateCompanyDto !== "undefined" && create_company_dto_1.CreateCompanyDto) === "function" ? _b : Object]),
-    __metadata("design:returntype", Promise)
-], CompaniesController.prototype, "create", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Put)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_c = typeof Partial !== "undefined" && Partial) === "function" ? _c : Object]),
-    __metadata("design:returntype", Promise)
-], CompaniesController.prototype, "update", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], CompaniesController.prototype, "remove", null);
-exports.CompaniesController = CompaniesController = __decorate([
-    (0, common_1.Controller)("companies"),
-    __metadata("design:paramtypes", [typeof (_a = typeof companies_service_1.CompaniesService !== "undefined" && companies_service_1.CompaniesService) === "function" ? _a : Object])
-], CompaniesController);
-
-
-/***/ }),
-/* 51 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.CompaniesService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const serial_id_helper_1 = __webpack_require__(27);
-let CompaniesService = class CompaniesService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    normalizeStatus(status) {
-        const normalized = String(status || 'active').trim().toLowerCase();
-        if (!['active', 'pending', 'inactive', 'suspended'].includes(normalized)) {
-            throw new common_1.BadRequestException('Status must be one of: active, pending, inactive, suspended');
-        }
-        return normalized;
-    }
-    normalizeEmail(email) {
-        return email.toLowerCase().trim();
-    }
-    async enrichCompanyData(company) {
-        let activeAssets;
-        if (company.assets && Array.isArray(company.assets)) {
-            activeAssets = company.assets.filter((asset) => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length;
-        }
-        else {
-            const assets = await this.prisma.asset.findMany({
-                where: { companyId: company.id },
-                select: { status: true }
-            });
-            activeAssets = assets.filter(asset => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length;
-        }
-        const totalTransactions = company._count?.transactions ||
-            await this.prisma.transaction.count({ where: { companyId: company.id } });
-        return {
-            ...company,
-            activeAssets,
-            totalTransactions
-        };
-    }
-    async findAll() {
-        const companies = await this.prisma.company.findMany({
-            include: {
-                assets: { select: { id: true, name: true, type: true, status: true } },
-                _count: { select: { assets: true, transactions: true } },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-        return companies.map(company => ({
-            ...company,
-            activeAssets: company.assets.filter(asset => ['available', 'active', 'published'].includes(String(asset.status || '').toLowerCase())).length,
-            totalTransactions: company._count.transactions,
-        }));
-    }
-    async findById(id) {
-        if (!id || id.trim() === '')
-            throw new common_1.BadRequestException('Company ID is required');
-        const company = await this.prisma.company.findUnique({
-            where: { id },
-            include: {
-                assets: { select: { id: true, name: true, type: true, status: true } },
-                transactions: { select: { id: true, totalAmount: true, status: true, date: true }, take: 10, orderBy: { date: 'desc' } },
-                _count: { select: { assets: true, transactions: true } },
-            },
-        });
-        if (!company)
-            throw new common_1.NotFoundException(`Company with ID ${id} not found`);
-        return this.enrichCompanyData(company);
-    }
-    async create(data) {
-        try {
-            if (!data.name || !data.name.trim())
-                throw new common_1.BadRequestException('Company name is required');
-            if (!data.email || !data.email.trim())
-                throw new common_1.BadRequestException('Email is required');
-            if (!data.type || !['developer', 'realtor', 'partner', 'consultant', 'investor'].includes(data.type)) {
-                throw new common_1.BadRequestException('Company type is required and must be one of: developer, realtor, partner, consultant, investor');
-            }
-            const existingByName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
-            if (existingByName)
-                throw new common_1.ConflictException('A company with this name already exists');
-            const existing = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email) } });
-            if (existing)
-                throw new common_1.ConflictException('A company with this email already exists');
-            if (data.phone?.trim()) {
-                const existingByPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim() } });
-                if (existingByPhone)
-                    throw new common_1.ConflictException('A company with this phone number already exists');
-            }
-            if (data.registrationNumber?.trim()) {
-                const existingByRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim() } });
-                if (existingByRegNo)
-                    throw new common_1.ConflictException('A company with this registration number already exists');
-            }
-            const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CMP');
-            const company = await this.prisma.company.create({
-                data: {
-                    serialId,
-                    name: data.name.trim(),
-                    type: data.type,
-                    email: this.normalizeEmail(data.email),
-                    phone: data.phone?.trim() || null,
-                    status: this.normalizeStatus(data.status),
-                    contactPerson: data.contactPerson?.trim() || null,
-                    address: data.address?.trim() || null,
-                    commissionRate: data.commissionRate ? parseFloat(data.commissionRate) : 0,
-                    paymentTerms: data.paymentTerms?.trim() || null,
-                    agreementStartDate: data.agreementStartDate ? new Date(data.agreementStartDate) : null,
-                    agreementExpiryDate: data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null,
-                    registrationNumber: data.registrationNumber?.trim() || null,
-                    notes: data.notes?.trim() || null,
-                    accountName: (data.accountName || data.bankAccountName)?.trim() || null,
-                    bankName: data.bankName?.trim() || null,
-                    accountNumber: data.accountNumber?.trim() || null,
-                },
-                include: {
-                    assets: { select: { id: true, name: true, type: true, status: true } },
-                    _count: { select: { assets: true, transactions: true } }
-                },
-            });
-            return this.enrichCompanyData(company);
-        }
-        catch (error) {
-            if (error.code === 'P2002') {
-                const rawField = error.meta?.target?.[0] || '';
-                const fieldLabels = {
-                    name: 'company name',
-                    email: 'email address',
-                    phone: 'phone number',
-                    registrationNumber: 'registration number',
-                    serialId: 'serial ID',
-                };
-                const label = fieldLabels[rawField] || rawField || 'a unique field';
-                throw new common_1.ConflictException(`A company with this ${label} already exists`);
-            }
-            if (error instanceof common_1.BadRequestException || error instanceof common_1.ConflictException)
-                throw error;
-            console.error('Company creation error:', error);
-            throw new common_1.InternalServerErrorException('Failed to create company');
-        }
-    }
-    async update(id, data) {
-        try {
-            if (!id || id.trim() === '')
-                throw new common_1.BadRequestException('Company ID is required');
-            const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
-            if (!exists)
-                throw new common_1.NotFoundException(`Company with ID ${id} not found`);
-            if (data.name !== undefined && data.name.trim()) {
-                const dupName = await this.prisma.company.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' }, NOT: { id } } });
-                if (dupName)
-                    throw new common_1.ConflictException('A company with this name already exists');
-            }
-            if (data.email !== undefined && data.email.trim()) {
-                const dupEmail = await this.prisma.company.findFirst({ where: { email: this.normalizeEmail(data.email), NOT: { id } } });
-                if (dupEmail)
-                    throw new common_1.ConflictException('A company with this email address already exists');
-            }
-            if (data.phone !== undefined && data.phone.trim()) {
-                const dupPhone = await this.prisma.company.findFirst({ where: { phone: data.phone.trim(), NOT: { id } } });
-                if (dupPhone)
-                    throw new common_1.ConflictException('A company with this phone number already exists');
-            }
-            if (data.registrationNumber !== undefined && data.registrationNumber.trim()) {
-                const dupRegNo = await this.prisma.company.findFirst({ where: { registrationNumber: data.registrationNumber.trim(), NOT: { id } } });
-                if (dupRegNo)
-                    throw new common_1.ConflictException('A company with this registration number already exists');
-            }
-            const updateData = {};
-            if (data.name !== undefined)
-                updateData.name = data.name.trim();
-            if (data.type !== undefined)
-                updateData.type = data.type;
-            if (data.email !== undefined)
-                updateData.email = this.normalizeEmail(data.email);
-            if (data.phone !== undefined)
-                updateData.phone = data.phone?.trim();
-            if (data.status !== undefined)
-                updateData.status = this.normalizeStatus(data.status);
-            if (data.contactPerson !== undefined)
-                updateData.contactPerson = data.contactPerson?.trim();
-            if (data.address !== undefined)
-                updateData.address = data.address?.trim();
-            if (data.commissionRate !== undefined)
-                updateData.commissionRate = parseFloat(data.commissionRate);
-            if (data.paymentTerms !== undefined)
-                updateData.paymentTerms = data.paymentTerms?.trim();
-            if (data.agreementStartDate !== undefined)
-                updateData.agreementStartDate = data.agreementStartDate ? new Date(data.agreementStartDate) : null;
-            if (data.agreementExpiryDate !== undefined)
-                updateData.agreementExpiryDate = data.agreementExpiryDate ? new Date(data.agreementExpiryDate) : null;
-            if (data.registrationNumber !== undefined)
-                updateData.registrationNumber = data.registrationNumber?.trim();
-            if (data.notes !== undefined)
-                updateData.notes = data.notes?.trim();
-            if (data.accountName !== undefined || data.bankAccountName !== undefined) {
-                updateData.accountName = (data.accountName || data.bankAccountName)?.trim() || null;
-            }
-            if (data.bankName !== undefined)
-                updateData.bankName = data.bankName?.trim();
-            if (data.accountNumber !== undefined)
-                updateData.accountNumber = data.accountNumber?.trim();
-            const company = await this.prisma.company.update({
-                where: { id },
-                data: updateData,
-                include: {
-                    assets: { select: { id: true, name: true, type: true, status: true } },
-                    _count: { select: { assets: true, transactions: true } }
-                },
-            });
-            return this.enrichCompanyData(company);
-        }
-        catch (error) {
-            if (error.code === 'P2002') {
-                const rawField = error.meta?.target?.[0] || '';
-                const fieldLabels = {
-                    name: 'company name',
-                    email: 'email address',
-                    phone: 'phone number',
-                    registrationNumber: 'registration number',
-                    serialId: 'serial ID',
-                };
-                const label = fieldLabels[rawField] || rawField || 'a unique field';
-                throw new common_1.ConflictException(`A company with this ${label} already exists`);
-            }
-            if (error instanceof common_1.BadRequestException || error instanceof common_1.ConflictException || error instanceof common_1.NotFoundException)
-                throw error;
-            console.error('Company update error:', error);
-            throw new common_1.InternalServerErrorException('Failed to update company');
-        }
-    }
-    async delete(id) {
-        if (!id || id.trim() === '')
-            throw new common_1.BadRequestException('Company ID is required');
-        const exists = await this.prisma.company.findUnique({ where: { id }, select: { id: true } });
-        if (!exists)
-            throw new common_1.NotFoundException(`Company with ID ${id} not found`);
-        const activeAssets = await this.prisma.asset.count({ where: { companyId: id, status: 'published' } });
-        if (activeAssets > 0)
-            throw new common_1.BadRequestException(`Cannot delete company with ${activeAssets} active assets.`);
-        const txCount = await this.prisma.transaction.count({ where: { companyId: id } });
-        if (txCount > 0)
-            throw new common_1.BadRequestException(`Cannot delete company with ${txCount} transactions.`);
-        await this.prisma.company.delete({ where: { id } });
-        return { message: 'Company deleted successfully', id };
-    }
-};
-exports.CompaniesService = CompaniesService;
-exports.CompaniesService = CompaniesService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], CompaniesService);
-
-
-/***/ }),
-/* 52 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FilterCompaniesDto = exports.UpdateCompanyDto = exports.CreateCompanyDto = exports.CompanyStatusEnum = exports.CompanyTypeEnum = void 0;
-const class_validator_1 = __webpack_require__(30);
-const class_transformer_1 = __webpack_require__(31);
-var CompanyTypeEnum;
-(function (CompanyTypeEnum) {
-    CompanyTypeEnum["DEVELOPER"] = "developer";
-    CompanyTypeEnum["REALTOR"] = "realtor";
-    CompanyTypeEnum["PARTNER"] = "partner";
-    CompanyTypeEnum["CONSULTANT"] = "consultant";
-    CompanyTypeEnum["INVESTOR"] = "investor";
-})(CompanyTypeEnum || (exports.CompanyTypeEnum = CompanyTypeEnum = {}));
-var CompanyStatusEnum;
-(function (CompanyStatusEnum) {
-    CompanyStatusEnum["ACTIVE"] = "active";
-    CompanyStatusEnum["PENDING"] = "pending";
-    CompanyStatusEnum["INACTIVE"] = "inactive";
-    CompanyStatusEnum["SUSPENDED"] = "suspended";
-})(CompanyStatusEnum || (exports.CompanyStatusEnum = CompanyStatusEnum = {}));
-class CreateCompanyDto {
-}
-exports.CreateCompanyDto = CreateCompanyDto;
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Company name is required' }),
-    (0, class_validator_1.MinLength)(2, { message: 'Company name must be at least 2 characters' }),
-    (0, class_validator_1.MaxLength)(200, { message: 'Company name must not exceed 200 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsEnum)(CompanyTypeEnum, {
-        message: 'Company type must be one of: developer, realtor, partner, consultant, investor'
-    }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Company type is required' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "type", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(50, { message: 'Registration number must not exceed 50 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "registrationNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CompanyStatusEnum, {
-        message: 'Status must be one of: active, inactive, suspended'
-    }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "status", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Contact person name is required' }),
-    (0, class_validator_1.MinLength)(2, { message: 'Contact person name must be at least 2 characters' }),
-    (0, class_validator_1.MaxLength)(100, { message: 'Contact person name must not exceed 100 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "contactPerson", void 0);
-__decorate([
-    (0, class_transformer_1.Transform)(({ value }) => value?.trim().toLowerCase()),
-    (0, class_validator_1.IsEmail)({}, { message: 'Please provide a valid email address' }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Email is required' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Phone number is required' }),
-    (0, class_validator_1.Matches)(/^[+]?[\d\s()-]+$/, {
-        message: 'Please provide a valid phone number (digits, spaces, +, -, () allowed)'
-    }),
-    (0, class_validator_1.MinLength)(10, { message: 'Phone number must be at least 10 characters' }),
-    (0, class_validator_1.MaxLength)(20, { message: 'Phone number must not exceed 20 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "phone", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(500, { message: 'Address must not exceed 500 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "address", void 0);
-__decorate([
-    (0, class_validator_1.IsDateString)({}, { message: 'Agreement start date must be a valid date (YYYY-MM-DD)' }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Agreement start date is required' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "agreementStartDate", void 0);
-__decorate([
-    (0, class_validator_1.IsDateString)({}, { message: 'Agreement expiry date must be a valid date (YYYY-MM-DD)' }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Agreement expiry date is required' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "agreementExpiryDate", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)({}, { message: 'Commission rate must be a number' }),
-    (0, class_validator_1.Min)(0, { message: 'Commission rate cannot be negative' }),
-    (0, class_validator_1.Max)(100, { message: 'Commission rate cannot exceed 100' }),
-    (0, class_validator_1.IsNotEmpty)({ message: 'Commission rate is required' }),
-    __metadata("design:type", Number)
-], CreateCompanyDto.prototype, "commissionRate", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(500, { message: 'Payment terms must not exceed 500 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "paymentTerms", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(100, { message: 'Account name must not exceed 100 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "accountName", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(100, { message: 'Bank name must not exceed 100 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "bankName", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^[\d]+$/, { message: 'Account number must contain only digits' }),
-    (0, class_validator_1.MinLength)(10, { message: 'Account number must be at least 10 digits' }),
-    (0, class_validator_1.MaxLength)(20, { message: 'Account number must not exceed 20 digits' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "accountNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(1000, { message: 'Notes must not exceed 1000 characters' }),
-    __metadata("design:type", String)
-], CreateCompanyDto.prototype, "notes", void 0);
-class UpdateCompanyDto {
-}
-exports.UpdateCompanyDto = UpdateCompanyDto;
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(2),
-    (0, class_validator_1.MaxLength)(200),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CompanyTypeEnum, {
-        message: 'Company type must be one of: developer, realtor, partner, consultant, investor'
-    }),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "type", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(50),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "registrationNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CompanyStatusEnum, {
-        message: 'Status must be one of: active, inactive, suspended'
-    }),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "status", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MinLength)(2),
-    (0, class_validator_1.MaxLength)(100),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "contactPerson", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_transformer_1.Transform)(({ value }) => value?.trim().toLowerCase()),
-    (0, class_validator_1.IsEmail)({}, { message: 'Please provide a valid email address' }),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^[+]?[\d\s()-]+$/, { message: 'Please provide a valid phone number' }),
-    (0, class_validator_1.MinLength)(10),
-    (0, class_validator_1.MaxLength)(20),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "phone", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(500),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "address", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "agreementStartDate", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsDateString)(),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "agreementExpiryDate", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(0),
-    (0, class_validator_1.Max)(100),
-    __metadata("design:type", Number)
-], UpdateCompanyDto.prototype, "commissionRate", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(500),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "paymentTerms", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(100),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "accountName", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(100),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "bankName", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.Matches)(/^[\d]+$/),
-    (0, class_validator_1.MinLength)(10),
-    (0, class_validator_1.MaxLength)(20),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "accountNumber", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.MaxLength)(1000),
-    __metadata("design:type", String)
-], UpdateCompanyDto.prototype, "notes", void 0);
-class FilterCompaniesDto {
-}
-exports.FilterCompaniesDto = FilterCompaniesDto;
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CompanyTypeEnum),
-    __metadata("design:type", String)
-], FilterCompaniesDto.prototype, "type", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsEnum)(CompanyStatusEnum),
-    __metadata("design:type", String)
-], FilterCompaniesDto.prototype, "status", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], FilterCompaniesDto.prototype, "search", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], FilterCompaniesDto.prototype, "sortBy", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    (0, class_validator_1.IsIn)(['asc', 'desc']),
-    __metadata("design:type", String)
-], FilterCompaniesDto.prototype, "sortOrder", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(1),
-    __metadata("design:type", Number)
-], FilterCompaniesDto.prototype, "page", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(1),
-    (0, class_validator_1.Max)(100),
-    __metadata("design:type", Number)
-], FilterCompaniesDto.prototype, "limit", void 0);
-
-
-/***/ }),
-/* 53 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AgentsModule = void 0;
-const common_1 = __webpack_require__(2);
-const agents_controller_1 = __webpack_require__(54);
-const agents_service_1 = __webpack_require__(55);
-const prisma_module_1 = __webpack_require__(34);
-let AgentsModule = class AgentsModule {
-};
-exports.AgentsModule = AgentsModule;
-exports.AgentsModule = AgentsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [agents_controller_1.AgentsController],
-        providers: [agents_service_1.AgentsService],
-        exports: [agents_service_1.AgentsService],
-    })
-], AgentsModule);
-
-
-/***/ }),
-/* 54 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AgentsController = void 0;
-const common_1 = __webpack_require__(2);
-const agents_service_1 = __webpack_require__(55);
-const class_validator_1 = __webpack_require__(30);
-class CreateAgentDto {
-}
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateAgentDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], CreateAgentDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateAgentDto.prototype, "phone", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateAgentDto.prototype, "cluster", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateAgentDto.prototype, "role", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateAgentDto.prototype, "status", void 0);
-let AgentsController = class AgentsController {
-    constructor(agentsService) {
-        this.agentsService = agentsService;
-    }
-    async findAll() {
-        return this.agentsService.findAll();
-    }
-    async getStats() {
-        return this.agentsService.getStats();
-    }
-    async findOne(id) {
-        return this.agentsService.findById(id);
-    }
-    async create(dto) {
-        return this.agentsService.create(dto);
-    }
-    async update(id, dto) {
-        return this.agentsService.update(id, dto);
-    }
-    async remove(id) {
-        return this.agentsService.delete(id);
-    }
-};
-exports.AgentsController = AgentsController;
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AgentsController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)("stats"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], AgentsController.prototype, "getStats", null);
-__decorate([
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AgentsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], AgentsController.prototype, "create", null);
-__decorate([
-    (0, common_1.Put)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_b = typeof Partial !== "undefined" && Partial) === "function" ? _b : Object]),
-    __metadata("design:returntype", Promise)
-], AgentsController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], AgentsController.prototype, "remove", null);
-exports.AgentsController = AgentsController = __decorate([
-    (0, common_1.Controller)("agents"),
-    __metadata("design:paramtypes", [typeof (_a = typeof agents_service_1.AgentsService !== "undefined" && agents_service_1.AgentsService) === "function" ? _a : Object])
-], AgentsController);
-
-
-/***/ }),
-/* 55 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.AgentsService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const bcrypt = __importStar(__webpack_require__(24));
-const client_1 = __webpack_require__(13);
-const serial_id_helper_1 = __webpack_require__(27);
-let AgentsService = class AgentsService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async findAll() {
-        const agents = await this.prisma.agent.findMany({
-            include: {
-                user: { select: { id: true, email: true, name: true, phone: true, role: true } },
-                cluster: { select: { id: true, name: true } },
-                _count: { select: { leadTransactions: true } },
-            },
-            orderBy: { status: 'asc' },
-        });
-        return agents.map(agent => ({
-            id: agent.id,
-            serialId: agent.serialId ?? "",
-            name: agent.user?.name ?? "",
-            email: agent.user?.email ?? "",
-            phone: agent.user?.phone ?? "",
-            cluster: agent.cluster?.name ?? "",
-            clusterId: agent.cluster?.id ?? "",
-            role: agent.user?.role ?? "AGENT",
-            status: agent.status?.toLowerCase() ?? "pending",
-            activeDeals: agent._count.leadTransactions,
-            closedDeals: agent.closedDeals,
-            totalCommission: agent.totalCommission,
-            performance: agent.closedDeals > 0 ? Math.min(100, Math.round((agent.closedDeals / 10) * 100)) : 0,
-        }));
-    }
-    async findById(id) {
-        const agent = await this.prisma.agent.findUnique({
-            where: { id },
-            include: {
-                user: { select: { id: true, email: true, name: true } },
-                cluster: true,
-                assignedLeads: { orderBy: { createdAt: 'desc' }, take: 10 },
-                leadTransactions: { orderBy: { date: 'desc' }, take: 10 },
-                closerTransactions: { orderBy: { date: 'desc' }, take: 10 },
-                commissions: { orderBy: { createdAt: 'desc' }, take: 10 },
-            },
-        });
-        if (!agent)
-            throw new common_1.NotFoundException(`Agent with ID ${id} not found`);
-        return agent;
-    }
-    async create(data) {
-        if (!data.name)
-            throw new common_1.BadRequestException('Name is required');
-        if (!data.email)
-            throw new common_1.BadRequestException('Email is required');
-        let user = await this.prisma.user.findUnique({ where: { email: data.email } });
-        if (user) {
-            const existing = await this.prisma.agent.findUnique({ where: { userId: user.id } });
-            if (existing)
-                throw new common_1.ConflictException('User is already registered as an agent');
-            await this.prisma.user.update({
-                where: { id: user.id },
-                data: {
-                    name: data.name,
-                    phone: data.phone,
-                    role: (data.role ? client_1.UserRole[data.role.toUpperCase()] : client_1.UserRole.AGENT),
-                },
-            });
-        }
-        else {
-            const hashedPassword = await bcrypt.hash('password123', 10);
-            const userSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'USR');
-            user = await this.prisma.user.create({
-                data: {
-                    serialId: userSerialId,
-                    email: data.email,
-                    password: hashedPassword,
-                    name: data.name,
-                    phone: data.phone,
-                    role: (data.role ? client_1.UserRole[data.role.toUpperCase()] : client_1.UserRole.AGENT),
-                },
-            });
-        }
-        const agentSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'AGT');
-        return this.prisma.agent.create({
-            data: {
-                serialId: agentSerialId,
-                userId: user.id,
-                clusterId: data.cluster || null,
-                status: data.status ? data.status.toUpperCase() : 'PENDING',
-                closedDeals: 0,
-                totalCommission: 0,
-            },
-            include: {
-                user: { select: { id: true, email: true, name: true, phone: true, role: true } },
-                cluster: { select: { id: true, name: true } },
-            },
-        });
-    }
-    async update(id, data) {
-        const agent = await this.findById(id);
-        if (data.name || data.email || data.phone || data.role) {
-            await this.prisma.user.update({
-                where: { id: agent.userId },
-                data: {
-                    ...(data.name ? { name: data.name } : {}),
-                    ...(data.email ? { email: data.email } : {}),
-                    ...(data.phone ? { phone: data.phone } : {}),
-                    ...(data.role ? { role: data.role.toUpperCase() } : {}),
-                },
-            });
-        }
-        const updateData = {};
-        if (data.cluster !== undefined)
-            updateData.clusterId = data.cluster;
-        if (data.status !== undefined)
-            updateData.status = data.status.toUpperCase();
-        return this.prisma.agent.update({
-            where: { id },
-            data: updateData,
-            include: {
-                user: { select: { id: true, email: true, name: true, phone: true, role: true } },
-                cluster: { select: { id: true, name: true } },
-            },
-        });
-    }
-    async delete(id) {
-        await this.findById(id);
-        await this.prisma.agent.delete({ where: { id } });
-        return { message: 'Agent deleted successfully', id };
-    }
-    async getStats() {
-        const [total, active, pending] = await Promise.all([
-            this.prisma.agent.count(),
-            this.prisma.agent.count({ where: { status: 'ACTIVE' } }),
-            this.prisma.agent.count({ where: { status: 'PENDING' } }),
-        ]);
-        const commissionAgg = await this.prisma.agent.aggregate({ _sum: { totalCommission: true, closedDeals: true } });
-        return {
-            totalAgents: total,
-            activeAgents: active,
-            pendingAgents: pending,
-            totalClosedDeals: commissionAgg._sum.closedDeals || 0,
-            totalCommission: commissionAgg._sum.totalCommission || 0,
-        };
-    }
-};
-exports.AgentsService = AgentsService;
-exports.AgentsService = AgentsService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], AgentsService);
-
-
-/***/ }),
-/* 56 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ClustersModule = void 0;
-const common_1 = __webpack_require__(2);
-const clusters_controller_1 = __webpack_require__(57);
-const clusters_service_1 = __webpack_require__(58);
-const prisma_module_1 = __webpack_require__(34);
-let ClustersModule = class ClustersModule {
-};
-exports.ClustersModule = ClustersModule;
-exports.ClustersModule = ClustersModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [clusters_controller_1.ClustersController],
-        providers: [clusters_service_1.ClustersService],
-        exports: [clusters_service_1.ClustersService],
-    })
-], ClustersModule);
-
-
-/***/ }),
-/* 57 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ClustersController = void 0;
-const common_1 = __webpack_require__(2);
-const clusters_service_1 = __webpack_require__(58);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const roles_guard_1 = __webpack_require__(41);
-class CreateClusterDto {
-}
-let ClustersController = class ClustersController {
-    constructor(clustersService) {
-        this.clustersService = clustersService;
-    }
-    async findAll() {
-        return this.clustersService.findAll();
-    }
-    async getStats() {
-        return this.clustersService.getStats();
-    }
-    async findOne(id) {
-        return this.clustersService.findById(id);
-    }
-    async create(dto) {
-        return this.clustersService.create(dto);
-    }
-    async update(id, dto) {
-        return this.clustersService.update(id, dto);
-    }
-    async remove(id) {
-        return this.clustersService.delete(id);
-    }
-};
-exports.ClustersController = ClustersController;
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], ClustersController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)("stats"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], ClustersController.prototype, "getStats", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], ClustersController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], ClustersController.prototype, "create", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Put)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_b = typeof Partial !== "undefined" && Partial) === "function" ? _b : Object]),
-    __metadata("design:returntype", Promise)
-], ClustersController.prototype, "update", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], ClustersController.prototype, "remove", null);
-exports.ClustersController = ClustersController = __decorate([
-    (0, common_1.Controller)("clusters"),
-    __metadata("design:paramtypes", [typeof (_a = typeof clusters_service_1.ClustersService !== "undefined" && clusters_service_1.ClustersService) === "function" ? _a : Object])
-], ClustersController);
-
-
-/***/ }),
-/* 58 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ClustersService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const serial_id_helper_1 = __webpack_require__(27);
-let ClustersService = class ClustersService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    normalizeClusterStatus(status) {
-        const normalized = (status || 'ACTIVE').toString().trim().toUpperCase();
-        if (!['ACTIVE', 'INACTIVE', 'PENDING'].includes(normalized)) {
-            throw new common_1.BadRequestException('Cluster status must be one of: ACTIVE, INACTIVE, PENDING');
-        }
-        return normalized.toLowerCase();
-    }
-    async resolveManagerId(teamLead) {
-        if (!teamLead)
-            return null;
-        const user = await this.prisma.user.findUnique({
-            where: { id: teamLead },
-            select: { id: true },
-        });
-        if (user)
-            return user.id;
-        const agent = await this.prisma.agent.findUnique({
-            where: { id: teamLead },
-            select: { userId: true },
-        });
-        if (agent?.userId)
-            return agent.userId;
-        throw new common_1.BadRequestException('Invalid teamLead: must be a valid User ID or Agent ID');
-    }
-    async findAll() {
-        const clusters = await this.prisma.cluster.findMany({
-            include: {
-                manager: { select: { id: true, name: true, email: true } },
-                agents: {
-                    include: {
-                        user: { select: { id: true, name: true } },
-                    },
-                },
-                freelancers: {
-                    include: { user: { select: { id: true, name: true } } },
-                },
-                _count: { select: { agents: true, freelancers: true } },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-        return await Promise.all(clusters.map(async (cluster) => {
-            const teamLead = cluster.manager?.name ?? "";
-            const agents = cluster._count.agents;
-            const agentIds = cluster.agents.map(a => a.id);
-            const transactions = await this.prisma.transaction.findMany({
-                where: {
-                    OR: [
-                        { leadAgentId: { in: agentIds } },
-                        { closerAgentId: { in: agentIds } },
-                    ],
-                },
-                select: { assetId: true },
-                distinct: ['assetId'],
-            });
-            const activeAssets = transactions.length;
-            const totalCommission = await this.prisma.agent.aggregate({
-                where: { clusterId: cluster.id },
-                _sum: { totalCommission: true },
-            });
-            return {
-                id: cluster.id,
-                serialId: cluster.serialId ?? "",
-                name: cluster.name,
-                teamLead,
-                managerId: cluster.managerId,
-                agents,
-                activeAssets,
-                totalCommission: totalCommission._sum.totalCommission || 0,
-                status: cluster.status,
-                location: cluster.location,
-                code: cluster.code,
-                commissionType: cluster.commissionType ?? 'AGENT',
-            };
-        }));
-    }
-    async findById(id) {
-        const cluster = await this.prisma.cluster.findUnique({
-            where: { id },
-            include: {
-                manager: { select: { id: true, name: true, email: true } },
-                agents: {
-                    include: {
-                        user: { select: { id: true, name: true, email: true } },
-                        assignedLeads: true,
-                        leadTransactions: true,
-                        closerTransactions: true,
-                    },
-                },
-                freelancers: {
-                    include: { user: { select: { id: true, name: true, email: true } } },
-                },
-            },
-        });
-        if (!cluster)
-            throw new common_1.NotFoundException(`Cluster with ID ${id} not found`);
-        return cluster;
-    }
-    async create(data) {
-        if (!data.name)
-            throw new common_1.BadRequestException('Cluster name is required');
-        const existingByName = await this.prisma.cluster.findFirst({ where: { name: { equals: data.name.trim(), mode: 'insensitive' } } });
-        if (existingByName)
-            throw new common_1.ConflictException('A cluster with this name already exists');
-        const managerId = await this.resolveManagerId(data.teamLead);
-        const status = this.normalizeClusterStatus(data.status);
-        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'CLT');
-        return this.prisma.cluster.create({
-            data: {
-                serialId,
-                name: data.name,
-                code: data.code || null,
-                status,
-                location: data.location || null,
-                managerId,
-                commissionType: data.commissionType || 'AGENT',
-            },
-            include: {
-                manager: { select: { id: true, name: true } },
-            },
-        });
-    }
-    async update(id, data) {
-        await this.findById(id);
-        const updateData = {};
-        if (data.name !== undefined)
-            updateData.name = data.name;
-        if (data.code !== undefined)
-            updateData.code = data.code;
-        if (data.status !== undefined)
-            updateData.status = this.normalizeClusterStatus(data.status);
-        if (data.location !== undefined)
-            updateData.location = data.location;
-        if (data.teamLead !== undefined)
-            updateData.managerId = await this.resolveManagerId(data.teamLead);
-        if (data.commissionType !== undefined)
-            updateData.commissionType = data.commissionType;
-        return this.prisma.cluster.update({
-            where: { id },
-            data: updateData,
-            include: { manager: { select: { id: true, name: true } } },
-        });
-    }
-    async delete(id) {
-        await this.findById(id);
-        await this.prisma.cluster.delete({ where: { id } });
-        return { message: 'Cluster deleted successfully', id };
-    }
-    async getStats() {
-        const [total, active, agents, freelancers] = await Promise.all([
-            this.prisma.cluster.count(),
-            this.prisma.cluster.count({ where: { status: 'active' } }),
-            this.prisma.user.count({ where: { role: 'AGENT' } }),
-            this.prisma.freelancer.count(),
-        ]);
-        return { totalClusters: total, activeClusters: active, totalAgents: agents, totalFreelancers: freelancers };
-    }
-};
-exports.ClustersService = ClustersService;
-exports.ClustersService = ClustersService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], ClustersService);
-
-
-/***/ }),
-/* 59 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.LeadsModule = void 0;
-const common_1 = __webpack_require__(2);
-const leads_controller_1 = __webpack_require__(60);
-const leads_service_1 = __webpack_require__(61);
-const prisma_module_1 = __webpack_require__(34);
-const notification_module_1 = __webpack_require__(35);
-let LeadsModule = class LeadsModule {
-};
-exports.LeadsModule = LeadsModule;
-exports.LeadsModule = LeadsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
-        controllers: [leads_controller_1.LeadsController],
-        providers: [leads_service_1.LeadsService],
-        exports: [leads_service_1.LeadsService],
-    })
-], LeadsModule);
-
-
-/***/ }),
-/* 60 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b, _c, _d;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.LeadsController = void 0;
-const common_1 = __webpack_require__(2);
-const platform_express_1 = __webpack_require__(45);
-const class_validator_1 = __webpack_require__(30);
-const leads_service_1 = __webpack_require__(61);
-class CreateLeadDto {
-}
-class AssignLeadsDto {
-}
-class AssignSingleLeadDto {
-}
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], AssignSingleLeadDto.prototype, "assignedToId", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], AssignSingleLeadDto.prototype, "clusterId", void 0);
-let LeadsController = class LeadsController {
-    constructor(leadsService) {
-        this.leadsService = leadsService;
-    }
-    async findAll(source, status) {
-        return this.leadsService.findAll({ source, status });
-    }
-    async getStats() {
-        return this.leadsService.getStats();
-    }
-    async findOne(id) {
-        return this.leadsService.findById(id);
-    }
-    async create(dto, req) {
-        const createdById = req?.user?.id;
-        return this.leadsService.create(dto, createdById);
-    }
-    async assignLeads(dto) {
-        return this.leadsService.assignLeads(dto);
-    }
-    async assignSingleLead(id, dto) {
-        return this.leadsService.assignSingleLead(id, dto);
-    }
-    async bulkImport(file, req) {
-        const createdById = req?.user?.id;
-        return this.leadsService.bulkImport(file, createdById);
-    }
-    async updateLeadStatus(id, body) {
-        return this.leadsService.updateLeadStatus(id, body.status);
-    }
-    async update(id, dto) {
-        return this.leadsService.update(id, dto);
-    }
-};
-exports.LeadsController = LeadsController;
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("source")),
-    __param(1, (0, common_1.Query)("status")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)("stats"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "getStats", null);
-__decorate([
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateLeadDto, Object]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "create", null);
-__decorate([
-    (0, common_1.Post)("assign"),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [AssignLeadsDto]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "assignLeads", null);
-__decorate([
-    (0, common_1.Post)(":id/assign"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, AssignSingleLeadDto]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "assignSingleLead", null);
-__decorate([
-    (0, common_1.Post)("bulk-import"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
-    __param(0, (0, common_1.UploadedFile)()),
-    __param(1, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_c = typeof Express !== "undefined" && (_b = Express.Multer) !== void 0 && _b.File) === "function" ? _c : Object, Object]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "bulkImport", null);
-__decorate([
-    (0, common_1.Put)(":id/status"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, Object]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "updateLeadStatus", null);
-__decorate([
-    (0, common_1.Put)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_d = typeof Partial !== "undefined" && Partial) === "function" ? _d : Object]),
-    __metadata("design:returntype", Promise)
-], LeadsController.prototype, "update", null);
-exports.LeadsController = LeadsController = __decorate([
-    (0, common_1.Controller)("leads"),
-    __metadata("design:paramtypes", [typeof (_a = typeof leads_service_1.LeadsService !== "undefined" && leads_service_1.LeadsService) === "function" ? _a : Object])
-], LeadsController);
-
-
-/***/ }),
-/* 61 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.LeadsService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const notification_service_1 = __webpack_require__(16);
-const serial_id_helper_1 = __webpack_require__(27);
-const ExcelJS = __importStar(__webpack_require__(62));
-let LeadsService = class LeadsService {
-    constructor(prisma, notificationService) {
-        this.prisma = prisma;
-        this.notificationService = notificationService;
-    }
-    async assignLeads(dto) {
-        if (dto.assignmentType === 'all') {
-            await this.prisma.lead.updateMany({
-                where: { id: { in: dto.leadIds } },
-                data: { status: 'available', assignedCluster: null, assignedToId: null },
-            });
-            await this.notificationService.notifyLeadAvailableToAll(dto.leadIds);
-        }
-        else if (dto.assignmentType === 'cluster' && dto.clusterId) {
-            await this.prisma.lead.updateMany({
-                where: { id: { in: dto.leadIds } },
-                data: { status: 'assigned', assignedCluster: dto.clusterId },
-            });
-            await this.notificationService.notifyLeadAssignedToCluster(dto.leadIds, dto.clusterId);
-        }
-        else {
-            throw new common_1.BadRequestException('Invalid assignment type or missing clusterId');
-        }
-        return { message: 'Leads assigned', ...dto };
-    }
-    async findAll(filters) {
-        const where = {};
-        if (filters?.status)
-            where.status = filters.status;
-        if (filters?.assetId)
-            where.assetId = filters.assetId;
-        if (filters?.assignedToId)
-            where.assignedToId = filters.assignedToId;
-        if (filters?.source)
-            where.source = filters.source;
-        return this.prisma.lead.findMany({
-            where,
-            include: {
-                asset: { select: { id: true, name: true, type: true, location: true } },
-                assignedTo: { include: { user: { select: { id: true, name: true } } } },
-                createdBy: { select: { id: true, name: true } },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-    }
-    async findById(id) {
-        const lead = await this.prisma.lead.findUnique({
-            where: { id },
-            include: {
-                asset: true,
-                assignedTo: { include: { user: true, cluster: true } },
-                createdBy: { select: { id: true, name: true, email: true } },
-            },
-        });
-        if (!lead)
-            throw new common_1.NotFoundException(`Lead with ID ${id} not found`);
-        return lead;
-    }
-    async create(data, createdById) {
-        if (!data.email)
-            throw new common_1.BadRequestException('Email is required');
-        const resolvedName = (data.name && data.name.trim()) || data.email.split('@')[0];
-        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'LED');
-        const createdLead = await this.prisma.lead.create({
-            data: {
-                serialId,
-                name: resolvedName,
-                email: data.email,
-                phone: data.phone || null,
-                assetInterest: data.assetInterest || null,
-                budget: data.budget ? parseFloat(data.budget) : null,
-                source: data.source || null,
-                leadSource: data.leadSource || "investor-app",
-                location: data.location || null,
-                notes: data.notes || null,
-                status: data.status || "pending",
-                assignedToId: data.assignedToId || null,
-                assignedCluster: data.assignedCluster || null,
-                createdById,
-                dateReceived: data.dateReceived ? new Date(data.dateReceived) : new Date(),
-            },
-            include: {
-                asset: { select: { id: true, name: true } },
-                assignedTo: { include: { user: { select: { id: true, name: true } } } },
-                createdBy: { select: { id: true, name: true } },
-            },
-        });
-        const source = String(createdLead.leadSource || createdLead.source || '').toLowerCase();
-        if (source.includes('investor')) {
-            await this.notificationService.notifyNewLeadFromInvestor(createdLead.id);
-        }
-        return createdLead;
-    }
-    async update(id, data) {
-        await this.findById(id);
-        const updateData = {};
-        if (data.name !== undefined)
-            updateData.name = data.name;
-        if (data.email !== undefined)
-            updateData.email = data.email;
-        if (data.phone !== undefined)
-            updateData.phone = data.phone;
-        if (data.status !== undefined)
-            updateData.status = data.status;
-        if (data.budget !== undefined)
-            updateData.budget = parseFloat(data.budget);
-        if (data.source !== undefined)
-            updateData.source = data.source;
-        if (data.leadSource !== undefined)
-            updateData.leadSource = data.leadSource;
-        if (data.location !== undefined)
-            updateData.location = data.location;
-        if (data.notes !== undefined)
-            updateData.notes = data.notes;
-        if (data.assetInterest !== undefined)
-            updateData.assetInterest = data.assetInterest;
-        if (data.assignedToId !== undefined)
-            updateData.assignedToId = data.assignedToId;
-        if (data.assignedCluster !== undefined)
-            updateData.assignedCluster = data.assignedCluster;
-        return this.prisma.lead.update({
-            where: { id },
-            data: updateData,
-            include: {
-                asset: { select: { id: true, name: true } },
-                assignedTo: { include: { user: { select: { id: true, name: true } } } },
-            },
-        });
-    }
-    async delete(id) {
-        await this.findById(id);
-        await this.prisma.lead.delete({ where: { id } });
-        return { message: 'Lead deleted successfully', id };
-    }
-    async getStats() {
-        const [total, byStatus] = await Promise.all([
-            this.prisma.lead.count(),
-            this.prisma.lead.groupBy({
-                by: ['status'],
-                _count: true,
-            }),
-        ]);
-        return {
-            total,
-            byStatus: byStatus.map((s) => ({ status: s.status, count: s._count })),
-        };
-    }
-    async assignSingleLead(leadId, dto) {
-        if (!leadId)
-            throw new common_1.BadRequestException('Missing leadId');
-        const updateData = {};
-        if (dto.assignedToId) {
-            updateData.assignedToId = dto.assignedToId;
-            updateData.status = 'assigned';
-        }
-        if (dto.clusterId) {
-            updateData.assignedCluster = dto.clusterId;
-            updateData.status = 'assigned';
-        }
-        if (!updateData.assignedToId && !updateData.assignedCluster) {
-            throw new common_1.BadRequestException('Must provide assignedToId or clusterId');
-        }
-        const lead = await this.prisma.lead.update({
-            where: { id: leadId },
-            data: updateData,
-        });
-        if (dto.clusterId) {
-            await this.notificationService.notifyLeadAssignedToCluster([leadId], dto.clusterId);
-        }
-        return { message: 'Lead assigned', lead };
-    }
-    async updateLeadStatus(id, status) {
-        if (!id)
-            throw new common_1.BadRequestException('Missing leadId');
-        if (!status)
-            throw new common_1.BadRequestException('Missing status');
-        const lead = await this.prisma.lead.update({
-            where: { id },
-            data: { status },
-        });
-        return { message: 'Lead status updated', lead };
-    }
-    async bulkImport(file, createdById) {
-        if (!file)
-            throw new common_1.BadRequestException('No file uploaded');
-        const workbook = new ExcelJS.Workbook();
-        await workbook.xlsx.load(file.buffer);
-        const worksheet = workbook.worksheets[0];
-        if (!worksheet)
-            throw new common_1.BadRequestException('Excel file contains no worksheets');
-        const results = { created: 0, skipped: 0, errors: [] };
-        const headerRow = worksheet.getRow(1);
-        const headers = {};
-        headerRow.eachCell((cell, colNumber) => {
-            headers[colNumber] = String(cell.value || '').trim().toLowerCase();
-        });
-        const getCol = (row, names) => {
-            for (const [colStr, header] of Object.entries(headers)) {
-                if (names.some(n => header.includes(n))) {
-                    const val = row.getCell(parseInt(colStr)).value;
-                    return val ? String(val).trim() : '';
-                }
-            }
-            return '';
-        };
-        for (let rowNum = 2; rowNum <= worksheet.rowCount; rowNum++) {
-            const row = worksheet.getRow(rowNum);
-            if (row.cellCount === 0)
-                continue;
-            const email = getCol(row, ['email']);
-            if (!email) {
-                results.skipped++;
-                continue;
-            }
-            const name = getCol(row, ['name', 'full name']) || email.split('@')[0];
-            const phone = getCol(row, ['phone', 'telephone', 'mobile']);
-            const budget = getCol(row, ['budget']);
-            const location = getCol(row, ['location', 'city', 'address']);
-            const assetInterest = getCol(row, ['asset', 'interest', 'property']);
-            const source = getCol(row, ['source']);
-            const notes = getCol(row, ['notes', 'comment', 'remark']);
-            try {
-                await this.create({ name, email, phone, budget, location, assetInterest, source, leadSource: 'bulk-import', notes }, createdById || '');
-                results.created++;
-            }
-            catch (err) {
-                results.errors.push(`Row ${rowNum}: ${err?.message || 'Unknown error'}`);
-                results.skipped++;
-            }
-        }
-        return { message: `Bulk import complete`, ...results };
-    }
-};
-exports.LeadsService = LeadsService;
-exports.LeadsService = LeadsService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
-], LeadsService);
-
-
-/***/ }),
-/* 62 */
-/***/ ((module) => {
-
-module.exports = require("exceljs");
-
-/***/ }),
-/* 63 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TransactionsModule = void 0;
-const common_1 = __webpack_require__(2);
-const platform_express_1 = __webpack_require__(45);
-const transactions_controller_1 = __webpack_require__(64);
-const transactions_service_1 = __webpack_require__(65);
-const prisma_module_1 = __webpack_require__(34);
-const notification_module_1 = __webpack_require__(35);
-let TransactionsModule = class TransactionsModule {
-};
-exports.TransactionsModule = TransactionsModule;
-exports.TransactionsModule = TransactionsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [
-            prisma_module_1.PrismaModule,
-            notification_module_1.NotificationModule,
-            platform_express_1.MulterModule.register({
-                dest: './uploads',
-            }),
-        ],
-        controllers: [transactions_controller_1.TransactionsController],
-        providers: [transactions_service_1.TransactionsService],
-        exports: [transactions_service_1.TransactionsService],
-    })
-], TransactionsModule);
-
-
-/***/ }),
-/* 64 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a, _b, _c, _d;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TransactionsController = void 0;
-const common_1 = __webpack_require__(2);
-const platform_express_1 = __webpack_require__(45);
-const transactions_service_1 = __webpack_require__(65);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const roles_guard_1 = __webpack_require__(41);
-const roles_decorator_1 = __webpack_require__(42);
-class CreateTransactionDto {
-}
-class SendCommissionsDto {
-}
-let TransactionsController = class TransactionsController {
-    constructor(transactionsService) {
-        this.transactionsService = transactionsService;
-    }
-    async findAll(month) {
-        return this.transactionsService.findAll({ month });
-    }
-    async getStats() {
-        return this.transactionsService.getStats();
-    }
-    async getUnpaidCommissions(month) {
-        return this.transactionsService.getUnpaidCommissions({ month });
-    }
-    async getPaidCommissions(month) {
-        return this.transactionsService.getPaidCommissions({ month });
-    }
-    async findOne(id) {
-        return this.transactionsService.findById(id);
-    }
-    async create(dto) {
-        return this.transactionsService.create(dto);
-    }
-    async sendCommissions(dto) {
-        return this.transactionsService.sendCommissionsForPayment(dto.transactionIds);
-    }
-    async uploadPaymentProof(file) {
-        return this.transactionsService.uploadPaymentProof(file);
-    }
-    async update(id, dto) {
-        return this.transactionsService.update(id, dto);
-    }
-};
-exports.TransactionsController = TransactionsController;
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("month")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)("stats"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "getStats", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)("commissions/unpaid"),
-    __param(0, (0, common_1.Query)("month")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "getUnpaidCommissions", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)("commissions/paid"),
-    __param(0, (0, common_1.Query)("month")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "getPaidCommissions", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateTransactionDto]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "create", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
-    (0, common_1.Post)("commissions/send"),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [SendCommissionsDto]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "sendCommissions", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
-    (0, common_1.Post)("commissions/payment-proof"),
-    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
-    __param(0, (0, common_1.UploadedFile)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_c = typeof Express !== "undefined" && (_b = Express.Multer) !== void 0 && _b.File) === "function" ? _c : Object]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "uploadPaymentProof", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)("ADMIN"),
-    (0, common_1.Put)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_d = typeof Partial !== "undefined" && Partial) === "function" ? _d : Object]),
-    __metadata("design:returntype", Promise)
-], TransactionsController.prototype, "update", null);
-exports.TransactionsController = TransactionsController = __decorate([
-    (0, common_1.Controller)("transactions"),
-    __metadata("design:paramtypes", [typeof (_a = typeof transactions_service_1.TransactionsService !== "undefined" && transactions_service_1.TransactionsService) === "function" ? _a : Object])
-], TransactionsController);
-
-
-/***/ }),
-/* 65 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.TransactionsService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const client_1 = __webpack_require__(13);
-const notification_service_1 = __webpack_require__(16);
-const serial_id_helper_1 = __webpack_require__(27);
-let TransactionsService = class TransactionsService {
-    constructor(prisma, notificationService) {
-        this.prisma = prisma;
-        this.notificationService = notificationService;
-    }
-    async getUnpaidCommissions({ month }) {
-        return this.findAll({
-            status: undefined,
-            month,
-        }).then(transactions => transactions.filter(t => t.status === 'unpaid' || t.status === 'sent'));
-    }
-    async getPaidCommissions({ month }) {
-        return this.findAll({
-            status: undefined,
-            month,
-        }).then(transactions => transactions.filter(t => t.status === 'paid'));
-    }
-    async sendCommissionsForPayment(transactionIds) {
-        await this.prisma.transaction.updateMany({
-            where: { id: { in: transactionIds } },
-            data: { commissionPaymentStatus: 'SENT' },
-        });
-        await this.notificationService.notifyCommissionSent(transactionIds);
-        return { message: 'Commissions marked as sent', transactionIds };
-    }
-    async uploadPaymentProof(file) {
-        const sentTransactions = await this.prisma.transaction.findMany({
-            where: { commissionPaymentStatus: 'SENT' },
-            select: { id: true },
-        });
-        const transactionIds = sentTransactions.map((tx) => tx.id);
-        await this.prisma.transaction.updateMany({
-            where: { commissionPaymentStatus: 'SENT' },
-            data: { commissionPaymentStatus: 'PAID' },
-        });
-        await this.notificationService.notifyCommissionsPaid(transactionIds, file?.originalname);
-        return { message: 'Payment proof uploaded and commissions marked as paid', fileName: file?.originalname };
-    }
-    async findAll(filters) {
-        const where = {};
-        if (filters?.status)
-            where.status = filters.status;
-        if (filters?.agentId) {
-            where.OR = [{ leadAgentId: filters.agentId }, { closerAgentId: filters.agentId }];
-        }
-        if (filters?.companyId)
-            where.companyId = filters.companyId;
-        if (filters?.month) {
-            const [year, month] = filters.month.split('-');
-            const start = new Date(Number(year), Number(month) - 1, 1);
-            const end = new Date(Number(year), Number(month), 1);
-            where.date = { gte: start, lt: end };
-        }
-        const transactions = await this.prisma.transaction.findMany({
-            where,
-            include: {
-                asset: { select: { name: true } },
-                buyer: { select: { name: true } },
-                company: { select: { name: true } },
-                leadAgent: { include: { user: { select: { name: true, accountNumber: true } } } },
-                closerAgent: { include: { user: { select: { name: true } } } },
-                installments: true,
-            },
-            orderBy: { date: 'desc' },
-        });
-        return transactions.map(formatDeal);
-    }
-    async findById(id) {
-        const transaction = await this.prisma.transaction.findUnique({
-            where: { id },
-            include: {
-                asset: true,
-                buyer: { select: { id: true, name: true, email: true } },
-                company: true,
-                leadAgent: { include: { user: { select: { id: true, name: true } } } },
-                closerAgent: { include: { user: { select: { id: true, name: true } } } },
-                installments: { orderBy: { dueDate: 'asc' } },
-                installmentPlans: true,
-                commissions: { include: { agent: { include: { user: { select: { id: true, name: true } } } } } },
-            },
-        });
-        if (!transaction)
-            throw new common_1.NotFoundException(`Transaction with ID ${id} not found`);
-        return transaction;
-    }
-    async create(data) {
-        if (!data.assetId)
-            throw new common_1.BadRequestException('Asset ID is required');
-        if (!data.buyerId)
-            throw new common_1.BadRequestException('Buyer ID is required');
-        if (!data.totalAmount)
-            throw new common_1.BadRequestException('Total amount is required');
-        const asset = await this.prisma.asset.findUnique({ where: { id: data.assetId } });
-        if (!asset)
-            throw new common_1.NotFoundException('Asset not found');
-        const buyer = await this.prisma.user.findUnique({ where: { id: data.buyerId } });
-        if (!buyer)
-            throw new common_1.NotFoundException('Buyer not found');
-        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'TRN');
-        const transaction = await this.prisma.transaction.create({
-            data: {
-                serialId,
-                assetId: data.assetId,
-                buyerId: data.buyerId,
-                totalAmount: parseFloat(data.totalAmount),
-                companyId: data.companyId || asset.companyId || null,
-                paymentType: data.paymentType || null,
-                leadAgentId: data.leadAgentId || null,
-                closerAgentId: data.closerAgentId || null,
-                leadCommission: data.leadCommission ? parseFloat(data.leadCommission) : 0,
-                closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : 0,
-                totalCommission: data.totalCommission ? parseFloat(data.totalCommission) : 0,
-                commission: data.commission ? parseFloat(data.commission) : 0,
-                status: data.status || client_1.CommissionPaymentStatus.UNPAID,
-                commissionPaymentStatus: data.commissionPaymentStatus || client_1.CommissionPaymentStatus.UNPAID,
-                installmentDuration: data.installmentDuration ? parseInt(data.installmentDuration) : null,
-            },
-            include: {
-                asset: { select: { id: true, name: true } },
-                buyer: { select: { id: true, name: true } },
-                company: { select: { id: true, name: true } },
-            },
-        });
-        await this.notificationService.notifyDealCreated(transaction.id);
-        if ((transaction.paymentType || '').toLowerCase() === 'installment') {
-            await this.notificationService.notifyDealPaymentReady(transaction.id);
-        }
-        await this.notificationService.notifyAdminAndSales({
-            title: 'New Deal Created',
-            message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
-            type: 'INFO',
-        });
-        return transaction;
-    }
-    async update(id, data) {
-        await this.findById(id);
-        const updateData = {};
-        if (data.status !== undefined)
-            updateData.status = data.status;
-        if (data.commissionPaymentStatus !== undefined)
-            updateData.commissionPaymentStatus = data.commissionPaymentStatus;
-        if (data.leadAgentId !== undefined)
-            updateData.leadAgentId = data.leadAgentId;
-        if (data.closerAgentId !== undefined)
-            updateData.closerAgentId = data.closerAgentId;
-        if (data.totalAmount !== undefined)
-            updateData.totalAmount = parseFloat(data.totalAmount);
-        if (data.paymentType !== undefined)
-            updateData.paymentType = data.paymentType;
-        if (data.companyId !== undefined)
-            updateData.companyId = data.companyId;
-        const updated = await this.prisma.transaction.update({
-            where: { id },
-            data: updateData,
-            include: {
-                asset: { select: { id: true, name: true } },
-                company: { select: { id: true, name: true } },
-            },
-        });
-        if (data.commissionPaymentStatus === 'SENT') {
-            await this.notificationService.notifyCommissionSent([id]);
-        }
-        if (data.commissionPaymentStatus === 'PAID') {
-            await this.notificationService.notifyCommissionsPaid([id]);
-        }
-        if (data.status === 'COMPLETED') {
-            await this.notificationService.notifyDealClosed(id);
-            await this.notificationService.notifyAdminAndSales({
-                title: 'Deal Completed',
-                message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
-                type: 'SUCCESS',
-            });
-        }
-        return updated;
-    }
-    async delete(id) {
-        await this.findById(id);
-        await this.prisma.transaction.delete({ where: { id } });
-        return { message: 'Transaction deleted successfully', id };
-    }
-    async getStats(filters) {
-        const where = { status: 'COMPLETED' };
-        if (filters?.startDate)
-            where.date = { ...where.date, gte: new Date(filters.startDate) };
-        if (filters?.endDate)
-            where.date = { ...where.date, lte: new Date(filters.endDate) };
-        const [total, revenue, commissions] = await Promise.all([
-            this.prisma.transaction.count({ where }),
-            this.prisma.transaction.aggregate({ where, _sum: { totalAmount: true } }),
-            this.prisma.transaction.aggregate({ where, _sum: { totalCommission: true } }),
-        ]);
-        return {
-            totalTransactions: total,
-            totalRevenue: revenue._sum.totalAmount || 0,
-            totalCommissions: commissions._sum.totalCommission || 0,
-            avgDealSize: total > 0 ? (revenue._sum.totalAmount || 0) / total : 0,
-        };
-    }
-};
-exports.TransactionsService = TransactionsService;
-exports.TransactionsService = TransactionsService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
-], TransactionsService);
-function formatDeal(tx) {
-    return {
-        id: tx.id,
-        serialId: tx.serialId ?? "",
-        leadName: tx.buyer?.name ?? tx.leadAgent?.user?.name ?? "",
-        buyer: tx.buyer?.name ?? "",
-        leadAgent: tx.leadAgent?.user?.name ?? "",
-        closerAgent: tx.closerAgent?.user?.name ?? "",
-        accountNumber: tx.leadAgent?.user?.accountNumber ?? "",
-        company: tx.company?.name ?? "",
-        asset: tx.asset?.name ?? "",
-        propertyValue: tx.totalAmount ? `₦${tx.totalAmount.toLocaleString()}` : "",
-        amount: tx.totalAmount ?? 0,
-        commission: tx.commission,
-        totalCommission: tx.totalCommission ? `₦${tx.totalCommission.toLocaleString()}` : "",
-        leadCommission: tx.leadCommission ? `₦${tx.leadCommission.toLocaleString()}` : "",
-        closerCommission: tx.closerCommission ? `₦${tx.closerCommission.toLocaleString()}` : "",
-        commissionType: tx.leadAgentId && tx.closerAgentId
-            ? (tx.leadAgentId === tx.closerAgentId ? "split" : "lead")
-            : "lead",
-        status: tx.commissionPaymentStatus?.toLowerCase() ?? "unpaid",
-        eligibility: tx.commissionPaymentStatus === "PAID" ? "Eligible" : "Not Eligible",
-        payoutDate: tx.updatedAt?.toISOString().split("T")[0],
-        date: tx.date?.toISOString().split("T")[0] ?? tx.updatedAt?.toISOString().split("T")[0],
-        paymentType: tx.paymentType === "installment" ? "installment" : "full",
-        paymentPlan: tx.paymentType === "installment"
-            ? {
-                type: "installment",
-                numberOfInstallments: tx.installments?.length ?? 0,
-            }
-            : null,
-        commissionBreakdown: (tx.installments ?? []).map((inst, idx) => ({
-            installmentId: inst.id,
-            installmentNumber: inst.installmentNumber ?? idx + 1,
-            leadCommission: inst.leadCommission ?? 0,
-            closerCommission: inst.closerCommission ?? 0,
-            totalCommission: (inst.leadCommission ?? 0) + (inst.closerCommission ?? 0),
-            status: inst.status === "PAID" ? "earned" : (inst.status === "PENDING" ? "pending" : "scheduled"),
-            earnedDate: inst.paidDate ?? null,
-        })),
-    };
-}
-
-
-/***/ }),
-/* 66 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InstallmentsModule = void 0;
-const common_1 = __webpack_require__(2);
-const installments_controller_1 = __webpack_require__(67);
-const installments_service_1 = __webpack_require__(68);
-const prisma_module_1 = __webpack_require__(34);
-const notification_module_1 = __webpack_require__(35);
-let InstallmentsModule = class InstallmentsModule {
-};
-exports.InstallmentsModule = InstallmentsModule;
-exports.InstallmentsModule = InstallmentsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
-        controllers: [installments_controller_1.InstallmentsController],
-        providers: [installments_service_1.InstallmentsService],
-        exports: [installments_service_1.InstallmentsService],
-    })
-], InstallmentsModule);
-
-
-/***/ }),
-/* 67 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InstallmentsController = void 0;
-const common_1 = __webpack_require__(2);
-const installments_service_1 = __webpack_require__(68);
-class CreateInstallmentPlanDto {
-}
-class SendReminderDto {
-}
-let InstallmentsController = class InstallmentsController {
-    constructor(installmentsService) {
-        this.installmentsService = installmentsService;
-    }
-    async findAll(status) {
-        return this.installmentsService.findAll({ status });
-    }
-    async getStats() {
-        return this.installmentsService.getStats();
-    }
-    async findOne(id) {
-        return this.installmentsService.findById(id);
-    }
-    async getSchedule(id) {
-        return this.installmentsService.getInstallmentSchedule(id);
-    }
-    async create(dto) {
-        return this.installmentsService.create(dto);
-    }
-    async sendReminder(dto) {
-        return this.installmentsService.sendPaymentReminder(dto);
-    }
-    async recordPayment(id, installmentId, body) {
-        return this.installmentsService.recordPayment(id, installmentId, body);
-    }
-    async getUpcoming() {
-        return this.installmentsService.findAll({ status: "upcoming" });
-    }
-    async getOverdue() {
-        return this.installmentsService.findAll({ status: "overdue" });
-    }
-};
-exports.InstallmentsController = InstallmentsController;
-__decorate([
-    (0, common_1.Get)(),
-    __param(0, (0, common_1.Query)("status")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "findAll", null);
-__decorate([
-    (0, common_1.Get)("stats"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "getStats", null);
-__decorate([
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Get)(":id/schedule"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "getSchedule", null);
-__decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateInstallmentPlanDto]),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "create", null);
-__decorate([
-    (0, common_1.Post)("reminders/send"),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [SendReminderDto]),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "sendReminder", null);
-__decorate([
-    (0, common_1.Put)(":id/installments/:installmentId/pay"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Param)("installmentId")),
-    __param(2, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object]),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "recordPayment", null);
-__decorate([
-    (0, common_1.Get)("upcoming"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "getUpcoming", null);
-__decorate([
-    (0, common_1.Get)("overdue"),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], InstallmentsController.prototype, "getOverdue", null);
-exports.InstallmentsController = InstallmentsController = __decorate([
-    (0, common_1.Controller)("installments"),
-    __metadata("design:paramtypes", [typeof (_a = typeof installments_service_1.InstallmentsService !== "undefined" && installments_service_1.InstallmentsService) === "function" ? _a : Object])
-], InstallmentsController);
-
-
-/***/ }),
-/* 68 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a, _b;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InstallmentsService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const notification_service_1 = __webpack_require__(16);
-const serial_id_helper_1 = __webpack_require__(27);
-let InstallmentsService = class InstallmentsService {
-    constructor(prisma, notificationService) {
-        this.prisma = prisma;
-        this.notificationService = notificationService;
-    }
-    async findAll(filters) {
-        const where = {};
-        if (filters?.status && filters.status !== 'all') {
-            where.status = filters.status.toUpperCase();
-        }
-        const plans = await this.prisma.installmentPlan.findMany({
-            where,
-            include: {
-                asset: { select: { name: true } },
-                company: { select: { name: true } },
-                leadAgent: { include: { user: { select: { name: true } } } },
-                closerAgent: { include: { user: { select: { name: true } } } },
-                installments: { orderBy: { dueDate: 'asc' } },
-            },
-            orderBy: { createdAt: 'desc' },
-        });
-        return plans.map(plan => ({
-            id: plan.id,
-            serialId: plan.serialId ?? "",
-            asset: plan.asset?.name ?? "",
-            buyer: plan.buyerName ?? "",
-            buyerEmail: plan.buyerEmail ?? "",
-            buyerPhone: plan.buyerPhone ?? "",
-            totalAmount: plan.totalAmount,
-            downPayment: plan.downPayment,
-            paidAmount: plan.paidAmount,
-            remainingBalance: plan.remainingBalance,
-            numberOfInstallments: plan.numberOfInstallments,
-            completedInstallments: plan.completedInstallments,
-            installmentAmount: plan.installmentAmount,
-            frequency: plan.frequency,
-            startDate: plan.startDate?.toISOString().split("T")[0] ?? "",
-            nextDueDate: plan.nextDueDate?.toISOString().split("T")[0] ?? "",
-            status: plan.status?.toLowerCase(),
-            company: plan.company?.name ?? "",
-            leadAgent: plan.leadAgent?.user?.name ?? "",
-            closerAgent: plan.closerAgent?.user?.name ?? "",
-            installments: plan.installments.map(inst => ({
-                id: inst.id,
-                serialId: inst.serialId ?? "",
-                dueDate: inst.dueDate?.toISOString().split("T")[0] ?? "",
-                amount: inst.amount,
-                paidAmount: inst.paidAmount,
-                status: inst.status?.toLowerCase(),
-                paidDate: inst.paidDate ? inst.paidDate.toISOString().split("T")[0] : null,
-                paymentMethod: inst.paymentMethod ?? "",
-            })),
-        }));
-    }
-    async create(dto) {
-        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'IPL');
-        return this.prisma.installmentPlan.create({
-            data: {
-                ...dto,
-                serialId,
-                companyId: dto.companyId,
-                remainingBalance: dto.totalAmount - (dto.downPayment || 0),
-                paidAmount: 0,
-                installmentAmount: dto.totalAmount / dto.numberOfInstallments,
-            },
-        });
-    }
-    async findById(id) {
-        const plan = await this.prisma.installmentPlan.findUnique({
-            where: { id },
-            include: {
-                asset: true,
-                leadAgent: {
-                    include: {
-                        user: {
-                            select: {
-                                name: true,
-                                email: true,
-                            },
-                        },
-                    },
-                },
-                closerAgent: {
-                    include: {
-                        user: {
-                            select: {
-                                name: true,
-                                email: true,
-                            },
-                        },
-                    },
-                },
-                installments: {
-                    orderBy: {
-                        dueDate: "asc",
-                    },
-                },
-            },
-        });
-        if (!plan) {
-            throw new common_1.NotFoundException(`Installment plan with ID ${id} not found`);
-        }
-        return plan;
-    }
-    async getInstallmentSchedule(planId) {
-        const plan = await this.findById(planId);
-        return plan.installments;
-    }
-    async recordPayment(planId, installmentId, data) {
-        const plan = await this.findById(planId);
-        const installment = await this.prisma.installment.findUnique({
-            where: { id: installmentId },
-        });
-        if (!installment) {
-            throw new common_1.NotFoundException(`Installment with ID ${installmentId} not found`);
-        }
-        const updatedInstallment = await this.prisma.installment.update({
-            where: { id: installmentId },
-            data: {
-                paidAmount: installment.paidAmount + data.amount,
-                status: installment.paidAmount + data.amount >= installment.amount ? "PAID" : "PARTIAL",
-                paidDate: new Date(),
-                paymentMethod: data.paymentMethod,
-            },
-        });
-        const newPaidAmount = plan.paidAmount + data.amount;
-        const completedInstallments = await this.prisma.installment.count({
-            where: {
-                installmentPlanId: planId,
-                status: "PAID",
-            },
-        });
-        const nextInstallment = await this.prisma.installment.findFirst({
-            where: {
-                installmentPlanId: planId,
-                status: { in: ["PENDING", "UPCOMING", "OVERDUE"] },
-            },
-            orderBy: {
-                dueDate: "asc",
-            },
-        });
-        const isCompleted = newPaidAmount >= plan.remainingBalance;
-        await this.prisma.installmentPlan.update({
-            where: { id: planId },
-            data: {
-                paidAmount: newPaidAmount,
-                completedInstallments,
-                nextDueDate: nextInstallment?.dueDate || null,
-                status: isCompleted ? "COMPLETED" : "ACTIVE",
-            },
-        });
-        await this.notificationService.notifyInstallmentPaymentRecorded({
-            planId,
-            installmentId,
-            paidAmount: data.amount,
-            paymentMethod: data.paymentMethod,
-            buyerName: plan.buyerName,
-            assetName: plan.asset?.name,
-        });
-        return updatedInstallment;
-    }
-    async sendPaymentReminder(data) {
-        const installment = await this.prisma.installment.findUnique({
-            where: { id: data.installmentId },
-            include: {
-                installmentPlan: {
-                    include: {
-                        asset: { select: { name: true } },
-                        leadAgent: { include: { user: { select: { name: true, email: true } } } },
-                    },
-                },
-            },
-        });
-        if (!installment) {
-            throw new common_1.NotFoundException(`Installment with ID ${data.installmentId} not found`);
-        }
-        const agentEmail = installment.installmentPlan?.leadAgent?.user?.email || 'unknown';
-        console.log(`Sending ${data.method} reminder for asset "${installment.installmentPlan?.asset?.name}" to agent ${agentEmail}`);
-        return {
-            message: "Reminder sent successfully",
-            installmentId: data.installmentId,
-            method: data.method,
-            sentAt: new Date(),
-        };
-    }
-    async getStats() {
-        const [activePlans, completedPlans, totalOutstanding, totalCollected, overduePayments,] = await Promise.all([
-            this.prisma.installmentPlan.count({ where: { status: "ACTIVE" } }),
-            this.prisma.installmentPlan.count({ where: { status: "COMPLETED" } }),
-            this.prisma.installmentPlan.aggregate({
-                where: { status: "ACTIVE" },
-                _sum: {
-                    remainingBalance: true,
-                    paidAmount: true,
-                },
-            }),
-            this.prisma.installmentPlan.aggregate({
-                _sum: {
-                    paidAmount: true,
-                },
-            }),
-            this.prisma.installment.count({
-                where: { status: "OVERDUE" },
-            }),
-        ]);
-        const outstanding = (totalOutstanding._sum.remainingBalance || 0) -
-            (totalOutstanding._sum.paidAmount || 0);
-        return {
-            activePlans,
-            completedPlans,
-            totalOutstanding: outstanding,
-            totalCollected: totalCollected._sum.paidAmount || 0,
-            overduePayments,
-        };
-    }
-    async updateInstallmentStatuses() {
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        await this.prisma.installment.updateMany({
-            where: {
-                dueDate: { lt: today },
-                status: { in: ["PENDING", "UPCOMING"] },
-            },
-            data: {
-                status: "OVERDUE",
-            },
-        });
-        const weekFromNow = new Date(today);
-        weekFromNow.setDate(weekFromNow.getDate() + 7);
-        await this.prisma.installment.updateMany({
-            where: {
-                dueDate: { lte: weekFromNow, gte: today },
-                status: "UPCOMING",
-            },
-            data: {
-                status: "PENDING",
-            },
-        });
-    }
-    async generateInstallmentSchedule(planId, data) {
-        const installments = [];
-        const { numberOfInstallments, installmentAmount, frequency, startDate } = data;
-        for (let i = 0; i < numberOfInstallments; i++) {
-            const dueDate = this.calculateDueDate(startDate, frequency, i);
-            installments.push({
-                installmentPlanId: planId,
-                dueDate,
-                amount: installmentAmount,
-                paidAmount: 0,
-                status: i === 0 ? "PENDING" : "UPCOMING",
-            });
-        }
-        await this.prisma.installment.createMany({
-            data: installments,
-        });
-    }
-    calculateDueDate(startDate, frequency, index) {
-        const dueDate = new Date(startDate);
-        switch (frequency.toLowerCase()) {
-            case "weekly":
-                dueDate.setDate(dueDate.getDate() + (index * 7));
-                break;
-            case "bi-weekly":
-                dueDate.setDate(dueDate.getDate() + (index * 14));
-                break;
-            case "monthly":
-                dueDate.setMonth(dueDate.getMonth() + index);
-                break;
-            case "quarterly":
-                dueDate.setMonth(dueDate.getMonth() + (index * 3));
-                break;
-            default:
-                dueDate.setMonth(dueDate.getMonth() + index);
-        }
-        return dueDate;
-    }
-};
-exports.InstallmentsService = InstallmentsService;
-exports.InstallmentsService = InstallmentsService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
-], InstallmentsService);
-
-
-/***/ }),
-/* 69 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SalesModule = void 0;
-const common_1 = __webpack_require__(2);
-const sales_controller_1 = __webpack_require__(70);
-const sales_service_1 = __webpack_require__(71);
-const prisma_module_1 = __webpack_require__(34);
-let SalesModule = class SalesModule {
-};
-exports.SalesModule = SalesModule;
-exports.SalesModule = SalesModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [sales_controller_1.SalesController],
-        providers: [sales_service_1.SalesService],
-    })
-], SalesModule);
-
-
-/***/ }),
-/* 70 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SalesController = void 0;
-const common_1 = __webpack_require__(2);
-const sales_service_1 = __webpack_require__(71);
-let SalesController = class SalesController {
-    constructor(svc) {
-        this.svc = svc;
-    }
-    async mySales(req) {
-        return this.svc.findByUser(req.user.id);
-    }
-    async all() {
-        return this.svc.findAll();
-    }
-    async summary() {
-        return this.svc.getSalesSummary();
-    }
-};
-exports.SalesController = SalesController;
-__decorate([
-    (0, common_1.Get)('me'),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], SalesController.prototype, "mySales", null);
-__decorate([
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], SalesController.prototype, "all", null);
-__decorate([
-    (0, common_1.Get)('summary'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], SalesController.prototype, "summary", null);
-exports.SalesController = SalesController = __decorate([
-    (0, common_1.Controller)('sales'),
-    __metadata("design:paramtypes", [typeof (_a = typeof sales_service_1.SalesService !== "undefined" && sales_service_1.SalesService) === "function" ? _a : Object])
-], SalesController);
-
-
-/***/ }),
-/* 71 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.SalesService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-let SalesService = class SalesService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async findByUser(userId) {
-        return this.prisma.transaction.findMany({
-            where: { buyerId: userId },
-            include: {
-                asset: { select: { id: true, name: true, type: true } },
-                leadAgent: { include: { user: { select: { id: true, name: true } } } },
-                closerAgent: { include: { user: { select: { id: true, name: true } } } },
-                installments: true,
-            },
-            orderBy: { date: 'desc' },
-        });
-    }
-    async findAll() {
-        return this.prisma.transaction.findMany({
-            where: { status: 'COMPLETED' },
-            include: {
-                asset: { select: { id: true, name: true, type: true } },
-                buyer: { select: { id: true, name: true, email: true } },
-                company: { select: { id: true, name: true } },
-                leadAgent: { include: { user: { select: { id: true, name: true } } } },
-                closerAgent: { include: { user: { select: { id: true, name: true } } } },
-            },
-            orderBy: { date: 'desc' },
-        });
-    }
-    async getSalesSummary() {
-        const agg = await this.prisma.transaction.aggregate({
-            where: { status: 'COMPLETED' },
-            _sum: { totalAmount: true, totalCommission: true },
-            _count: true,
-        });
-        return {
-            totalSales: agg._count,
-            totalRevenue: agg._sum.totalAmount || 0,
-            totalCommission: agg._sum.totalCommission || 0,
-            avgDealSize: agg._count > 0 ? (agg._sum.totalAmount || 0) / agg._count : 0,
-        };
-    }
-};
-exports.SalesService = SalesService;
-exports.SalesService = SalesService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], SalesService);
-
-
-/***/ }),
-/* 72 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InvestmentsModule = void 0;
-const common_1 = __webpack_require__(2);
-const investments_controller_1 = __webpack_require__(73);
-const investments_service_1 = __webpack_require__(74);
-const prisma_module_1 = __webpack_require__(34);
-let InvestmentsModule = class InvestmentsModule {
-};
-exports.InvestmentsModule = InvestmentsModule;
-exports.InvestmentsModule = InvestmentsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [investments_controller_1.InvestmentsController],
-        providers: [investments_service_1.InvestmentsService],
-    })
-], InvestmentsModule);
-
-
-/***/ }),
-/* 73 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var __param = (this && this.__param) || function (paramIndex, decorator) {
-    return function (target, key) { decorator(target, key, paramIndex); }
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InvestmentsController = void 0;
-const common_1 = __webpack_require__(2);
-const investments_service_1 = __webpack_require__(74);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const roles_decorator_1 = __webpack_require__(42);
-const roles_guard_1 = __webpack_require__(41);
-let InvestmentsController = class InvestmentsController {
-    constructor(svc) {
-        this.svc = svc;
-    }
-    async myInvestments(req) {
-        if (!req.user?.id) {
-            throw new common_1.UnauthorizedException('Missing or invalid auth token.');
-        }
-        return this.svc.findByUser(req.user.id);
-    }
-    async summary(req) {
-        if (!req.user?.id) {
-            throw new common_1.UnauthorizedException('Missing or invalid auth token.');
-        }
-        return this.svc.getInvestmentSummary(req.user.id);
-    }
-    async createInvestment(req, body) {
-        if (!req.user?.id) {
-            throw new common_1.UnauthorizedException('Missing or invalid auth token.');
-        }
-        return this.svc.createInvestorPurchase(req.user.id, body);
-    }
-    async all() {
-        return this.svc.findAll();
-    }
-};
-exports.InvestmentsController = InvestmentsController;
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Get)('me'),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], InvestmentsController.prototype, "myInvestments", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Get)('summary'),
-    __param(0, (0, common_1.Req)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object]),
-    __metadata("design:returntype", Promise)
-], InvestmentsController.prototype, "summary", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Req)()),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Object, Object]),
-    __metadata("design:returntype", Promise)
-], InvestmentsController.prototype, "createInvestment", null);
-__decorate([
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
-    (0, roles_decorator_1.Roles)('ADMIN'),
-    (0, common_1.Get)(),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", Promise)
-], InvestmentsController.prototype, "all", null);
-exports.InvestmentsController = InvestmentsController = __decorate([
-    (0, common_1.Controller)('investments'),
-    __metadata("design:paramtypes", [typeof (_a = typeof investments_service_1.InvestmentsService !== "undefined" && investments_service_1.InvestmentsService) === "function" ? _a : Object])
-], InvestmentsController);
-
-
-/***/ }),
-/* 74 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.InvestmentsService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const serial_id_helper_1 = __webpack_require__(27);
-let InvestmentsService = class InvestmentsService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async findByUser(userId) {
-        try {
-            return this.prisma.transaction.findMany({
-                where: { buyerId: userId },
-                include: {
-                    asset: { select: { id: true, name: true, type: true, location: true, images: true } },
-                    company: { select: { id: true, name: true } },
-                    installments: { orderBy: { dueDate: 'asc' } },
-                    installmentPlans: true,
-                },
-                orderBy: { date: 'desc' },
-            });
-        }
-        catch (error) {
-            return this.prisma.transaction.findMany({
-                where: { buyerId: userId },
-                include: {
-                    asset: { select: { id: true, name: true, type: true, location: true, images: true } },
-                    company: { select: { id: true, name: true } },
-                },
-                orderBy: { date: 'desc' },
-            });
-        }
-    }
-    async findAll() {
-        return this.prisma.transaction.findMany({
-            include: {
-                asset: { select: { id: true, name: true, type: true } },
-                buyer: { select: { id: true, name: true, email: true } },
-                company: { select: { id: true, name: true } },
-            },
-            orderBy: { date: 'desc' },
-        });
-    }
-    async getInvestmentSummary(userId) {
-        const agg = await this.prisma.transaction.aggregate({
-            where: { buyerId: userId },
-            _sum: { totalAmount: true },
-            _count: true,
-        });
-        return {
-            totalInvestments: agg._count,
-            totalInvested: agg._sum.totalAmount || 0,
-        };
-    }
-    async createInvestorPurchase(userId, data) {
-        if (!data.amount || data.amount <= 0) {
-            throw new common_1.BadRequestException('Amount must be a positive number.');
-        }
-        if (!data.assetId) {
-            throw new common_1.BadRequestException('assetId is required to record an investment.');
-        }
-        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'TRN');
-        const transaction = await this.prisma.transaction.create({
-            data: {
-                serialId,
-                buyerId: userId,
-                assetId: data.assetId,
-                totalAmount: data.amount,
-                paymentType: 'OUTRIGHT',
-                leadCommission: 0,
-                closerCommission: 0,
-                totalCommission: 0,
-                ownershipType: 'Full',
-            },
-            include: {
-                asset: { select: { id: true, name: true, type: true, location: true } },
-            },
-        });
-        return transaction;
-    }
-};
-exports.InvestmentsService = InvestmentsService;
-exports.InvestmentsService = InvestmentsService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], InvestmentsService);
-
-
-/***/ }),
-/* 75 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DashboardModule = void 0;
-const common_1 = __webpack_require__(2);
-const dashboard_service_1 = __webpack_require__(76);
-const dashboard_controller_1 = __webpack_require__(77);
-const prisma_module_1 = __webpack_require__(34);
-let DashboardModule = class DashboardModule {
-};
-exports.DashboardModule = DashboardModule;
-exports.DashboardModule = DashboardModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        providers: [dashboard_service_1.DashboardService],
-        controllers: [dashboard_controller_1.DashboardController],
-    })
-], DashboardModule);
-
-
-/***/ }),
-/* 76 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DashboardService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-let DashboardService = class DashboardService {
-    constructor(prisma) {
-        this.prisma = prisma;
-    }
-    async getOverview() {
-        const [totalAgents, activeClusters, totalRevenue, totalCommissions, activeAssets, assetTypeCounts, salesVolume,] = await Promise.all([
-            this.prisma.user.count({ where: { role: 'AGENT' } }),
-            this.prisma.cluster.count({ where: { status: 'active' } }),
-            this.prisma.transaction.aggregate({
-                where: { status: 'COMPLETED' },
-                _sum: { totalAmount: true },
-            }),
-            this.prisma.transaction.aggregate({
-                where: { status: 'COMPLETED' },
-                _sum: { totalCommission: true },
-            }),
-            this.prisma.asset.count({ where: { status: 'published' } }),
-            this.prisma.asset.groupBy({
-                by: ['type'],
-                _count: { type: true },
-                where: { type: { not: null } },
-            }),
-            this.prisma.$queryRawUnsafe(`
-        SELECT 
-          TO_CHAR("createdAt", 'YYYY-MM') AS month,
-          COUNT(*) AS sales,
-          SUM("totalAmount") AS revenue
-        FROM "Transaction"
-        WHERE status = 'COMPLETED'
-        GROUP BY month
-        ORDER BY month
-        LIMIT 12
-      `),
-        ]);
-        function calcChange(current, previous) {
-            if (previous === undefined || previous === null)
-                return 'N/A';
-            if (previous === 0)
-                return current > 0 ? '+100.0%' : '0.0%';
-            const change = ((current - previous) / previous) * 100;
-            return `${change >= 0 ? '+' : ''}${change.toFixed(1)}%`;
-        }
-        const prevAgents = 0;
-        const prevClusters = 0;
-        const prevRevenue = 0;
-        const prevCommissions = 0;
-        const kpis = [
-            {
-                title: "Total Agents",
-                value: totalAgents,
-                icon: "building",
-                trend: "up",
-                change: calcChange(totalAgents, prevAgents),
-            },
-            {
-                title: "Active Clusters",
-                value: activeClusters,
-                icon: "trendingUp",
-                trend: "up",
-                change: calcChange(activeClusters, prevClusters),
-            },
-            {
-                title: "Total Revenue",
-                value: `₦${(totalRevenue._sum.totalAmount || 0).toLocaleString()}`,
-                icon: "dollarSign",
-                trend: "up",
-                change: calcChange(Number(totalRevenue._sum.totalAmount || 0), prevRevenue),
-            },
-            {
-                title: "Total Commissions",
-                value: `₦${(totalCommissions._sum.totalCommission || 0).toLocaleString()}`,
-                icon: "receipt",
-                trend: "up",
-                change: calcChange(Number(totalCommissions._sum.totalCommission || 0), prevCommissions),
-            },
-        ];
-        const colors = ["#4c51bf", "#10b981", "#f59e42", "#e53e3e", "#6b7280"];
-        const assetDistribution = assetTypeCounts.map((item, idx) => ({
-            name: item.type || "Other",
-            value: item._count.type,
-            color: colors[idx % colors.length],
-        }));
-        const salesVolumeData = salesVolume.map((row) => ({
-            month: row.month,
-            sales: Number(row.sales),
-            revenue: Number(row.revenue) / 1000,
-        }));
-        return {
-            kpis,
-            assetDistribution,
-            salesVolume: salesVolumeData,
-        };
-    }
-    async getRecentTransactions() {
-        return this.prisma.transaction.findMany({
-            take: 10,
-            orderBy: { date: 'desc' },
-            include: {
-                asset: { select: { id: true, name: true, type: true } },
-                buyer: { select: { id: true, name: true } },
-                company: { select: { id: true, name: true } },
-                leadAgent: { include: { user: { select: { id: true, name: true } } } },
-                closerAgent: { include: { user: { select: { id: true, name: true } } } },
-            },
-        });
-    }
-};
-exports.DashboardService = DashboardService;
-exports.DashboardService = DashboardService = __decorate([
-    (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], DashboardService);
-
-
-/***/ }),
-/* 77 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-var __metadata = (this && this.__metadata) || function (k, v) {
-    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
-};
-var _a;
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.DashboardController = void 0;
-const common_1 = __webpack_require__(2);
-const dashboard_service_1 = __webpack_require__(76);
-const passport_1 = __webpack_require__(9);
-let DashboardController = class DashboardController {
-    constructor(dashboardService) {
-        this.dashboardService = dashboardService;
-    }
-    getOverview() {
-        return this.dashboardService.getOverview();
-    }
-    getRecentTransactions() {
-        return this.dashboardService.getRecentTransactions();
-    }
-};
-exports.DashboardController = DashboardController;
-__decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, common_1.Get)('overview'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], DashboardController.prototype, "getOverview", null);
-__decorate([
-    (0, common_1.UseGuards)((0, passport_1.AuthGuard)('jwt')),
-    (0, common_1.Get)('recent-transactions'),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], DashboardController.prototype, "getRecentTransactions", null);
-exports.DashboardController = DashboardController = __decorate([
-    (0, common_1.Controller)('dashboard'),
-    __metadata("design:paramtypes", [typeof (_a = typeof dashboard_service_1.DashboardService !== "undefined" && dashboard_service_1.DashboardService) === "function" ? _a : Object])
-], DashboardController);
-
-
-/***/ }),
-/* 78 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.ReportsModule = void 0;
-const common_1 = __webpack_require__(2);
-const reports_controller_1 = __webpack_require__(79);
-const reports_service_1 = __webpack_require__(80);
-const prisma_module_1 = __webpack_require__(34);
-let ReportsModule = class ReportsModule {
-};
-exports.ReportsModule = ReportsModule;
-exports.ReportsModule = ReportsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [reports_controller_1.ReportsController],
-        providers: [reports_service_1.ReportsService],
-        exports: [reports_service_1.ReportsService],
-    })
-], ReportsModule);
-
-
-/***/ }),
-/* 79 */
+/***/ "./src/reports/reports.controller.ts":
+/*!*******************************************!*\
+  !*** ./src/reports/reports.controller.ts ***!
+  \*******************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -7688,11 +6971,11 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ReportsController = void 0;
-const common_1 = __webpack_require__(2);
-const reports_service_1 = __webpack_require__(80);
-const express_1 = __webpack_require__(81);
-const roles_guard_1 = __webpack_require__(41);
-const passport_1 = __webpack_require__(9);
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const reports_service_1 = __webpack_require__(/*! ./reports.service */ "./src/reports/reports.service.ts");
+const express_1 = __webpack_require__(/*! express */ "express");
+const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
+const passport_1 = __webpack_require__(/*! @nestjs/passport */ "@nestjs/passport");
 let ReportsController = class ReportsController {
     constructor(reportsService) {
         this.reportsService = reportsService;
@@ -7846,7 +7129,45 @@ exports.ReportsController = ReportsController = __decorate([
 
 
 /***/ }),
-/* 80 */
+
+/***/ "./src/reports/reports.module.ts":
+/*!***************************************!*\
+  !*** ./src/reports/reports.module.ts ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.ReportsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const reports_controller_1 = __webpack_require__(/*! ./reports.controller */ "./src/reports/reports.controller.ts");
+const reports_service_1 = __webpack_require__(/*! ./reports.service */ "./src/reports/reports.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let ReportsModule = class ReportsModule {
+};
+exports.ReportsModule = ReportsModule;
+exports.ReportsModule = ReportsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [reports_controller_1.ReportsController],
+        providers: [reports_service_1.ReportsService],
+        exports: [reports_service_1.ReportsService],
+    })
+], ReportsModule);
+
+
+/***/ }),
+
+/***/ "./src/reports/reports.service.ts":
+/*!****************************************!*\
+  !*** ./src/reports/reports.service.ts ***!
+  \****************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -7895,10 +7216,10 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.ReportsService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const ExcelJS = __importStar(__webpack_require__(62));
-const client_1 = __webpack_require__(13);
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const ExcelJS = __importStar(__webpack_require__(/*! exceljs */ "exceljs"));
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 let ReportsService = class ReportsService {
     constructor(prisma) {
         this.prisma = prisma;
@@ -8533,43 +7854,11 @@ exports.ReportsService = ReportsService = __decorate([
 
 
 /***/ }),
-/* 81 */
-/***/ ((module) => {
 
-module.exports = require("express");
-
-/***/ }),
-/* 82 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
-
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FreelancersModule = void 0;
-const common_1 = __webpack_require__(2);
-const freelancers_controller_1 = __webpack_require__(83);
-const freelancers_service_1 = __webpack_require__(84);
-const prisma_module_1 = __webpack_require__(34);
-let FreelancersModule = class FreelancersModule {
-};
-exports.FreelancersModule = FreelancersModule;
-exports.FreelancersModule = FreelancersModule = __decorate([
-    (0, common_1.Module)({
-        imports: [prisma_module_1.PrismaModule],
-        controllers: [freelancers_controller_1.FreelancersController],
-        providers: [freelancers_service_1.FreelancersService],
-        exports: [freelancers_service_1.FreelancersService],
-    })
-], FreelancersModule);
-
-
-/***/ }),
-/* 83 */
+/***/ "./src/sales/sales.controller.ts":
+/*!***************************************!*\
+  !*** ./src/sales/sales.controller.ts ***!
+  \***************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -8585,363 +7874,163 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b;
+var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FreelancersController = void 0;
-const common_1 = __webpack_require__(2);
-const freelancers_service_1 = __webpack_require__(84);
-const class_validator_1 = __webpack_require__(30);
-class CreateFreelancerDto {
-}
-__decorate([
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "name", void 0);
-__decorate([
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "phone", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "registeredBy", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "registrarName", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "registrarType", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "cluster", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateFreelancerDto.prototype, "status", void 0);
-let FreelancersController = class FreelancersController {
-    constructor(freelancersService) {
-        this.freelancersService = freelancersService;
+exports.SalesController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const sales_service_1 = __webpack_require__(/*! ./sales.service */ "./src/sales/sales.service.ts");
+let SalesController = class SalesController {
+    constructor(svc) {
+        this.svc = svc;
     }
-    async findAll() {
-        return this.freelancersService.findAll();
+    async mySales(req) {
+        return this.svc.findByUser(req.user.id);
     }
-    async getStats() {
-        return this.freelancersService.getStats();
+    async all() {
+        return this.svc.findAll();
     }
-    async getByRegistrar(registrarId) {
-        return this.freelancersService.getFreelancersByRegistrar(registrarId);
-    }
-    async findOne(id) {
-        return this.freelancersService.findById(id);
-    }
-    async create(dto) {
-        return this.freelancersService.create(dto);
-    }
-    async update(id, dto) {
-        return this.freelancersService.update(id, dto);
-    }
-    async remove(id) {
-        return this.freelancersService.delete(id);
+    async summary() {
+        return this.svc.getSalesSummary();
     }
 };
-exports.FreelancersController = FreelancersController;
+exports.SalesController = SalesController;
+__decorate([
+    (0, common_1.Get)('me'),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], SalesController.prototype, "mySales", null);
 __decorate([
     (0, common_1.Get)(),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], FreelancersController.prototype, "findAll", null);
+], SalesController.prototype, "all", null);
 __decorate([
-    (0, common_1.Get)("stats"),
+    (0, common_1.Get)('summary'),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
-], FreelancersController.prototype, "getStats", null);
-__decorate([
-    (0, common_1.Get)("by-registrar/:registrarId"),
-    __param(0, (0, common_1.Param)("registrarId")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], FreelancersController.prototype, "getByRegistrar", null);
-__decorate([
-    (0, common_1.Get)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], FreelancersController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [CreateFreelancerDto]),
-    __metadata("design:returntype", Promise)
-], FreelancersController.prototype, "create", null);
-__decorate([
-    (0, common_1.Put)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, typeof (_b = typeof Partial !== "undefined" && Partial) === "function" ? _b : Object]),
-    __metadata("design:returntype", Promise)
-], FreelancersController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(":id"),
-    __param(0, (0, common_1.Param)("id")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], FreelancersController.prototype, "remove", null);
-exports.FreelancersController = FreelancersController = __decorate([
-    (0, common_1.Controller)("freelancers"),
-    __metadata("design:paramtypes", [typeof (_a = typeof freelancers_service_1.FreelancersService !== "undefined" && freelancers_service_1.FreelancersService) === "function" ? _a : Object])
-], FreelancersController);
+], SalesController.prototype, "summary", null);
+exports.SalesController = SalesController = __decorate([
+    (0, common_1.Controller)('sales'),
+    __metadata("design:paramtypes", [typeof (_a = typeof sales_service_1.SalesService !== "undefined" && sales_service_1.SalesService) === "function" ? _a : Object])
+], SalesController);
 
 
 /***/ }),
-/* 84 */
+
+/***/ "./src/sales/sales.module.ts":
+/*!***********************************!*\
+  !*** ./src/sales/sales.module.ts ***!
+  \***********************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.SalesModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const sales_controller_1 = __webpack_require__(/*! ./sales.controller */ "./src/sales/sales.controller.ts");
+const sales_service_1 = __webpack_require__(/*! ./sales.service */ "./src/sales/sales.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let SalesModule = class SalesModule {
+};
+exports.SalesModule = SalesModule;
+exports.SalesModule = SalesModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [sales_controller_1.SalesController],
+        providers: [sales_service_1.SalesService],
+    })
+], SalesModule);
+
+
+/***/ }),
+
+/***/ "./src/sales/sales.service.ts":
+/*!************************************!*\
+  !*** ./src/sales/sales.service.ts ***!
+  \************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.FreelancersService = void 0;
-const common_1 = __webpack_require__(2);
-const prisma_service_1 = __webpack_require__(12);
-const bcrypt = __importStar(__webpack_require__(24));
-const serial_id_helper_1 = __webpack_require__(27);
-let FreelancersService = class FreelancersService {
+exports.SalesService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let SalesService = class SalesService {
     constructor(prisma) {
         this.prisma = prisma;
     }
+    async findByUser(userId) {
+        return this.prisma.transaction.findMany({
+            where: { buyerId: userId },
+            include: {
+                asset: { select: { id: true, name: true, type: true } },
+                leadAgent: { include: { user: { select: { id: true, name: true } } } },
+                closerAgent: { include: { user: { select: { id: true, name: true } } } },
+                installments: true,
+            },
+            orderBy: { date: 'desc' },
+        });
+    }
     async findAll() {
-        const freelancers = await this.prisma.freelancer.findMany({
+        return this.prisma.transaction.findMany({
+            where: { status: 'COMPLETED' },
             include: {
-                user: { select: { id: true, email: true, name: true } },
-                cluster: { select: { id: true, name: true } },
+                asset: { select: { id: true, name: true, type: true } },
+                buyer: { select: { id: true, name: true, email: true } },
+                company: { select: { id: true, name: true } },
+                leadAgent: { include: { user: { select: { id: true, name: true } } } },
+                closerAgent: { include: { user: { select: { id: true, name: true } } } },
             },
-            orderBy: { createdAt: 'desc' },
-        });
-        return freelancers.map(freelancer => ({
-            id: freelancer.id,
-            serialId: freelancer.serialId ?? "",
-            name: freelancer.user?.name ?? "",
-            email: freelancer.user?.email ?? "",
-            registeredBy: freelancer.registeredBy ?? "",
-            registrarName: freelancer.registrarName ?? "",
-            registrarType: freelancer.registrarType ?? "",
-            cluster: freelancer.cluster?.name ?? "",
-            clusterId: freelancer.cluster?.id ?? "",
-            activeDeals: freelancer.activeDeals ?? 0,
-            closedDeals: freelancer.closedDeals ?? 0,
-            totalCommission: freelancer.totalCommission ?? 0,
-            performance: freelancer.closedDeals > 0 ? Math.min(100, Math.round((freelancer.closedDeals / 10) * 100)) : 0,
-            status: freelancer.status?.toLowerCase() ?? "pending",
-        }));
-    }
-    async findById(id) {
-        const freelancer = await this.prisma.freelancer.findUnique({
-            where: { id },
-            include: {
-                user: { select: { id: true, email: true, name: true } },
-                cluster: true,
-            },
-        });
-        if (!freelancer)
-            throw new common_1.NotFoundException(`Freelancer with ID ${id} not found`);
-        return freelancer;
-    }
-    async create(data) {
-        let user = await this.prisma.user.findUnique({ where: { email: data.email } });
-        if (user) {
-            const existing = await this.prisma.freelancer.findUnique({ where: { userId: user.id } });
-            if (existing)
-                throw new common_1.ConflictException('User is already registered as a freelancer');
-        }
-        else {
-            const hashedPassword = await bcrypt.hash('password123', 10);
-            const userSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'USR');
-            user = await this.prisma.user.create({
-                data: { serialId: userSerialId, email: data.email, password: hashedPassword, name: data.name, role: 'FREELANCER' },
-            });
-        }
-        const freelancerSerialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'FRL');
-        return this.prisma.freelancer.create({
-            data: {
-                serialId: freelancerSerialId,
-                userId: user.id,
-                clusterId: data.cluster || null,
-                status: data.status ? data.status.toUpperCase() : 'PENDING',
-                registeredBy: data.registeredBy || null,
-                registrarName: data.registrarName || null,
-                registrarType: data.registrarType || null,
-                activeDeals: 0,
-                closedDeals: 0,
-                totalCommission: 0,
-            },
-            include: {
-                user: { select: { id: true, email: true, name: true } },
-                cluster: { select: { id: true, name: true } },
-            },
+            orderBy: { date: 'desc' },
         });
     }
-    async update(id, data) {
-        const freelancer = await this.findById(id);
-        if (data.name || data.email) {
-            await this.prisma.user.update({
-                where: { id: freelancer.userId },
-                data: {
-                    ...(data.name ? { name: data.name } : {}),
-                    ...(data.email ? { email: data.email } : {}),
-                },
-            });
-        }
-        const updateData = {};
-        if (data.cluster)
-            updateData.clusterId = data.cluster;
-        if (data.status)
-            updateData.status = data.status.toUpperCase();
-        if (data.registeredBy !== undefined)
-            updateData.registeredBy = data.registeredBy;
-        if (data.registrarName !== undefined)
-            updateData.registrarName = data.registrarName;
-        if (data.registrarType !== undefined)
-            updateData.registrarType = data.registrarType;
-        return this.prisma.freelancer.update({
-            where: { id },
-            data: updateData,
-            include: {
-                user: { select: { id: true, email: true, name: true } },
-                cluster: { select: { id: true, name: true } },
-            },
+    async getSalesSummary() {
+        const agg = await this.prisma.transaction.aggregate({
+            where: { status: 'COMPLETED' },
+            _sum: { totalAmount: true, totalCommission: true },
+            _count: true,
         });
-    }
-    async delete(id) {
-        await this.findById(id);
-        await this.prisma.freelancer.delete({ where: { id } });
-        return { message: 'Freelancer deleted successfully', id };
-    }
-    async getStats() {
-        const [total, active, agg] = await Promise.all([
-            this.prisma.freelancer.count(),
-            this.prisma.freelancer.count({ where: { status: 'ACTIVE' } }),
-            this.prisma.freelancer.aggregate({
-                _sum: { totalCommission: true, activeDeals: true, closedDeals: true },
-            }),
-        ]);
         return {
-            totalFreelancers: total,
-            activeFreelancers: active,
-            totalActiveDeals: agg._sum.activeDeals || 0,
-            totalClosedDeals: agg._sum.closedDeals || 0,
+            totalSales: agg._count,
+            totalRevenue: agg._sum.totalAmount || 0,
             totalCommission: agg._sum.totalCommission || 0,
+            avgDealSize: agg._count > 0 ? (agg._sum.totalAmount || 0) / agg._count : 0,
         };
     }
-    async getFreelancersByRegistrar(registrarId) {
-        return this.prisma.freelancer.findMany({
-            where: { registeredBy: registrarId },
-            include: {
-                user: { select: { id: true, name: true, email: true } },
-                cluster: { select: { id: true, name: true } },
-            },
-        });
-    }
 };
-exports.FreelancersService = FreelancersService;
-exports.FreelancersService = FreelancersService = __decorate([
+exports.SalesService = SalesService;
+exports.SalesService = SalesService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
-], FreelancersService);
+], SalesService);
 
 
 /***/ }),
-/* 85 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
-
-var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
-};
-Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PaymentsModule = void 0;
-const common_1 = __webpack_require__(2);
-const config_1 = __webpack_require__(6);
-const payments_controller_1 = __webpack_require__(86);
-const payments_service_1 = __webpack_require__(87);
-let PaymentsModule = class PaymentsModule {
-};
-exports.PaymentsModule = PaymentsModule;
-exports.PaymentsModule = PaymentsModule = __decorate([
-    (0, common_1.Module)({
-        imports: [config_1.ConfigModule],
-        controllers: [payments_controller_1.PaymentsController],
-        providers: [payments_service_1.PaymentsService],
-        exports: [payments_service_1.PaymentsService],
-    })
-], PaymentsModule);
-
-
-/***/ }),
-/* 86 */
+/***/ "./src/transactions/transactions.controller.ts":
+/*!*****************************************************!*\
+  !*** ./src/transactions/transactions.controller.ts ***!
+  \*****************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -8959,96 +8048,180 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 };
 var _a, _b, _c, _d;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PaymentsController = void 0;
-const common_1 = __webpack_require__(2);
-const class_validator_1 = __webpack_require__(30);
-const jwt_auth_guard_1 = __webpack_require__(29);
-const payments_service_1 = __webpack_require__(87);
-class InitializePaymentDto {
+exports.TransactionsController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
+const transactions_service_1 = __webpack_require__(/*! ./transactions.service */ "./src/transactions/transactions.service.ts");
+const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
+const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
+class CreateTransactionDto {
 }
-__decorate([
-    (0, class_validator_1.IsIn)(['paystack', 'flutterwave']),
-    __metadata("design:type", typeof (_a = typeof payments_service_1.PaymentProvider !== "undefined" && payments_service_1.PaymentProvider) === "function" ? _a : Object)
-], InitializePaymentDto.prototype, "provider", void 0);
-__decorate([
-    (0, class_validator_1.IsEmail)(),
-    __metadata("design:type", String)
-], InitializePaymentDto.prototype, "email", void 0);
-__decorate([
-    (0, class_validator_1.IsNumber)(),
-    (0, class_validator_1.Min)(1),
-    __metadata("design:type", Number)
-], InitializePaymentDto.prototype, "amount", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], InitializePaymentDto.prototype, "currency", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], InitializePaymentDto.prototype, "callbackUrl", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], InitializePaymentDto.prototype, "reference", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsObject)(),
-    __metadata("design:type", typeof (_b = typeof Record !== "undefined" && Record) === "function" ? _b : Object)
-], InitializePaymentDto.prototype, "metadata", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], InitializePaymentDto.prototype, "title", void 0);
-let PaymentsController = class PaymentsController {
-    constructor(paymentsService) {
-        this.paymentsService = paymentsService;
+class SendCommissionsDto {
+}
+let TransactionsController = class TransactionsController {
+    constructor(transactionsService) {
+        this.transactionsService = transactionsService;
     }
-    getProviders() {
-        return this.paymentsService.getProviderConfig();
+    async findAll(month) {
+        return this.transactionsService.findAll({ month });
     }
-    initializePayment(payload) {
-        return this.paymentsService.initializePayment(payload);
+    async getStats() {
+        return this.transactionsService.getStats();
     }
-    verifyPayment(provider, reference) {
-        return this.paymentsService.verifyPayment(provider, reference);
+    async getUnpaidCommissions(month) {
+        return this.transactionsService.getUnpaidCommissions({ month });
+    }
+    async getPaidCommissions(month) {
+        return this.transactionsService.getPaidCommissions({ month });
+    }
+    async findOne(id) {
+        return this.transactionsService.findById(id);
+    }
+    async create(dto) {
+        return this.transactionsService.create(dto);
+    }
+    async sendCommissions(dto) {
+        return this.transactionsService.sendCommissionsForPayment(dto.transactionIds);
+    }
+    async uploadPaymentProof(file) {
+        return this.transactionsService.uploadPaymentProof(file);
+    }
+    async update(id, dto) {
+        return this.transactionsService.update(id, dto);
     }
 };
-exports.PaymentsController = PaymentsController;
+exports.TransactionsController = TransactionsController;
 __decorate([
-    (0, common_1.Get)('providers'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)("month")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)("stats"),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], PaymentsController.prototype, "getProviders", null);
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "getStats", null);
 __decorate([
-    (0, common_1.Post)('initialize'),
-    __param(0, (0, common_1.Body)(new common_1.ValidationPipe({ transform: true }))),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)("commissions/unpaid"),
+    __param(0, (0, common_1.Query)("month")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [InitializePaymentDto]),
-    __metadata("design:returntype", void 0)
-], PaymentsController.prototype, "initializePayment", null);
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "getUnpaidCommissions", null);
 __decorate([
-    (0, common_1.Get)('verify'),
-    __param(0, (0, common_1.Query)('provider')),
-    __param(1, (0, common_1.Query)('reference')),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)("commissions/paid"),
+    __param(0, (0, common_1.Query)("month")),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [typeof (_d = typeof payments_service_1.PaymentProvider !== "undefined" && payments_service_1.PaymentProvider) === "function" ? _d : Object, String]),
-    __metadata("design:returntype", void 0)
-], PaymentsController.prototype, "verifyPayment", null);
-exports.PaymentsController = PaymentsController = __decorate([
-    (0, common_1.Controller)('payments'),
-    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
-    __metadata("design:paramtypes", [typeof (_c = typeof payments_service_1.PaymentsService !== "undefined" && payments_service_1.PaymentsService) === "function" ? _c : Object])
-], PaymentsController);
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "getPaidCommissions", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, common_1.Post)(),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [CreateTransactionDto]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
+    (0, common_1.Post)("commissions/send"),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [SendCommissionsDto]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "sendCommissions", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
+    (0, common_1.Post)("commissions/payment-proof"),
+    (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("file")),
+    __param(0, (0, common_1.UploadedFile)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [typeof (_c = typeof Express !== "undefined" && (_b = Express.Multer) !== void 0 && _b.File) === "function" ? _c : Object]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "uploadPaymentProof", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    (0, roles_decorator_1.Roles)("ADMIN"),
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_d = typeof Partial !== "undefined" && Partial) === "function" ? _d : Object]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "update", null);
+exports.TransactionsController = TransactionsController = __decorate([
+    (0, common_1.Controller)("transactions"),
+    __metadata("design:paramtypes", [typeof (_a = typeof transactions_service_1.TransactionsService !== "undefined" && transactions_service_1.TransactionsService) === "function" ? _a : Object])
+], TransactionsController);
 
 
 /***/ }),
-/* 87 */
+
+/***/ "./src/transactions/transactions.module.ts":
+/*!*************************************************!*\
+  !*** ./src/transactions/transactions.module.ts ***!
+  \*************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.TransactionsModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
+const transactions_controller_1 = __webpack_require__(/*! ./transactions.controller */ "./src/transactions/transactions.controller.ts");
+const transactions_service_1 = __webpack_require__(/*! ./transactions.service */ "./src/transactions/transactions.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
+let TransactionsModule = class TransactionsModule {
+};
+exports.TransactionsModule = TransactionsModule;
+exports.TransactionsModule = TransactionsModule = __decorate([
+    (0, common_1.Module)({
+        imports: [
+            prisma_module_1.PrismaModule,
+            notification_module_1.NotificationModule,
+            platform_express_1.MulterModule.register({
+                dest: './uploads',
+            }),
+        ],
+        controllers: [transactions_controller_1.TransactionsController],
+        providers: [transactions_service_1.TransactionsService],
+        exports: [transactions_service_1.TransactionsService],
+    })
+], TransactionsModule);
+
+
+/***/ }),
+
+/***/ "./src/transactions/transactions.service.ts":
+/*!**************************************************!*\
+  !*** ./src/transactions/transactions.service.ts ***!
+  \**************************************************/
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
@@ -9061,174 +8234,1349 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
-var PaymentsService_1;
-var _a;
+var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.PaymentsService = void 0;
-const common_1 = __webpack_require__(2);
-const config_1 = __webpack_require__(6);
-let PaymentsService = PaymentsService_1 = class PaymentsService {
-    constructor(configService) {
-        this.configService = configService;
-        this.logger = new common_1.Logger(PaymentsService_1.name);
+exports.TransactionsService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
+const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
+let TransactionsService = class TransactionsService {
+    constructor(prisma, notificationService) {
+        this.prisma = prisma;
+        this.notificationService = notificationService;
     }
-    getProviderConfig() {
-        const paystackConfigured = Boolean(this.configService.get('PAYSTACK_SECRET_KEY'));
-        const flutterwaveConfigured = Boolean(this.configService.get('FLUTTERWAVE_SECRET_KEY'));
-        return {
-            paystack: {
-                configured: paystackConfigured,
-                publicKey: this.configService.get('PAYSTACK_PUBLIC_KEY') || null,
-            },
-            flutterwave: {
-                configured: flutterwaveConfigured,
-                publicKey: this.configService.get('FLUTTERWAVE_PUBLIC_KEY') || null,
-            },
-        };
+    async getUnpaidCommissions({ month }) {
+        return this.findAll({
+            status: undefined,
+            month,
+        }).then(transactions => transactions.filter(t => t.status === 'unpaid' || t.status === 'sent'));
     }
-    async initializePayment(payload) {
-        if (payload.provider === 'paystack') {
-            return this.initializePaystackPayment(payload);
-        }
-        return this.initializeFlutterwavePayment(payload);
+    async getPaidCommissions({ month }) {
+        return this.findAll({
+            status: undefined,
+            month,
+        }).then(transactions => transactions.filter(t => t.status === 'paid'));
     }
-    async verifyPayment(provider, reference) {
-        if (provider === 'paystack') {
-            return this.verifyPaystackPayment(reference);
-        }
-        return this.verifyFlutterwavePayment(reference);
-    }
-    async initializePaystackPayment(payload) {
-        const secretKey = this.configService.get('PAYSTACK_SECRET_KEY');
-        if (!secretKey) {
-            throw new common_1.InternalServerErrorException('PAYSTACK_SECRET_KEY is not configured');
-        }
-        const response = await this.requestJson('https://api.paystack.co/transaction/initialize', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                email: payload.email,
-                amount: Math.round(payload.amount * 100),
-                currency: payload.currency || 'NGN',
-                callback_url: payload.callbackUrl || this.configService.get('PAYMENT_CALLBACK_URL'),
-                reference: payload.reference,
-                metadata: payload.metadata || {},
-            }),
+    async sendCommissionsForPayment(transactionIds) {
+        await this.prisma.transaction.updateMany({
+            where: { id: { in: transactionIds } },
+            data: { commissionPaymentStatus: 'SENT' },
         });
-        return {
-            provider: 'paystack',
-            reference: response?.data?.reference,
-            authorizationUrl: response?.data?.authorization_url,
-            accessCode: response?.data?.access_code,
-            raw: response,
-        };
+        await this.notificationService.notifyCommissionSent(transactionIds);
+        return { message: 'Commissions marked as sent', transactionIds };
     }
-    async initializeFlutterwavePayment(payload) {
-        const secretKey = this.configService.get('FLUTTERWAVE_SECRET_KEY');
-        if (!secretKey) {
-            throw new common_1.InternalServerErrorException('FLUTTERWAVE_SECRET_KEY is not configured');
-        }
-        const txRef = payload.reference || `buyops-${Date.now()}`;
-        const response = await this.requestJson('https://api.flutterwave.com/v3/payments', {
-            method: 'POST',
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                tx_ref: txRef,
-                amount: payload.amount,
-                currency: payload.currency || 'NGN',
-                redirect_url: payload.callbackUrl || this.configService.get('PAYMENT_CALLBACK_URL') || 'http://localhost:5173',
-                customer: {
-                    email: payload.email,
-                },
-                customizations: {
-                    title: payload.title || 'BuyOps Payment',
-                },
-                meta: payload.metadata || {},
-            }),
+    async uploadPaymentProof(file) {
+        const sentTransactions = await this.prisma.transaction.findMany({
+            where: { commissionPaymentStatus: 'SENT' },
+            select: { id: true },
         });
-        return {
-            provider: 'flutterwave',
-            reference: txRef,
-            authorizationUrl: response?.data?.link,
-            raw: response,
-        };
+        const transactionIds = sentTransactions.map((tx) => tx.id);
+        await this.prisma.transaction.updateMany({
+            where: { commissionPaymentStatus: 'SENT' },
+            data: { commissionPaymentStatus: 'PAID' },
+        });
+        await this.notificationService.notifyCommissionsPaid(transactionIds, file?.originalname);
+        return { message: 'Payment proof uploaded and commissions marked as paid', fileName: file?.originalname };
     }
-    async verifyPaystackPayment(reference) {
-        const secretKey = this.configService.get('PAYSTACK_SECRET_KEY');
-        if (!secretKey) {
-            throw new common_1.InternalServerErrorException('PAYSTACK_SECRET_KEY is not configured');
+    async findAll(filters) {
+        const where = {};
+        if (filters?.status)
+            where.status = filters.status;
+        if (filters?.agentId) {
+            where.OR = [{ leadAgentId: filters.agentId }, { closerAgentId: filters.agentId }];
         }
-        const response = await this.requestJson(`https://api.paystack.co/transaction/verify/${reference}`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
+        if (filters?.companyId)
+            where.companyId = filters.companyId;
+        if (filters?.month) {
+            const [year, month] = filters.month.split('-');
+            const start = new Date(Number(year), Number(month) - 1, 1);
+            const end = new Date(Number(year), Number(month), 1);
+            where.date = { gte: start, lt: end };
+        }
+        const transactions = await this.prisma.transaction.findMany({
+            where,
+            include: {
+                asset: { select: { name: true } },
+                buyer: { select: { name: true } },
+                company: { select: { name: true } },
+                leadAgent: { include: { user: { select: { name: true, accountNumber: true } } } },
+                closerAgent: { include: { user: { select: { name: true } } } },
+                installments: true,
+            },
+            orderBy: { date: 'desc' },
+        });
+        return transactions.map(formatDeal);
+    }
+    async findById(id) {
+        const transaction = await this.prisma.transaction.findUnique({
+            where: { id },
+            include: {
+                asset: true,
+                buyer: { select: { id: true, name: true, email: true } },
+                company: true,
+                leadAgent: { include: { user: { select: { id: true, name: true } } } },
+                closerAgent: { include: { user: { select: { id: true, name: true } } } },
+                installments: { orderBy: { dueDate: 'asc' } },
+                installmentPlans: true,
+                commissions: { include: { agent: { include: { user: { select: { id: true, name: true } } } } } },
             },
         });
-        return {
-            provider: 'paystack',
-            reference,
-            status: response?.data?.status,
-            paidAt: response?.data?.paid_at,
-            amount: response?.data?.amount ? response.data.amount / 100 : undefined,
-            currency: response?.data?.currency,
-            customerEmail: response?.data?.customer?.email,
-            raw: response,
-        };
+        if (!transaction)
+            throw new common_1.NotFoundException(`Transaction with ID ${id} not found`);
+        return transaction;
     }
-    async verifyFlutterwavePayment(reference) {
-        const secretKey = this.configService.get('FLUTTERWAVE_SECRET_KEY');
-        if (!secretKey) {
-            throw new common_1.InternalServerErrorException('FLUTTERWAVE_SECRET_KEY is not configured');
-        }
-        const response = await this.requestJson(`https://api.flutterwave.com/v3/transactions/verify_by_reference?tx_ref=${encodeURIComponent(reference)}`, {
-            method: 'GET',
-            headers: {
-                Authorization: `Bearer ${secretKey}`,
+    async create(data) {
+        if (!data.assetId)
+            throw new common_1.BadRequestException('Asset ID is required');
+        if (!data.buyerId)
+            throw new common_1.BadRequestException('Buyer ID is required');
+        if (!data.totalAmount)
+            throw new common_1.BadRequestException('Total amount is required');
+        const asset = await this.prisma.asset.findUnique({ where: { id: data.assetId } });
+        if (!asset)
+            throw new common_1.NotFoundException('Asset not found');
+        const buyer = await this.prisma.user.findUnique({ where: { id: data.buyerId } });
+        if (!buyer)
+            throw new common_1.NotFoundException('Buyer not found');
+        const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'TRN');
+        const transaction = await this.prisma.transaction.create({
+            data: {
+                serialId,
+                assetId: data.assetId,
+                buyerId: data.buyerId,
+                totalAmount: parseFloat(data.totalAmount),
+                companyId: data.companyId || asset.companyId || null,
+                paymentType: data.paymentType || null,
+                leadAgentId: data.leadAgentId || null,
+                closerAgentId: data.closerAgentId || null,
+                leadCommission: data.leadCommission ? parseFloat(data.leadCommission) : 0,
+                closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : 0,
+                totalCommission: data.totalCommission ? parseFloat(data.totalCommission) : 0,
+                commission: data.commission ? parseFloat(data.commission) : 0,
+                status: data.status || client_1.CommissionPaymentStatus.UNPAID,
+                commissionPaymentStatus: data.commissionPaymentStatus || client_1.CommissionPaymentStatus.UNPAID,
+                installmentDuration: data.installmentDuration ? parseInt(data.installmentDuration) : null,
+            },
+            include: {
+                asset: { select: { id: true, name: true } },
+                buyer: { select: { id: true, name: true } },
+                company: { select: { id: true, name: true } },
             },
         });
-        return {
-            provider: 'flutterwave',
-            reference,
-            status: response?.data?.status,
-            paidAt: response?.data?.created_at,
-            amount: response?.data?.amount,
-            currency: response?.data?.currency,
-            customerEmail: response?.data?.customer?.email,
-            raw: response,
-        };
+        await this.notificationService.notifyDealCreated(transaction.id);
+        if ((transaction.paymentType || '').toLowerCase() === 'installment') {
+            await this.notificationService.notifyDealPaymentReady(transaction.id);
+        }
+        await this.notificationService.notifyAdminAndSales({
+            title: 'New Deal Created',
+            message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
+            type: 'INFO',
+        });
+        return transaction;
     }
-    async requestJson(url, init) {
-        const response = await fetch(url, init);
-        const text = await response.text();
-        let json;
-        try {
-            json = text ? JSON.parse(text) : {};
+    async update(id, data) {
+        await this.findById(id);
+        const updateData = {};
+        if (data.status !== undefined)
+            updateData.status = data.status;
+        if (data.commissionPaymentStatus !== undefined)
+            updateData.commissionPaymentStatus = data.commissionPaymentStatus;
+        if (data.leadAgentId !== undefined)
+            updateData.leadAgentId = data.leadAgentId;
+        if (data.closerAgentId !== undefined)
+            updateData.closerAgentId = data.closerAgentId;
+        if (data.totalAmount !== undefined)
+            updateData.totalAmount = parseFloat(data.totalAmount);
+        if (data.paymentType !== undefined)
+            updateData.paymentType = data.paymentType;
+        if (data.companyId !== undefined)
+            updateData.companyId = data.companyId;
+        const updated = await this.prisma.transaction.update({
+            where: { id },
+            data: updateData,
+            include: {
+                asset: { select: { id: true, name: true } },
+                company: { select: { id: true, name: true } },
+            },
+        });
+        if (data.commissionPaymentStatus === 'SENT') {
+            await this.notificationService.notifyCommissionSent([id]);
         }
-        catch {
-            json = { message: text };
+        if (data.commissionPaymentStatus === 'PAID') {
+            await this.notificationService.notifyCommissionsPaid([id]);
         }
-        if (!response.ok) {
-            this.logger.error(`Payment provider request failed (${response.status}): ${JSON.stringify(json)}`);
-            throw new common_1.InternalServerErrorException(json?.message || json?.error || 'Payment provider request failed');
+        if (data.status === 'COMPLETED') {
+            await this.notificationService.notifyDealClosed(id);
+            await this.notificationService.notifyAdminAndSales({
+                title: 'Deal Completed',
+                message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
+                type: 'SUCCESS',
+            });
         }
-        return json;
+        return updated;
+    }
+    async delete(id) {
+        await this.findById(id);
+        await this.prisma.transaction.delete({ where: { id } });
+        return { message: 'Transaction deleted successfully', id };
+    }
+    async getStats(filters) {
+        const where = { status: 'COMPLETED' };
+        if (filters?.startDate)
+            where.date = { ...where.date, gte: new Date(filters.startDate) };
+        if (filters?.endDate)
+            where.date = { ...where.date, lte: new Date(filters.endDate) };
+        const [total, revenue, commissions] = await Promise.all([
+            this.prisma.transaction.count({ where }),
+            this.prisma.transaction.aggregate({ where, _sum: { totalAmount: true } }),
+            this.prisma.transaction.aggregate({ where, _sum: { totalCommission: true } }),
+        ]);
+        return {
+            totalTransactions: total,
+            totalRevenue: revenue._sum.totalAmount || 0,
+            totalCommissions: commissions._sum.totalCommission || 0,
+            avgDealSize: total > 0 ? (revenue._sum.totalAmount || 0) / total : 0,
+        };
     }
 };
-exports.PaymentsService = PaymentsService;
-exports.PaymentsService = PaymentsService = PaymentsService_1 = __decorate([
+exports.TransactionsService = TransactionsService;
+exports.TransactionsService = TransactionsService = __decorate([
     (0, common_1.Injectable)(),
-    __metadata("design:paramtypes", [typeof (_a = typeof config_1.ConfigService !== "undefined" && config_1.ConfigService) === "function" ? _a : Object])
-], PaymentsService);
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
+], TransactionsService);
+function formatDeal(tx) {
+    return {
+        id: tx.id,
+        serialId: tx.serialId ?? "",
+        leadName: tx.buyer?.name ?? tx.leadAgent?.user?.name ?? "",
+        buyer: tx.buyer?.name ?? "",
+        leadAgent: tx.leadAgent?.user?.name ?? "",
+        closerAgent: tx.closerAgent?.user?.name ?? "",
+        accountNumber: tx.leadAgent?.user?.accountNumber ?? "",
+        company: tx.company?.name ?? "",
+        asset: tx.asset?.name ?? "",
+        propertyValue: tx.totalAmount ? `₦${tx.totalAmount.toLocaleString()}` : "",
+        amount: tx.totalAmount ?? 0,
+        commission: tx.commission,
+        totalCommission: tx.totalCommission ? `₦${tx.totalCommission.toLocaleString()}` : "",
+        leadCommission: tx.leadCommission ? `₦${tx.leadCommission.toLocaleString()}` : "",
+        closerCommission: tx.closerCommission ? `₦${tx.closerCommission.toLocaleString()}` : "",
+        commissionType: tx.leadAgentId && tx.closerAgentId
+            ? (tx.leadAgentId === tx.closerAgentId ? "split" : "lead")
+            : "lead",
+        status: tx.commissionPaymentStatus?.toLowerCase() ?? "unpaid",
+        eligibility: tx.commissionPaymentStatus === "PAID" ? "Eligible" : "Not Eligible",
+        payoutDate: tx.updatedAt?.toISOString().split("T")[0],
+        date: tx.date?.toISOString().split("T")[0] ?? tx.updatedAt?.toISOString().split("T")[0],
+        paymentType: tx.paymentType === "installment" ? "installment" : "full",
+        paymentPlan: tx.paymentType === "installment"
+            ? {
+                type: "installment",
+                numberOfInstallments: tx.installments?.length ?? 0,
+            }
+            : null,
+        commissionBreakdown: (tx.installments ?? []).map((inst, idx) => ({
+            installmentId: inst.id,
+            installmentNumber: inst.installmentNumber ?? idx + 1,
+            leadCommission: inst.leadCommission ?? 0,
+            closerCommission: inst.closerCommission ?? 0,
+            totalCommission: (inst.leadCommission ?? 0) + (inst.closerCommission ?? 0),
+            status: inst.status === "PAID" ? "earned" : (inst.status === "PENDING" ? "pending" : "scheduled"),
+            earnedDate: inst.paidDate ?? null,
+        })),
+    };
+}
 
+
+/***/ }),
+
+/***/ "./src/users/users.controller.ts":
+/*!***************************************!*\
+  !*** ./src/users/users.controller.ts ***!
+  \***************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UsersController = exports.CreateUserDto = exports.UpdatePasswordDto = exports.UpdateUserDto = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const users_service_1 = __webpack_require__(/*! ./users.service */ "./src/users/users.service.ts");
+const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+class UpdateUserDto {
+}
+exports.UpdateUserDto = UpdateUserDto;
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "timezone", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "dateFormat", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "currency", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "emailNotifications", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "pushNotifications", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "transactionAlerts", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "weeklyReports", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsBoolean)(),
+    __metadata("design:type", Boolean)
+], UpdateUserDto.prototype, "agentUpdates", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "gender", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "dateOfBirth", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "homeAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "nin", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "stateOfOrigin", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "dateOfRecruitment", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinFullName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinPhoneNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinRelationship", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "kinAddress", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "bankName", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "accountNumber", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "beneficiaryName", void 0);
+class UpdatePasswordDto {
+}
+exports.UpdatePasswordDto = UpdatePasswordDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(6),
+    __metadata("design:type", String)
+], UpdatePasswordDto.prototype, "newPassword", void 0);
+class CreateUserDto {
+}
+exports.CreateUserDto = CreateUserDto;
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.MinLength)(8, { message: 'Password must be at least 8 characters' }),
+    (0, class_validator_1.Matches)(/^(?=.*[0-9])(?=.*[!@#$%^&*])/, {
+        message: 'Password must include at least one number and one special character',
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "password", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^(ADMIN|TEAM_LEAD|AGENT|FREELANCER|INVESTOR|USER)$/i, {
+        message: 'Role must be one of: ADMIN, TEAM_LEAD, AGENT, FREELANCER, INVESTOR, USER',
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "role", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.Matches)(/^(ACTIVE|INACTIVE|PENDING)$/i, {
+        message: 'Status must be one of: ACTIVE, INACTIVE, PENDING',
+    }),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateUserDto.prototype, "phone", void 0);
+let UsersController = class UsersController {
+    constructor(usersService) {
+        this.usersService = usersService;
+    }
+    async findAll(role, status, search) {
+        return this.usersService.findAll({ role, status, search });
+    }
+    async getProfile(req) {
+        return this.usersService.findById(req.user.id);
+    }
+    async updateProfile(req, dto) {
+        return this.usersService.updateUser(req.user.id, dto);
+    }
+    async findOne(id, req) {
+        if (req.user.role !== "ADMIN" && req.user.id !== id) {
+            throw new Error("Unauthorized to view this profile");
+        }
+        return this.usersService.findById(id);
+    }
+    async findByEmail(email) {
+        return this.usersService.findByEmail(email);
+    }
+    async getUserStats(id, req) {
+        if (req.user.role !== "ADMIN" && req.user.id !== id) {
+            throw new Error("Unauthorized to view these statistics");
+        }
+        return this.usersService.getUserStats(id);
+    }
+    async getUserActivity(id, limit, req) {
+        if (req.user.role !== "ADMIN" && req.user.id !== id) {
+            throw new Error("Unauthorized to view this activity");
+        }
+        const activityLimit = limit ? parseInt(limit) : 20;
+        return this.usersService.getUserActivity(id, activityLimit);
+    }
+    async getUserTransactions(id, req) {
+        if (req.user.role !== "ADMIN" && req.user.id !== id) {
+            throw new Error("Unauthorized to view these transactions");
+        }
+        return this.usersService.getUserTransactions(id);
+    }
+    async getUserLeads(id, req) {
+        if (req.user.role !== "ADMIN" && req.user.id !== id) {
+            throw new Error("Unauthorized to view these leads");
+        }
+        return this.usersService.getUserLeads(id);
+    }
+    async create(dto) {
+        return this.usersService.createUser(dto);
+    }
+    async update(id, dto, req) {
+        if (req.user.role !== "ADMIN") {
+            if (req.user.id !== id) {
+                throw new Error("Unauthorized to update this profile");
+            }
+            delete dto.role;
+        }
+        return this.usersService.updateUser(id, dto);
+    }
+    async updateRole(id, role) {
+        return this.usersService.updateUserRole(id, role);
+    }
+    async updatePassword(id, dto) {
+        return this.usersService.updateUserPassword(id, dto.newPassword);
+    }
+    async deactivate(id) {
+        return this.usersService.deactivateUser(id);
+    }
+    async reactivate(id) {
+        return this.usersService.reactivateUser(id);
+    }
+    async remove(id) {
+        return this.usersService.deleteUser(id);
+    }
+    async getUsersByRole(role) {
+        return this.usersService.getUsersByRole(role);
+    }
+    async getUserDashboard(id, req) {
+        if (req.user.role !== "ADMIN" && req.user.id !== id) {
+            throw new Error("Unauthorized to view this dashboard");
+        }
+        return this.usersService.getUserDashboard(id);
+    }
+    async getAllAgents() {
+        return this.usersService.getAllAgents();
+    }
+    async getAllInvestors() {
+        return this.usersService.getAllInvestors();
+    }
+    async searchUsers(query, role) {
+        return this.usersService.searchUsers(query, role);
+    }
+    async getUserCountByRole() {
+        return this.usersService.getUserCountByRole();
+    }
+    async bulkCreate(users) {
+        return this.usersService.bulkCreateUsers(users);
+    }
+};
+exports.UsersController = UsersController;
+__decorate([
+    (0, common_1.Get)(),
+    __param(0, (0, common_1.Query)("role")),
+    __param(1, (0, common_1.Query)("status")),
+    __param(2, (0, common_1.Query)("search")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)("me"),
+    __param(0, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getProfile", null);
+__decorate([
+    (0, common_1.Put)("me"),
+    __param(0, (0, common_1.Req)()),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object, UpdateUserDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateProfile", null);
+__decorate([
+    (0, common_1.Get)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findOne", null);
+__decorate([
+    (0, common_1.Get)("email/:email"),
+    __param(0, (0, common_1.Param)("email")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "findByEmail", null);
+__decorate([
+    (0, common_1.Get)(":id/stats"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserStats", null);
+__decorate([
+    (0, common_1.Get)(":id/activity"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Query)("limit")),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserActivity", null);
+__decorate([
+    (0, common_1.Get)(":id/transactions"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserTransactions", null);
+__decorate([
+    (0, common_1.Get)(":id/leads"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserLeads", null);
+__decorate([
+    (0, common_1.Post)(),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [CreateUserDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "create", null);
+__decorate([
+    (0, common_1.Put)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __param(2, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, UpdateUserDto, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "update", null);
+__decorate([
+    (0, common_1.Put)(":id/role"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)("role")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updateRole", null);
+__decorate([
+    (0, common_1.Put)(":id/password"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, UpdatePasswordDto]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "updatePassword", null);
+__decorate([
+    (0, common_1.Post)(":id/deactivate"),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "deactivate", null);
+__decorate([
+    (0, common_1.Post)(":id/reactivate"),
+    (0, common_1.HttpCode)(common_1.HttpStatus.OK),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "reactivate", null);
+__decorate([
+    (0, common_1.Delete)(":id"),
+    __param(0, (0, common_1.Param)("id")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "remove", null);
+__decorate([
+    (0, common_1.Get)("by-role/:role"),
+    __param(0, (0, common_1.Param)("role")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUsersByRole", null);
+__decorate([
+    (0, common_1.Get)(":id/dashboard"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Req)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserDashboard", null);
+__decorate([
+    (0, common_1.Get)("agents/all"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getAllAgents", null);
+__decorate([
+    (0, common_1.Get)("investors/all"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getAllInvestors", null);
+__decorate([
+    (0, common_1.Get)("search/query"),
+    __param(0, (0, common_1.Query)("q")),
+    __param(1, (0, common_1.Query)("role")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "searchUsers", null);
+__decorate([
+    (0, common_1.Get)("count/by-role"),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "getUserCountByRole", null);
+__decorate([
+    (0, common_1.Post)("bulk-create"),
+    (0, common_1.HttpCode)(common_1.HttpStatus.CREATED),
+    __param(0, (0, common_1.Body)("users")),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Array]),
+    __metadata("design:returntype", Promise)
+], UsersController.prototype, "bulkCreate", null);
+exports.UsersController = UsersController = __decorate([
+    (0, common_1.Controller)("users"),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    __metadata("design:paramtypes", [typeof (_a = typeof users_service_1.UsersService !== "undefined" && users_service_1.UsersService) === "function" ? _a : Object])
+], UsersController);
+
+
+/***/ }),
+
+/***/ "./src/users/users.module.ts":
+/*!***********************************!*\
+  !*** ./src/users/users.module.ts ***!
+  \***********************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UsersModule = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const users_controller_1 = __webpack_require__(/*! ./users.controller */ "./src/users/users.controller.ts");
+const users_service_1 = __webpack_require__(/*! ./users.service */ "./src/users/users.service.ts");
+const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
+let UsersModule = class UsersModule {
+};
+exports.UsersModule = UsersModule;
+exports.UsersModule = UsersModule = __decorate([
+    (0, common_1.Module)({
+        imports: [prisma_module_1.PrismaModule],
+        controllers: [users_controller_1.UsersController],
+        providers: [users_service_1.UsersService],
+        exports: [users_service_1.UsersService],
+    })
+], UsersModule);
+
+
+/***/ }),
+
+/***/ "./src/users/users.service.ts":
+/*!************************************!*\
+  !*** ./src/users/users.service.ts ***!
+  \************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.UsersService = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
+let UsersService = class UsersService {
+    constructor(prisma) {
+        this.prisma = prisma;
+    }
+    async findAll({ role, status, search } = {}) {
+        let where = {};
+        if (role && Object.values(client_1.UserRole).includes(role)) {
+            where.role = role;
+        }
+        if (status) {
+            where.status = status;
+        }
+        if (search) {
+            where.name = { contains: search, mode: 'insensitive' };
+        }
+        return this.prisma.user.findMany({
+            where,
+            select: {
+                id: true,
+                serialId: true,
+                email: true,
+                name: true,
+                role: true,
+                status: true,
+                phone: true,
+                createdAt: true,
+                agentProfile: {
+                    select: {
+                        id: true,
+                        closedDeals: true,
+                        totalCommission: true,
+                        status: true,
+                        cluster: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                freelancerProfile: {
+                    select: {
+                        id: true,
+                        activeDeals: true,
+                        closedDeals: true,
+                        totalCommission: true,
+                        registrarName: true,
+                        registrarType: true,
+                        status: true,
+                        cluster: {
+                            select: {
+                                id: true,
+                                name: true,
+                            },
+                        },
+                    },
+                },
+                managedClusters: {
+                    select: {
+                        id: true,
+                        name: true,
+                        code: true,
+                        status: true,
+                        location: true,
+                    },
+                },
+                transactions: {
+                    select: {
+                        id: true,
+                        totalAmount: true,
+                        status: true,
+                        date: true,
+                        asset: {
+                            select: {
+                                id: true,
+                                name: true,
+                                type: true,
+                                location: true,
+                            },
+                        },
+                    },
+                    orderBy: { date: 'desc' },
+                    take: 5,
+                },
+            },
+            orderBy: { createdAt: 'desc' },
+        });
+    }
+    async findById(id) {
+        const user = await this.prisma.user.findUnique({
+            where: { id },
+            include: {
+                agentProfile: {
+                    include: {
+                        cluster: true,
+                        assignedLeads: {
+                            orderBy: { createdAt: 'desc' },
+                            take: 50,
+                        },
+                        leadTransactions: {
+                            orderBy: { date: 'desc' },
+                            take: 20,
+                        },
+                        closerTransactions: {
+                            orderBy: { date: 'desc' },
+                            take: 20,
+                        },
+                    },
+                },
+                freelancerProfile: {
+                    include: { cluster: true },
+                },
+                notifications: { orderBy: { createdAt: 'desc' }, take: 10 },
+            },
+        });
+        if (!user) {
+            throw new common_1.NotFoundException(`User with ID ${id} not found`);
+        }
+        return user;
+    }
+    async getUserTransactions(userId) {
+        return this.prisma.transaction.findMany({
+            where: { buyerId: userId },
+            include: {
+                asset: {
+                    select: { id: true, name: true, type: true, location: true },
+                },
+                leadAgent: { include: { user: { select: { id: true, name: true } } } },
+                closerAgent: { include: { user: { select: { id: true, name: true } } } },
+                installments: true,
+            },
+            orderBy: { date: 'desc' },
+        });
+    }
+    async getUserStats(userId) {
+        const user = await this.prisma.user.findUnique({ where: { id: userId } });
+        if (!user)
+            throw new common_1.NotFoundException('User not found');
+        if (user.role === 'AGENT') {
+            const agent = await this.prisma.agent.findUnique({ where: { userId } });
+            if (!agent)
+                return { closedDeals: 0, totalCommission: 0, assignedLeads: 0 };
+            const [leadCount, leadTxCount, closerTxCount] = await Promise.all([
+                this.prisma.lead.count({ where: { assignedToId: agent.id } }),
+                this.prisma.transaction.count({ where: { leadAgentId: agent.id, status: 'COMPLETED' } }),
+                this.prisma.transaction.count({ where: { closerAgentId: agent.id, status: 'COMPLETED' } }),
+            ]);
+            return {
+                assignedLeads: leadCount,
+                closedDeals: leadTxCount + closerTxCount,
+                totalCommission: agent.totalCommission,
+            };
+        }
+        if (user.role === 'INVESTOR') {
+            const stats = await this.prisma.transaction.aggregate({
+                where: { buyerId: userId },
+                _sum: { totalAmount: true },
+                _count: true,
+            });
+            return {
+                totalInvested: stats._sum.totalAmount || 0,
+                totalTransactions: stats._count,
+            };
+        }
+        const [totalUsers, totalTransactions, revenueAgg] = await Promise.all([
+            this.prisma.user.count(),
+            this.prisma.transaction.count({ where: { status: 'COMPLETED' } }),
+            this.prisma.transaction.aggregate({
+                where: { status: 'COMPLETED' },
+                _sum: { totalAmount: true },
+            }),
+        ]);
+        return {
+            totalUsers,
+            totalTransactions,
+            totalRevenue: revenueAgg._sum.totalAmount || 0,
+        };
+    }
+    async updateUser(id, dto) {
+        const updateData = {};
+        if (dto.name !== undefined)
+            updateData.name = dto.name;
+        if (dto.email !== undefined)
+            updateData.email = dto.email;
+        if (dto.phone !== undefined)
+            updateData.phone = dto.phone;
+        if (dto.role !== undefined)
+            updateData.role = dto.role;
+        if (dto.timezone !== undefined)
+            updateData.timezone = dto.timezone;
+        if (dto.dateFormat !== undefined)
+            updateData.dateFormat = dto.dateFormat;
+        if (dto.currency !== undefined)
+            updateData.currency = dto.currency;
+        if (dto.emailNotifications !== undefined)
+            updateData.emailNotifications = dto.emailNotifications;
+        if (dto.pushNotifications !== undefined)
+            updateData.pushNotifications = dto.pushNotifications;
+        if (dto.transactionAlerts !== undefined)
+            updateData.transactionAlerts = dto.transactionAlerts;
+        if (dto.weeklyReports !== undefined)
+            updateData.weeklyReports = dto.weeklyReports;
+        if (dto.agentUpdates !== undefined)
+            updateData.agentUpdates = dto.agentUpdates;
+        if (dto.gender !== undefined)
+            updateData.gender = dto.gender;
+        if (dto.dateOfBirth !== undefined)
+            updateData.dateOfBirth = dto.dateOfBirth ? new Date(dto.dateOfBirth) : null;
+        if (dto.homeAddress !== undefined)
+            updateData.homeAddress = dto.homeAddress;
+        if (dto.nin !== undefined)
+            updateData.nin = dto.nin;
+        if (dto.stateOfOrigin !== undefined)
+            updateData.stateOfOrigin = dto.stateOfOrigin;
+        if (dto.dateOfRecruitment !== undefined)
+            updateData.dateOfRecruitment = dto.dateOfRecruitment ? new Date(dto.dateOfRecruitment) : null;
+        if (dto.kinFullName !== undefined)
+            updateData.kinFullName = dto.kinFullName;
+        if (dto.kinPhoneNumber !== undefined)
+            updateData.kinPhoneNumber = dto.kinPhoneNumber;
+        if (dto.kinRelationship !== undefined)
+            updateData.kinRelationship = dto.kinRelationship;
+        if (dto.kinAddress !== undefined)
+            updateData.kinAddress = dto.kinAddress;
+        if (dto.bankName !== undefined)
+            updateData.bankName = dto.bankName;
+        if (dto.accountNumber !== undefined)
+            updateData.accountNumber = dto.accountNumber;
+        if (dto.beneficiaryName !== undefined)
+            updateData.beneficiaryName = dto.beneficiaryName;
+        return this.prisma.user.update({ where: { id }, data: updateData });
+    }
+    async findByEmail(email) {
+        return this.prisma.user.findUnique({ where: { email } });
+    }
+    async getUserActivity(id, limit) {
+        return this.prisma.notification.findMany({ where: { userId: id }, take: limit, orderBy: { createdAt: 'desc' } });
+    }
+    async getUserLeads(id) {
+        return this.prisma.lead.findMany({ where: { assignedToId: id } });
+    }
+    async createUser(dto) {
+        if (!dto.status || !['ACTIVE', 'INACTIVE', 'PENDING'].includes(dto.status.toUpperCase())) {
+            throw new Error('User status is required and must be one of: ACTIVE, INACTIVE, PENDING');
+        }
+        return this.prisma.user.create({ data: { ...dto, status: dto.status.toUpperCase() } });
+    }
+    async updateUserRole(id, role) {
+        if (!Object.values(client_1.UserRole).includes(role)) {
+            throw new Error('Invalid role');
+        }
+        return this.prisma.user.update({ where: { id }, data: { role: role } });
+    }
+    async updateUserPassword(id, newPassword) {
+        return this.prisma.user.update({ where: { id }, data: { password: newPassword } });
+    }
+    async deactivateUser(id) {
+        throw new Error('User model does not have a status field');
+    }
+    async reactivateUser(id) {
+        throw new Error('User model does not have a status field');
+    }
+    async deleteUser(id) {
+        return this.prisma.user.delete({ where: { id } });
+    }
+    async getUsersByRole(role) {
+        if (!Object.values(client_1.UserRole).includes(role)) {
+            throw new Error('Invalid role');
+        }
+        return this.prisma.user.findMany({ where: { role: role } });
+    }
+    async getUserDashboard(id) {
+        return { userId: id, dashboard: 'stub' };
+    }
+    async getAllAgents() {
+        return this.prisma.user.findMany({ where: { role: client_1.UserRole.AGENT } });
+    }
+    async getAllInvestors() {
+        return this.prisma.user.findMany({ where: { role: client_1.UserRole.INVESTOR } });
+    }
+    async searchUsers(query, role) {
+        let where = {
+            OR: [
+                { name: { contains: query, mode: 'insensitive' } },
+                { email: { contains: query, mode: 'insensitive' } },
+            ],
+        };
+        if (role && Object.values(client_1.UserRole).includes(role)) {
+            where.role = role;
+        }
+        return this.prisma.user.findMany({ where });
+    }
+    async getUserCountByRole() {
+        return this.prisma.user.groupBy({ by: ['role'], _count: { role: true } });
+    }
+    async bulkCreateUsers(users) {
+        return this.prisma.user.createMany({ data: users });
+    }
+    async delete(id) {
+        return this.prisma.user.delete({ where: { id } });
+    }
+};
+exports.UsersService = UsersService;
+exports.UsersService = UsersService = __decorate([
+    (0, common_1.Injectable)(),
+    __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object])
+], UsersService);
+
+
+/***/ }),
+
+/***/ "@nestjs/common":
+/*!*********************************!*\
+  !*** external "@nestjs/common" ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/common");
+
+/***/ }),
+
+/***/ "@nestjs/config":
+/*!*********************************!*\
+  !*** external "@nestjs/config" ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/config");
+
+/***/ }),
+
+/***/ "@nestjs/core":
+/*!*******************************!*\
+  !*** external "@nestjs/core" ***!
+  \*******************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/core");
+
+/***/ }),
+
+/***/ "@nestjs/jwt":
+/*!******************************!*\
+  !*** external "@nestjs/jwt" ***!
+  \******************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/jwt");
+
+/***/ }),
+
+/***/ "@nestjs/passport":
+/*!***********************************!*\
+  !*** external "@nestjs/passport" ***!
+  \***********************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/passport");
+
+/***/ }),
+
+/***/ "@nestjs/platform-express":
+/*!*******************************************!*\
+  !*** external "@nestjs/platform-express" ***!
+  \*******************************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/platform-express");
+
+/***/ }),
+
+/***/ "@nestjs/schedule":
+/*!***********************************!*\
+  !*** external "@nestjs/schedule" ***!
+  \***********************************/
+/***/ ((module) => {
+
+module.exports = require("@nestjs/schedule");
+
+/***/ }),
+
+/***/ "@prisma/adapter-pg":
+/*!*************************************!*\
+  !*** external "@prisma/adapter-pg" ***!
+  \*************************************/
+/***/ ((module) => {
+
+module.exports = require("@prisma/adapter-pg");
+
+/***/ }),
+
+/***/ "@prisma/client":
+/*!*********************************!*\
+  !*** external "@prisma/client" ***!
+  \*********************************/
+/***/ ((module) => {
+
+module.exports = require("@prisma/client");
+
+/***/ }),
+
+/***/ "bcrypt":
+/*!*************************!*\
+  !*** external "bcrypt" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("bcrypt");
+
+/***/ }),
+
+/***/ "class-transformer":
+/*!************************************!*\
+  !*** external "class-transformer" ***!
+  \************************************/
+/***/ ((module) => {
+
+module.exports = require("class-transformer");
+
+/***/ }),
+
+/***/ "class-validator":
+/*!**********************************!*\
+  !*** external "class-validator" ***!
+  \**********************************/
+/***/ ((module) => {
+
+module.exports = require("class-validator");
+
+/***/ }),
+
+/***/ "dotenv/config":
+/*!********************************!*\
+  !*** external "dotenv/config" ***!
+  \********************************/
+/***/ ((module) => {
+
+module.exports = require("dotenv/config");
+
+/***/ }),
+
+/***/ "exceljs":
+/*!**************************!*\
+  !*** external "exceljs" ***!
+  \**************************/
+/***/ ((module) => {
+
+module.exports = require("exceljs");
+
+/***/ }),
+
+/***/ "express":
+/*!**************************!*\
+  !*** external "express" ***!
+  \**************************/
+/***/ ((module) => {
+
+module.exports = require("express");
+
+/***/ }),
+
+/***/ "multer":
+/*!*************************!*\
+  !*** external "multer" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("multer");
+
+/***/ }),
+
+/***/ "nodemailer":
+/*!*****************************!*\
+  !*** external "nodemailer" ***!
+  \*****************************/
+/***/ ((module) => {
+
+module.exports = require("nodemailer");
+
+/***/ }),
+
+/***/ "passport-jwt":
+/*!*******************************!*\
+  !*** external "passport-jwt" ***!
+  \*******************************/
+/***/ ((module) => {
+
+module.exports = require("passport-jwt");
+
+/***/ }),
+
+/***/ "pg":
+/*!*********************!*\
+  !*** external "pg" ***!
+  \*********************/
+/***/ ((module) => {
+
+module.exports = require("pg");
+
+/***/ }),
+
+/***/ "qrcode":
+/*!*************************!*\
+  !*** external "qrcode" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("qrcode");
+
+/***/ }),
+
+/***/ "speakeasy":
+/*!****************************!*\
+  !*** external "speakeasy" ***!
+  \****************************/
+/***/ ((module) => {
+
+module.exports = require("speakeasy");
+
+/***/ }),
+
+/***/ "twilio":
+/*!*************************!*\
+  !*** external "twilio" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("twilio");
+
+/***/ }),
+
+/***/ "path":
+/*!***********************!*\
+  !*** external "path" ***!
+  \***********************/
+/***/ ((module) => {
+
+module.exports = require("path");
 
 /***/ })
-/******/ 	]);
+
+/******/ 	});
 /************************************************************************/
 /******/ 	// The module cache
 /******/ 	var __webpack_module_cache__ = {};
@@ -9259,13 +9607,16 @@ var __webpack_exports__ = {};
 // This entry needs to be wrapped in an IIFE because it needs to be isolated against other modules in the chunk.
 (() => {
 var exports = __webpack_exports__;
+/*!*********************!*\
+  !*** ./src/main.ts ***!
+  \*********************/
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-__webpack_require__(1);
-const common_1 = __webpack_require__(2);
-const core_1 = __webpack_require__(3);
-const path_1 = __webpack_require__(4);
-const app_module_1 = __webpack_require__(5);
+__webpack_require__(/*! dotenv/config */ "dotenv/config");
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const core_1 = __webpack_require__(/*! @nestjs/core */ "@nestjs/core");
+const path_1 = __webpack_require__(/*! path */ "path");
+const app_module_1 = __webpack_require__(/*! ./app.module */ "./src/app.module.ts");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'uploads'), {
