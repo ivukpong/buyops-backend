@@ -19,7 +19,6 @@ const NOW = new Date();
 async function main() {
   console.log('🧹 Clearing database...');
 
-  // Delete in reverse dependency order (child tables first)
   await prisma.savedProperty.deleteMany({});
   await prisma.notification.deleteMany({});
   await prisma.commission.deleteMany({});
@@ -236,11 +235,23 @@ async function main() {
   // ASSET IMAGES
   await prisma.assetImage.createMany({
     data: [
-      { assetId: asset1.id, url: 'https://example.com/duplex1.jpg', caption: 'Front View', order: 1 },
-      { assetId: asset1.id, url: 'https://example.com/duplex2.jpg', caption: 'Living Room', order: 2 },
-      { assetId: asset2.id, url: 'https://example.com/terrace1.jpg', caption: 'Terrace View', order: 1 },
-      { assetId: asset3.id, url: 'https://example.com/land1.jpg', caption: 'Aerial View', order: 1 },
-      { assetId: asset3.id, url: 'https://example.com/land2.jpg', caption: 'Land Survey', order: 2 },
+      // Elara Pearl Duplexes — BO-AST-0001
+      { assetId: asset1.id, url: 'https://images.unsplash.com/photo-1568605114967-8130f3a36994?w=1200', caption: 'Front Elevation', order: 1 },
+      { assetId: asset1.id, url: 'https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200', caption: 'Open-Plan Living Room', order: 2 },
+      { assetId: asset1.id, url: 'https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1200', caption: 'Contemporary Kitchen', order: 3 },
+      { assetId: asset1.id, url: 'https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=1200', caption: 'Master Bedroom Suite', order: 4 },
+      { assetId: asset1.id, url: 'https://images.unsplash.com/photo-1576013551627-0cc20b96c2a7?w=1200', caption: 'Private Swimming Pool', order: 5 },
+
+      // Primeview Terraces — BO-AST-0002
+      { assetId: asset2.id, url: 'https://images.unsplash.com/photo-1580587771525-78b9dba3b914?w=1200', caption: 'Street-Facing Facade', order: 1 },
+      { assetId: asset2.id, url: 'https://images.unsplash.com/photo-1600566753151-384129cf4e3e?w=1200', caption: 'Spacious Living Area', order: 2 },
+      { assetId: asset2.id, url: 'https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?w=1200', caption: 'Rooftop Terrace', order: 3 },
+      { assetId: asset2.id, url: 'https://images.unsplash.com/photo-1502005229762-cf1b2da7c5d6?w=1200', caption: 'Construction Progress — Q1 2026', order: 4 },
+
+      // Lagos Land Parcels — BO-AST-0003
+      { assetId: asset3.id, url: 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?w=1200', caption: 'Aerial Overview — Ibeju-Lekki', order: 1 },
+      { assetId: asset3.id, url: 'https://images.unsplash.com/photo-1590859808308-3d2d9c515b1a?w=1200', caption: 'Site Boundary Markers', order: 2 },
+      { assetId: asset3.id, url: 'https://images.unsplash.com/photo-1464618663641-bbdd760ae84a?w=1200', caption: 'Access Road to Development Zone', order: 3 },
     ],
     skipDuplicates: true,
   });
@@ -248,13 +259,24 @@ async function main() {
   // ASSET DOCUMENTS
   await prisma.assetDocument.createMany({
     data: [
-      { assetId: asset1.id, url: 'https://example.com/elara-title-deed.pdf', title: 'Title Deed - Elara Pearl Duplexes', type: 'Legal Document' },
-      { assetId: asset1.id, url: 'https://example.com/elara-survey-plan.pdf', title: 'Survey Plan', type: 'Technical Document' },
-      { assetId: asset1.id, url: 'https://example.com/elara-cof-o.pdf', title: 'Certificate of Occupancy', type: 'Legal Document' },
-      { assetId: asset2.id, url: 'https://example.com/primeview-layout.pdf', title: 'Layout Plan - Primeview Terraces', type: 'Technical Document' },
-      { assetId: asset2.id, url: 'https://example.com/primeview-deed.pdf', title: 'Deed of Assignment', type: 'Legal Document' },
-      { assetId: asset3.id, url: 'https://example.com/land-survey.pdf', title: 'Land Survey - Ibeju-Lekki', type: 'Survey Document' },
-      { assetId: asset3.id, url: 'https://example.com/land-cof-o.pdf', title: 'Certificate of Occupancy - Land Parcels', type: 'Legal Document' },
+      // Elara Pearl Duplexes — BO-AST-0001
+      { assetId: asset1.id, title: 'Certificate of Occupancy — Elara Pearl Duplexes', type: 'Legal Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset1.id, title: 'Registered Survey Plan', type: 'Technical Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset1.id, title: 'Deed of Assignment — Template', type: 'Legal Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset1.id, title: 'Architectural Floor Plans', type: 'Technical Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset1.id, title: 'Property Valuation Report', type: 'Financial Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+
+      // Primeview Terraces — BO-AST-0002
+      { assetId: asset2.id, title: 'Layout & Site Plan — Primeview Terraces', type: 'Technical Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset2.id, title: 'Deed of Assignment — Template', type: 'Legal Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset2.id, title: 'Building Approval & Development Permit', type: 'Regulatory Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset2.id, title: 'Off-Plan Purchase Agreement', type: 'Legal Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+
+      // Lagos Land Parcels — BO-AST-0003
+      { assetId: asset3.id, title: 'Certificate of Occupancy — Land Parcels', type: 'Legal Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset3.id, title: 'Registered Survey Plan — Ibeju-Lekki', type: 'Survey Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset3.id, title: 'Land Use & Zoning Report', type: 'Regulatory Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
+      { assetId: asset3.id, title: 'Deed of Conveyance — Template', type: 'Legal Document', url: 'https://pdfobject.com/pdf/sample.pdf' },
     ],
     skipDuplicates: true,
   });
@@ -322,7 +344,7 @@ async function main() {
       status: 'COMPLETED',
       commissionPaymentStatus: 'PAID',
       paymentType: 'Full Payment',
-      date: new Date(NOW.getTime() - 15 * 24 * 60 * 60 * 1000), // 15 days ago
+      date: new Date(NOW.getTime() - 15 * 24 * 60 * 60 * 1000),
       leadAgentId: agent.id,
       closerAgentId: agent.id,
       companyId: primevest.id,
