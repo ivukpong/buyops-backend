@@ -21,8 +21,10 @@ async function bootstrap() {
 
   app.enableCors({
     origin: (origin, callback) => {
-      // Allow requests with no origin (mobile apps, Postman, etc.)
-      if (!origin) return callback(null, true);
+      // Allow requests with no origin or null origin
+      // This covers: mobile apps (React Native APK), Postman, file:// WebViews
+      // Note: Android WebViews and some RN configurations send the string "null" as origin
+      if (!origin || origin === 'null') return callback(null, true);
 
       // In development, allow all origins
       if (process.env.NODE_ENV !== 'production') {
