@@ -35,7 +35,11 @@ async function bootstrap() {
       if (frontendOrigins.includes(origin)) {
         callback(null, true);
       } else {
-        callback(new Error('Not allowed by CORS'), false);
+        // Use null (not an Error) so the request still completes.
+        // Browsers will be blocked by CORS (no ACAO header = browser blocks the read).
+        // Native mobile clients (React Native/Expo) don't enforce CORS so they
+        // will receive the response regardless — which is the desired behaviour.
+        callback(null, false);
       }
     },
     credentials: true,
