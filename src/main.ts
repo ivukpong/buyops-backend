@@ -14,6 +14,11 @@ async function bootstrap() {
     prefix: '/uploads/',
   });
 
+  // Serve public assets (logo, etc.)
+  app.useStaticAssets(join(__dirname, '..', 'public'), {
+    prefix: '/public/',
+  });
+
   // Determine frontend origins
   const frontendOrigins = process.env.FRONTEND_ORIGINS
     ? process.env.FRONTEND_ORIGINS.split(",").map((o) => o.trim())

@@ -690,13 +690,14 @@ const assets_controller_1 = __webpack_require__(/*! ./assets.controller */ "./sr
 const assets_service_1 = __webpack_require__(/*! ./assets.service */ "./src/assets/assets.service.ts");
 const prisma_module_1 = __webpack_require__(/*! ../prisma/prisma.module */ "./src/prisma/prisma.module.ts");
 const notification_module_1 = __webpack_require__(/*! ../notification/notification.module */ "./src/notification/notification.module.ts");
+const public_controller_1 = __webpack_require__(/*! ./public.controller */ "./src/assets/public.controller.ts");
 let AssetsModule = class AssetsModule {
 };
 exports.AssetsModule = AssetsModule;
 exports.AssetsModule = AssetsModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule, notification_module_1.NotificationModule],
-        controllers: [assets_controller_1.AssetsController],
+        controllers: [assets_controller_1.AssetsController, public_controller_1.PublicController],
         providers: [assets_service_1.AssetsService],
         exports: [assets_service_1.AssetsService],
     })
@@ -808,6 +809,36 @@ let AssetsService = class AssetsService {
                 virtualTours: asset.virtualTours ?? 0,
             };
         });
+    }
+    async getPublicStats() {
+        const [publishedAssets, totalLeads] = await Promise.all([
+            this.prisma.asset.findMany({
+                where: { status: 'published' },
+                select: { price: true, fractionCost: true, rentalYield: true, rentalYieldMax: true, capitalAppreciation: true },
+            }),
+            this.prisma.lead.count(),
+        ]);
+        let totalValue = 0;
+        let yieldSum = 0;
+        let yieldCount = 0;
+        for (const a of publishedAssets) {
+            const raw = a.price || a.fractionCost || '0';
+            const n = parseFloat(raw);
+            if (!isNaN(n))
+                totalValue += n;
+            const ry = parseFloat(a.rentalYield || '0') || a.rentalYieldMax || 0;
+            const ca = a.capitalAppreciation || 0;
+            if (ry + ca > 0) {
+                yieldSum += ry + ca;
+                yieldCount++;
+            }
+        }
+        return {
+            assetsListed: publishedAssets.length,
+            totalInvestors: totalLeads,
+            totalTransactionValue: totalValue,
+            averageROI: yieldCount > 0 ? Math.round(yieldSum / yieldCount) : 18,
+        };
     }
     async getOverviewStats() {
         const assets = await this.prisma.asset.findMany({
@@ -1197,6 +1228,121 @@ exports.AssetsService = AssetsService = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
 ], AssetsService);
+
+
+/***/ }),
+
+/***/ "./src/assets/public.controller.ts":
+/*!*****************************************!*\
+  !*** ./src/assets/public.controller.ts ***!
+  \*****************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.PublicController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const assets_service_1 = __webpack_require__(/*! ./assets.service */ "./src/assets/assets.service.ts");
+const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./src/prisma/prisma.service.ts");
+let PublicController = class PublicController {
+    constructor(assetsService, prisma) {
+        this.assetsService = assetsService;
+        this.prisma = prisma;
+    }
+    async getPublishedAssets(take) {
+        const all = await this.assetsService.findAll({ status: 'published' });
+        const limit = take ? Math.min(parseInt(take, 10), 50) : 50;
+        const items = all.slice(0, limit);
+        return items.map((a) => ({
+            id: a.id,
+            name: a.name,
+            title: a.title ?? a.name,
+            location: a.location ?? '',
+            address: a.address ?? '',
+            type: a.type ?? '',
+            constructionStage: a.constructionStage ?? a.projectStatus ?? '',
+            price: a.price ?? a.fractionCost ?? null,
+            finalPrice: a.finalPrice,
+            fractionCost: a.fractionCost ?? null,
+            fractionTotal: a.fractionTotal ?? null,
+            availableUnits: a.availableUnits ?? null,
+            totalUnits: a.totalUnits ?? null,
+            rentalYield: a.rentalYield ?? null,
+            rentalYieldMin: a.rentalYieldMin ?? null,
+            rentalYieldMax: a.rentalYieldMax ?? null,
+            capitalAppreciation: a.capitalAppreciation ?? null,
+            totalAnnualReturn: a.totalAnnualReturn,
+            images: a.images.map((img) => ({
+                id: img.id,
+                url: img.url,
+                caption: img.caption ?? null,
+            })),
+        }));
+    }
+    async getPublicStats() {
+        return this.assetsService.getPublicStats();
+    }
+    async joinWaitlist(body) {
+        if (!body.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+            throw new common_1.BadRequestException('A valid email address is required');
+        }
+        const email = body.email.toLowerCase().trim();
+        const existing = await this.prisma.lead.findUnique({ where: { email } });
+        if (existing)
+            return { success: true, message: "You're already on the list!" };
+        const name = body.name?.trim() || email.split('@')[0];
+        const notes = body.persona ? `Website waitlist — persona: ${body.persona}` : 'Website waitlist';
+        await this.prisma.lead.create({
+            data: {
+                name,
+                email,
+                source: 'website-waitlist',
+                leadSource: 'website-waitlist',
+                notes,
+                status: 'pending',
+            },
+        });
+        return { success: true, message: "You're on the list!" };
+    }
+};
+exports.PublicController = PublicController;
+__decorate([
+    (0, common_1.Get)('assets'),
+    __param(0, (0, common_1.Query)('take')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], PublicController.prototype, "getPublishedAssets", null);
+__decorate([
+    (0, common_1.Get)('stats'),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], PublicController.prototype, "getPublicStats", null);
+__decorate([
+    (0, common_1.Post)('waitlist'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], PublicController.prototype, "joinWaitlist", null);
+exports.PublicController = PublicController = __decorate([
+    (0, common_1.Controller)('public'),
+    __metadata("design:paramtypes", [typeof (_a = typeof assets_service_1.AssetsService !== "undefined" && assets_service_1.AssetsService) === "function" ? _a : Object, typeof (_b = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _b : Object])
+], PublicController);
 
 
 /***/ }),
@@ -3762,11 +3908,91 @@ var _a;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.InstallmentsController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
 const installments_service_1 = __webpack_require__(/*! ./installments.service */ "./src/installments/installments.service.ts");
 class CreateInstallmentPlanDto {
 }
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "buyerName", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "buyerEmail", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "buyerPhone", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "assetId", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateInstallmentPlanDto.prototype, "totalAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateInstallmentPlanDto.prototype, "downPayment", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateInstallmentPlanDto.prototype, "numberOfInstallments", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "frequency", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "startDate", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "leadAgentId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "closerAgentId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "companyId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateInstallmentPlanDto.prototype, "transactionId", void 0);
 class SendReminderDto {
 }
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SendReminderDto.prototype, "installmentId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SendReminderDto.prototype, "reminderDate", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SendReminderDto.prototype, "method", void 0);
+class UpdatePlanStatusDto {
+}
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], UpdatePlanStatusDto.prototype, "status", void 0);
 let InstallmentsController = class InstallmentsController {
     constructor(installmentsService) {
         this.installmentsService = installmentsService;
@@ -3791,6 +4017,12 @@ let InstallmentsController = class InstallmentsController {
     }
     async recordPayment(id, installmentId, body) {
         return this.installmentsService.recordPayment(id, installmentId, body);
+    }
+    async recordPaymentShorthand(installmentId, body) {
+        return this.installmentsService.recordPaymentByInstallmentId(installmentId, body);
+    }
+    async updatePlanStatus(id, dto) {
+        return this.installmentsService.updatePlanStatus(id, dto.status);
     }
     async getUpcoming() {
         return this.installmentsService.findAll({ status: "upcoming" });
@@ -3850,6 +4082,22 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], InstallmentsController.prototype, "recordPayment", null);
+__decorate([
+    (0, common_1.Post)(":installmentId/payments"),
+    __param(0, (0, common_1.Param)("installmentId")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, Object]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "recordPaymentShorthand", null);
+__decorate([
+    (0, common_1.Patch)("plans/:id"),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, UpdatePlanStatusDto]),
+    __metadata("design:returntype", Promise)
+], InstallmentsController.prototype, "updatePlanStatus", null);
 __decorate([
     (0, common_1.Get)("upcoming"),
     __metadata("design:type", Function),
@@ -3983,17 +4231,28 @@ let InstallmentsService = class InstallmentsService {
         }));
     }
     async create(dto) {
+        const installmentAmount = dto.totalAmount / dto.numberOfInstallments;
         const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'IPL');
-        return this.prisma.installmentPlan.create({
+        const plan = await this.prisma.installmentPlan.create({
             data: {
                 ...dto,
                 serialId,
                 companyId: dto.companyId,
                 remainingBalance: dto.totalAmount - (dto.downPayment || 0),
                 paidAmount: 0,
-                installmentAmount: dto.totalAmount / dto.numberOfInstallments,
+                installmentAmount,
+                startDate: new Date(dto.startDate),
             },
         });
+        if (dto.transactionId) {
+            await this.generateInstallmentSchedule(plan.id, dto.transactionId, {
+                numberOfInstallments: dto.numberOfInstallments,
+                installmentAmount,
+                frequency: dto.frequency,
+                startDate: new Date(dto.startDate),
+            });
+        }
+        return plan;
     }
     async findById(id) {
         const plan = await this.prisma.installmentPlan.findUnique({
@@ -4089,6 +4348,31 @@ let InstallmentsService = class InstallmentsService {
         });
         return updatedInstallment;
     }
+    async recordPaymentByInstallmentId(installmentId, data) {
+        const installment = await this.prisma.installment.findUnique({
+            where: { id: installmentId },
+        });
+        if (!installment) {
+            throw new common_1.NotFoundException(`Installment with ID ${installmentId} not found`);
+        }
+        if (!installment.installmentPlanId) {
+            throw new common_1.NotFoundException(`Installment ${installmentId} has no associated plan`);
+        }
+        return this.recordPayment(installment.installmentPlanId, installmentId, data);
+    }
+    async updatePlanStatus(planId, status) {
+        const plan = await this.prisma.installmentPlan.findUnique({ where: { id: planId } });
+        if (!plan)
+            throw new common_1.NotFoundException(`Installment plan ${planId} not found`);
+        const updated = await this.prisma.installmentPlan.update({
+            where: { id: planId },
+            data: { status: status.toUpperCase() },
+        });
+        if (status.toUpperCase() === 'COMPLETED') {
+            await this.notificationService.notifyInstallmentPlanCompleted(planId);
+        }
+        return updated;
+    }
     async sendPaymentReminder(data) {
         const installment = await this.prisma.installment.findUnique({
             where: { id: data.installmentId },
@@ -4167,13 +4451,14 @@ let InstallmentsService = class InstallmentsService {
             },
         });
     }
-    async generateInstallmentSchedule(planId, data) {
+    async generateInstallmentSchedule(planId, transactionId, data) {
         const installments = [];
         const { numberOfInstallments, installmentAmount, frequency, startDate } = data;
         for (let i = 0; i < numberOfInstallments; i++) {
             const dueDate = this.calculateDueDate(startDate, frequency, i);
             installments.push({
                 installmentPlanId: planId,
+                transactionId,
                 dueDate,
                 amount: installmentAmount,
                 paidAmount: 0,
@@ -4474,11 +4759,81 @@ exports.LeadsController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
 const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
 const leads_service_1 = __webpack_require__(/*! ./leads.service */ "./src/leads/leads.service.ts");
 class CreateLeadDto {
 }
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsEmail)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "email", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "phone", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "assetInterest", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateLeadDto.prototype, "budget", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "source", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "leadSource", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "assignedCluster", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "status", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "assignedToId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateLeadDto.prototype, "createdBy", void 0);
 class AssignLeadsDto {
 }
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], AssignLeadsDto.prototype, "leadIds", void 0);
+__decorate([
+    (0, class_validator_1.IsIn)(['cluster', 'all']),
+    __metadata("design:type", String)
+], AssignLeadsDto.prototype, "assignmentType", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], AssignLeadsDto.prototype, "clusterId", void 0);
 class AssignSingleLeadDto {
 }
 __decorate([
@@ -4757,6 +5112,11 @@ let LeadsService = class LeadsService {
         if (!data.email)
             throw new common_1.BadRequestException('Email is required');
         const resolvedName = (data.name && data.name.trim()) || data.email.split('@')[0];
+        const existingLead = await this.prisma.lead.findUnique({ where: { email: data.email } });
+        if (existingLead) {
+            await this.notificationService.notifyNewLeadFromInvestor(existingLead.id);
+            return existingLead;
+        }
         const serialId = await (0, serial_id_helper_1.generateSerialId)(this.prisma, 'LED');
         const createdLead = await this.prisma.lead.create({
             data: {
@@ -5027,259 +5387,425 @@ exports.CronService = CronService = __decorate([
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.EmailTemplates = void 0;
+const LOGO_SRC = 'https://res.cloudinary.com/dfm3gcy5u/image/upload/w_380,h_98,f_png,q_100/v1774273368/logo';
+function layout(opts) {
+    const accent = opts.accentBar ?? '#4c51bf';
+    return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
+  <meta name="supported-color-schemes" content="light dark" />
+  <title>${opts.title}</title>
+  <style>
+    @media (prefers-color-scheme: dark) {
+      .email-outer       { background-color: #0f172a !important; }
+      .email-outer-td    { background-color: #0f172a !important; }
+      .email-header      { background-color: #1e293b !important; }
+      .email-logo        { filter: brightness(0) invert(1) !important; }
+      .email-divider-line { background-color: #334155 !important; }
+      .email-card        { background-color: #1e293b !important; }
+      .email-title       { color: #f8fafc !important; }
+      .email-text        { color: #cbd5e1 !important; }
+      .email-muted       { color: #94a3b8 !important; }
+      .email-info-tbl    { background-color: #0f172a !important; border-color: #334155 !important; }
+      .email-info-row td { border-bottom-color: #334155 !important; }
+      .email-info-label  { color: #94a3b8 !important; }
+      .email-info-val    { color: #e2e8f0 !important; }
+      .email-footer-text { color: #475569 !important; }
+      .email-divider     { border-top-color: #334155 !important; color: #64748b !important; }
+    }
+  </style>
+</head>
+<body class="email-outer" style="margin:0;padding:0;background-color:#f3f4f6;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Arial,sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-outer" style="background-color:#f3f4f6;">
+    <tr>
+      <td align="center" class="email-outer-td" style="padding:40px 16px;">
+        <table width="600" cellpadding="0" cellspacing="0" role="presentation" style="max-width:600px;width:100%;">
+
+          <!-- TOP ACCENT STRIP -->
+          <tr>
+            <td style="background:${accent};height:5px;border-radius:12px 12px 0 0;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- HEADER -->
+          <tr>
+            <td class="email-header" style="background:#ffffff;padding:22px 40px;">
+              <img src="${LOGO_SRC}" width="190" height="49" alt="BuyOps" class="email-logo" style="display:block;" />
+            </td>
+          </tr>
+
+          <!-- HEADER / CARD DIVIDER -->
+          <tr>
+            <td class="email-divider-line" style="background:#e5e7eb;height:1px;font-size:0;line-height:0;">&nbsp;</td>
+          </tr>
+
+          <!-- CARD -->
+          <tr>
+            <td class="email-card" style="background:#ffffff;border-radius:0 0 12px 12px;">
+              <table width="100%" cellpadding="0" cellspacing="0" role="presentation">
+                <tr>
+                  <td style="padding:36px 40px 44px;">
+
+                    <!-- badge -->
+                    <table cellpadding="0" cellspacing="0" role="presentation" style="margin-bottom:22px;">
+                      <tr>
+                        <td style="background:${opts.badgeBg};border-radius:20px;padding:5px 14px;">
+                          <span style="color:${opts.badgeColor};font-size:11px;font-weight:700;letter-spacing:0.8px;text-transform:uppercase;">${opts.badgeText}</span>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <!-- title -->
+                    <h1 class="email-title" style="margin:0 0 20px;color:#1a1f36;font-size:22px;font-weight:700;line-height:1.3;">${opts.title}</h1>
+
+                    ${opts.body}
+
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- FOOTER -->
+          <tr>
+            <td style="padding:28px 0 8px;text-align:center;">
+              <p class="email-footer-text" style="margin:0 0 5px;color:#9ca3af;font-size:12px;">&copy; 2026 BuyOps. All rights reserved.</p>
+              <p class="email-footer-text" style="margin:0;color:#b0b7c3;font-size:11px;">This is an automated message &mdash; please do not reply directly to this email.</p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+function para(text, color = '#374151') {
+    return `<p class="email-text" style="margin:0 0 16px;color:${color};font-size:15px;line-height:1.7;">${text}</p>`;
+}
+function infoRow(label, value) {
+    return `
+    <tr class="email-info-row">
+      <td class="email-info-label" style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#6b7280;font-size:13px;width:160px;vertical-align:top;">${label}</td>
+      <td class="email-info-val" style="padding:10px 0;border-bottom:1px solid #f3f4f6;color:#1a1f36;font-size:13px;font-weight:600;vertical-align:top;">${value}</td>
+    </tr>`;
+}
+function infoCard(rows) {
+    return `
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" class="email-info-tbl" style="background:#f8f9fb;border:1px solid #e5e7eb;border-radius:10px;margin:20px 0 28px;">
+    <tr><td style="padding:4px 20px 0;">
+      <table width="100%" cellpadding="0" cellspacing="0" role="presentation">${rows}</table>
+    </td></tr>
+  </table>`;
+}
+function cta(href, label, color = '#4c51bf') {
+    return `
+  <table cellpadding="0" cellspacing="0" role="presentation" style="margin:8px 0 28px;">
+    <tr>
+      <td style="background:${color};border-radius:8px;">
+        <a href="${href}" style="display:inline-block;padding:14px 36px;color:#ffffff;font-size:15px;font-weight:700;text-decoration:none;letter-spacing:0.2px;">${label}</a>
+      </td>
+    </tr>
+  </table>`;
+}
+function alertBox(text, color, bg, border) {
+    return `
+  <table width="100%" cellpadding="0" cellspacing="0" role="presentation" style="margin:20px 0;">
+    <tr>
+      <td style="background:${bg};border-left:4px solid ${border};border-radius:6px;padding:14px 18px;">
+        <p style="margin:0;color:${color};font-size:14px;line-height:1.6;">${text}</p>
+      </td>
+    </tr>
+  </table>`;
+}
+function dividerNote(text) {
+    return `<p class="email-divider email-muted" style="margin:28px 0 0;padding-top:24px;border-top:1px solid #e5e7eb;color:#9ca3af;font-size:12px;line-height:1.7;">${text}</p>`;
+}
 exports.EmailTemplates = {
     PASSWORD_RESET: {
         subject: () => 'Reset Your BuyOps Password',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Reset Your BuyOps Password</h2>
-        <p>Dear ${recipient.name},</p>
-        <p>You requested a password reset for your BuyOps account.</p>
-        <p>Click the link below to create a new password:</p>
-        <p>
-          <a href="${data.resetLink}" 
-             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Reset Password
-          </a>
-        </p>
-        <p>If you did not request this, please ignore this email.</p>
-        <p>For security reasons, this link will expire shortly.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data, recipient) => layout({
+            title: 'Reset Your Password',
+            badgeText: 'Security',
+            badgeColor: '#b45309',
+            badgeBg: '#fffbeb',
+            accentBar: '#f59e0b',
+            body: `
+          ${para(`Hi ${recipient.name},`)}
+          ${para('We received a request to reset the password for your BuyOps account. Click the button below to create a new password.')}
+          ${cta(data.resetLink, 'Reset Password', '#4c51bf')}
+          ${alertBox('This link will expire shortly. If you did not request a password reset, you can safely ignore this email — your password will remain unchanged.', '#92400e', '#fffbeb', '#f59e0b')}
+          ${dividerNote('For your security, never share your password or this link with anyone. BuyOps will never ask for your password via email.')}
+        `,
+        }),
     },
     NEW_DEVICE_LOGIN: {
         subject: () => 'New Login Detected on Your BuyOps Account',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Login Detected</h2>
-        <p>We noticed a successful login to your BuyOps account from a new device.</p>
-        <p><strong>Device:</strong> ${data.device || 'Unknown'}<br/>
-           <strong>Location:</strong> ${data.location || 'Unknown'}<br/>
-           <strong>Time:</strong> ${data.timestamp || new Date().toLocaleString()}</p>
-        <p>If this was you, no action is required.</p>
-        <p>If you do not recognise this activity, please reset your password immediately or contact support.</p>
-        <p>Your security matters to us.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data, recipient) => layout({
+            title: 'New Login Detected',
+            badgeText: 'Security Alert',
+            badgeColor: '#b45309',
+            badgeBg: '#fffbeb',
+            accentBar: '#f59e0b',
+            body: `
+          ${para(`Hi ${recipient.name},`)}
+          ${para('We detected a successful login to your BuyOps account from a new device or location.')}
+          ${infoCard(infoRow('Device', data.device || 'Unknown') +
+                infoRow('Location', data.location || 'Unknown') +
+                infoRow('Time', data.timestamp || new Date().toLocaleString()))}
+          ${para('If this was you, no action is needed.')}
+          ${alertBox('Not you? Reset your password immediately to secure your account.', '#991b1b', '#fef2f2', '#ef4444')}
+          ${dividerNote('BuyOps monitors account activity to keep your investments safe. Contact support if you have concerns.')}
+        `,
+        }),
     },
     ASSET_PUBLISHED: {
-        subject: (data) => 'Asset Successfully Published',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Asset Successfully Published</h2>
-        <p>This is to confirm that a new asset has been published on BuyOps.</p>
-        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
-           <strong>Company:</strong> ${data.companyName}</p>
-        <p>The asset is now available according to its visibility and distribution settings.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        subject: () => 'Asset Successfully Published',
+        body: (data) => layout({
+            title: 'Asset Successfully Published',
+            badgeText: 'Asset Management',
+            badgeColor: '#3730a3',
+            badgeBg: '#eef2ff',
+            accentBar: '#4c51bf',
+            body: `
+          ${para('A new investment asset has been published on BuyOps and is now live according to its visibility and distribution settings.')}
+          ${infoCard(infoRow('Asset Name', data.assetName) +
+                infoRow('Company', data.companyName))}
+          ${para('Agents and eligible investors can now view and interact with this asset.', '#6b7280')}
+          ${dividerNote('This is an automated confirmation from the BuyOps platform.')}
+        `,
+        }),
     },
     ASSET_UPDATED: {
         subject: () => 'Asset Information Updated',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Asset Information Updated</h2>
-        <p>An asset on BuyOps has been updated.</p>
-        <p><strong>Asset Name:</strong> ${data.assetName}<br/>
-           <strong>Updated Fields:</strong> ${data.updatedFields}</p>
-        <p>Please review the changes to ensure accuracy and alignment with current terms.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'Asset Information Updated',
+            badgeText: 'Asset Management',
+            badgeColor: '#3730a3',
+            badgeBg: '#eef2ff',
+            accentBar: '#4c51bf',
+            body: `
+          ${para('An investment asset on BuyOps has been updated. Please review the changes to ensure accuracy.')}
+          ${infoCard(infoRow('Asset Name', data.assetName) +
+                infoRow('Updated Fields', data.updatedFields))}
+          ${alertBox('Please verify that all updated information aligns with current terms and agreements.', '#1e40af', '#eff6ff', '#3b82f6')}
+          ${dividerNote('This is an automated notification from the BuyOps platform.')}
+        `,
+        }),
     },
     NEW_LEAD_FROM_INVESTOR: {
         subject: () => 'New Lead Assigned to You',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Lead Assigned to You</h2>
-        <p>A new lead has been onboarded and assigned to you.</p>
-        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
-           <strong>Asset Interest:</strong> ${data.assetName}<br/>
-           <strong>Budget:</strong> ₦${(data.budget || 0).toLocaleString()}</p>
-        <p>Please follow up promptly to progress the opportunity.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'New Lead Assigned to You',
+            badgeText: 'Lead',
+            badgeColor: '#0e7490',
+            badgeBg: '#ecfeff',
+            accentBar: '#0891b2',
+            body: `
+          ${para('A new investor lead has been onboarded and assigned directly to you. Please follow up promptly to progress the opportunity.')}
+          ${infoCard(infoRow('Lead Name', data.leadName) +
+                infoRow('Asset Interest', data.assetName) +
+                infoRow('Budget', `&#8358;${(data.budget || 0).toLocaleString()}`))}
+          ${alertBox('Timely follow-up significantly improves conversion rates. Aim to reach out within 24 hours.', '#065f46', '#ecfdf5', '#10b981')}
+          ${dividerNote('Full lead details are available in your BuyOps dashboard.')}
+        `,
+        }),
     },
     LEAD_ASSIGNED_TO_CLUSTER: {
         subject: () => 'Lead Assigned to Your Cluster',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Lead Assigned to Your Cluster</h2>
-        <p>A lead has been assigned to your cluster.</p>
-        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
-           <strong>Assigned Cluster:</strong> ${data.clusterName}</p>
-        <p>Kindly coordinate follow-up with your team.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'Lead Assigned to Your Cluster',
+            badgeText: 'Lead',
+            badgeColor: '#0e7490',
+            badgeBg: '#ecfeff',
+            accentBar: '#0891b2',
+            body: `
+          ${para('A new lead has been assigned to your cluster. Please coordinate with your team for prompt follow-up.')}
+          ${infoCard(infoRow('Lead Name', data.leadName) +
+                infoRow('Cluster', data.clusterName))}
+          ${dividerNote('Coordinate with your cluster manager to assign the appropriate agent for follow-up.')}
+        `,
+        }),
     },
     LEAD_AVAILABLE_TO_ALL: {
         subject: () => 'New Lead Available',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Lead Available</h2>
-        <p>A new lead has been made available to all clusters.</p>
-        <p><strong>Lead Name:</strong> ${data.leadName}<br/>
-           <strong>Asset Interest:</strong> ${data.assetName}</p>
-        <p>Agents may engage based on availability and fit.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'New Lead Available',
+            badgeText: 'Open Lead',
+            badgeColor: '#0e7490',
+            badgeBg: '#ecfeff',
+            accentBar: '#0891b2',
+            body: `
+          ${para('A new lead has been made available to all clusters. Agents may engage based on availability and fit.')}
+          ${infoCard(infoRow('Lead Name', data.leadName) +
+                infoRow('Asset Interest', data.assetName))}
+          ${alertBox('This lead is open to all clusters. First to engage with a qualified pitch gets priority.', '#0e7490', '#ecfeff', '#0891b2')}
+          ${dividerNote('View the full lead profile in your BuyOps dashboard.')}
+        `,
+        }),
     },
     DEAL_CREATED: {
         subject: () => 'New Deal Created',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>New Deal Created</h2>
-        <p>A new deal has been created on BuyOps.</p>
-        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
-           <strong>Agent:</strong> ${data.agentName}<br/>
-           <strong>Asset:</strong> ${data.assetName}</p>
-        <p>This notification is for administrative oversight.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'New Deal Created',
+            badgeText: 'Deal',
+            badgeColor: '#065f46',
+            badgeBg: '#ecfdf5',
+            accentBar: '#10b981',
+            body: `
+          ${para('A new deal has been created on BuyOps. This notification is for your administrative oversight.')}
+          ${infoCard(infoRow('Deal ID', data.dealId) +
+                infoRow('Agent', data.agentName) +
+                infoRow('Asset', data.assetName))}
+          ${dividerNote('Deal activity is tracked in real-time in your BuyOps admin dashboard.')}
+        `,
+        }),
     },
     DEAL_PAYMENT_READY: {
         subject: () => 'Deal Ready for Payment Processing',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Deal Ready for Payment Processing</h2>
-        <p>A deal has been marked as Payment Ready.</p>
-        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
-           <strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Payment Type:</strong> ${data.paymentType}</p>
-        <p>Please proceed with payment verification and processing.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'Deal Ready for Payment',
+            badgeText: 'Action Required',
+            badgeColor: '#b45309',
+            badgeBg: '#fffbeb',
+            accentBar: '#f59e0b',
+            body: `
+          ${para('A deal has been marked as <strong>Payment Ready</strong>. Please proceed with payment verification and processing.')}
+          ${infoCard(infoRow('Deal ID', data.dealId) +
+                infoRow('Amount', `&#8358;${(data.amount || 0).toLocaleString()}`) +
+                infoRow('Payment Type', data.paymentType))}
+          ${alertBox('Please verify the payment details before processing. Ensure all documentation is in order.', '#92400e', '#fffbeb', '#f59e0b')}
+          ${dividerNote('Process this payment through the BuyOps admin panel to maintain a full audit trail.')}
+        `,
+        }),
     },
     DEAL_CLOSED: {
         subject: () => 'Deal Successfully Closed',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Deal Successfully Closed</h2>
-        <p>A deal has been successfully closed.</p>
-        <p><strong>Deal ID:</strong> ${data.dealId}<br/>
-           <strong>Asset:</strong> ${data.assetName}<br/>
-           <strong>Commission Status:</strong> ${data.commissionStatus}</p>
-        <p>This transaction will now reflect in reporting and commissions.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'Deal Successfully Closed',
+            badgeText: 'Deal Closed',
+            badgeColor: '#065f46',
+            badgeBg: '#ecfdf5',
+            accentBar: '#10b981',
+            body: `
+          ${para('A deal has been successfully closed on BuyOps. This transaction will now be reflected in reporting and commissions.')}
+          ${infoCard(infoRow('Deal ID', data.dealId) +
+                infoRow('Asset', data.assetName) +
+                infoRow('Commission Status', data.commissionStatus))}
+          ${dividerNote('Full transaction details and commission breakdown are available in the BuyOps admin dashboard.')}
+        `,
+        }),
     },
     INSTALLMENT_DUE: {
         subject: () => 'Upcoming Installment Payment Due',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Upcoming Installment Payment Due</h2>
-        <p>This is a reminder that an installment payment is due.</p>
-        <p><strong>Amount Due:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
-        <p>Please ensure payment is completed on or before the due date to avoid penalties.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data) => layout({
+            title: 'Installment Payment Due Soon',
+            badgeText: 'Payment Reminder',
+            badgeColor: '#b45309',
+            badgeBg: '#fffbeb',
+            accentBar: '#f59e0b',
+            body: `
+          ${para('This is a friendly reminder that an installment payment is coming up. Please ensure payment is completed on or before the due date.')}
+          ${infoCard(infoRow('Amount Due', `&#8358;${(data.amount || 0).toLocaleString()}`) +
+                infoRow('Due Date', new Date(data.dueDate).toLocaleDateString('en-NG', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                })))}
+          ${alertBox('Late payments may attract penalties. Please make your payment before the due date to stay in good standing.', '#92400e', '#fffbeb', '#f59e0b')}
+          ${dividerNote('Log in to your BuyOps account to make a payment or view your full installment schedule.')}
+        `,
+        }),
     },
     INSTALLMENT_OVERDUE: {
-        subject: () => 'Overdue Installment Payment',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Overdue Installment Payment</h2>
-        <p>Your installment payment is now overdue.</p>
-        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Original Due Date:</strong> ${new Date(data.dueDate).toLocaleDateString()}</p>
-        <p style="color: #e53e3e;">Please make payment as soon as possible or contact support if you need assistance.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        subject: () => 'Overdue Installment Payment \u2014 Action Required',
+        body: (data) => layout({
+            title: 'Installment Payment Overdue',
+            badgeText: 'Overdue',
+            badgeColor: '#991b1b',
+            badgeBg: '#fef2f2',
+            accentBar: '#ef4444',
+            body: `
+          ${para('Your installment payment is now <strong>overdue</strong>. Please make payment as soon as possible to avoid further penalties or disruption to your investment.')}
+          ${infoCard(infoRow('Amount Overdue', `&#8358;${(data.amount || 0).toLocaleString()}`) +
+                infoRow('Original Due Date', new Date(data.dueDate).toLocaleDateString('en-NG', {
+                    weekday: 'long', year: 'numeric', month: 'long', day: 'numeric',
+                })))}
+          ${alertBox('Continued non-payment may affect the status of your investment. Please contact your agent or our support team if you need assistance.', '#991b1b', '#fef2f2', '#ef4444')}
+          ${dividerNote('If you have already made this payment and received this email in error, please contact BuyOps support with your transaction reference.')}
+        `,
+        }),
     },
     PAYMENT_RECEIVED: {
-        subject: () => 'Payment Received Confirmation',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Payment Received Confirmation</h2>
-        <p>We confirm receipt of your recent payment.</p>
-        <p><strong>Amount:</strong> ₦${(data.amount || 0).toLocaleString()}<br/>
-           <strong>Transaction Reference:</strong> ${data.reference}</p>
-        <p>Thank you for your payment.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        subject: () => 'Payment Received \u2014 Confirmation',
+        body: (data) => layout({
+            title: 'Payment Confirmed',
+            badgeText: 'Payment Received',
+            badgeColor: '#065f46',
+            badgeBg: '#ecfdf5',
+            accentBar: '#10b981',
+            body: `
+          ${para('We have successfully received your payment. Thank you for staying on track with your investment.')}
+          ${infoCard(infoRow('Amount Received', `&#8358;${(data.amount || 0).toLocaleString()}`) +
+                infoRow('Transaction Reference', data.reference))}
+          ${alertBox('Your payment has been recorded and your installment schedule has been updated accordingly.', '#065f46', '#ecfdf5', '#10b981')}
+          ${dividerNote('Please retain this email as proof of payment. View your full payment history in your BuyOps account.')}
+        `,
+        }),
     },
     INSTALLMENT_COMPLETED: {
-        subject: () => 'Installment Plan Completed',
-        body: (data) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Installment Plan Completed</h2>
-        <p>Congratulations! Your installment payment plan has been fully completed.</p>
-        <p><strong>Asset:</strong> ${data.assetName}<br/>
-           <strong>Total Paid:</strong> ₦${(data.totalPaid || 0).toLocaleString()}</p>
-        <p>Thank you for completing your investment journey with BuyOps.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        subject: () => 'Congratulations \u2014 Installment Plan Completed!',
+        body: (data) => layout({
+            title: 'Installment Plan Completed!',
+            badgeText: 'Completed',
+            badgeColor: '#065f46',
+            badgeBg: '#ecfdf5',
+            accentBar: '#10b981',
+            body: `
+          ${para('Congratulations! You have successfully completed your installment payment plan. This is a significant milestone in your investment journey with BuyOps.')}
+          ${infoCard(infoRow('Asset', data.assetName) +
+                infoRow('Total Paid', `&#8358;${(data.totalPaid || 0).toLocaleString()}`))}
+          ${alertBox('Thank you for your commitment and trust in BuyOps. Our team will be in touch regarding next steps for your investment.', '#065f46', '#ecfdf5', '#10b981')}
+          ${dividerNote('Your full investment and payment history is available in your BuyOps account.')}
+        `,
+        }),
     },
     AGENT_INVITATION: {
-        subject: () => 'Welcome to BuyOps - Agent Invitation',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Welcome to BuyOps!</h2>
-        <p>Dear ${recipient.name},</p>
-        <p>You have been invited to join BuyOps as a Sales Agent.</p>
-        <p><strong>Login Credentials:</strong><br/>
-           <strong>Email:</strong> ${recipient.email}<br/>
-           <strong>Temporary Password:</strong> ${data.tempPassword}</p>
-        <p>Please use the credentials above to log in to your account. We recommend changing your password immediately upon first login for security purposes.</p>
-        <p>
-          <a href="${data.loginLink}" 
-             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Log In to BuyOps
-          </a>
-        </p>
-        <p>If you have any questions or need assistance, please contact our support team.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        subject: () => 'Welcome to BuyOps \u2014 Your Agent Account is Ready',
+        body: (data, recipient) => layout({
+            title: `Welcome to BuyOps, ${recipient.name}!`,
+            badgeText: 'Invitation',
+            badgeColor: '#3730a3',
+            badgeBg: '#eef2ff',
+            accentBar: '#4c51bf',
+            body: `
+          ${para(`Hi ${recipient.name},`)}
+          ${para("You've been invited to join BuyOps as a <strong>Sales Agent</strong>. Your account has been set up and is ready to go. Use the credentials below to log in for the first time.")}
+          ${infoCard(infoRow('Email', recipient.email) +
+                infoRow('Temporary Password', `<code style="background:#f3f4f6;padding:2px 8px;border-radius:4px;font-size:13px;font-family:monospace;">${data.tempPassword}</code>`))}
+          ${cta(data.loginLink, 'Log In to BuyOps', '#4c51bf')}
+          ${alertBox('For your security, please change your password immediately after your first login.', '#1e40af', '#eff6ff', '#3b82f6')}
+          ${dividerNote('If you were not expecting this invitation or believe it was sent in error, please contact BuyOps support immediately and disregard this email.')}
+        `,
+        }),
     },
     EMAIL_VERIFICATION: {
         subject: () => 'Verify Your BuyOps Email Address',
-        body: (data, recipient) => `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
-        <h2>Verify Your Email Address</h2>
-        <p>Dear ${recipient.name},</p>
-        <p>Thank you for registering with BuyOps. Please verify your email address by clicking the link below:</p>
-        <p>
-          <a href="${data.verificationLink}" 
-             style="background-color: #4c51bf; color: white; padding: 12px 24px; text-decoration: none; border-radius: 4px; display: inline-block;">
-            Verify Email
-          </a>
-        </p>
-        <p>This verification link will expire in 24 hours.</p>
-        <p>If you did not create this account, please ignore this email.</p>
-        <hr />
-        <p style="color: #666; font-size: 12px;">BuyOps - Your Investment Partner</p>
-      </div>
-    `,
+        body: (data, recipient) => layout({
+            title: 'Verify Your Email Address',
+            badgeText: 'Email Verification',
+            badgeColor: '#3730a3',
+            badgeBg: '#eef2ff',
+            accentBar: '#4c51bf',
+            body: `
+          ${para(`Hi ${recipient.name},`)}
+          ${para('Thank you for registering with BuyOps. To complete your account setup, please verify your email address by clicking the button below.')}
+          ${cta(data.verificationLink, 'Verify Email Address', '#4c51bf')}
+          ${alertBox('This verification link expires in 24 hours. If it expires, you can request a new one from your account settings.', '#1e40af', '#eff6ff', '#3b82f6')}
+          ${dividerNote('If you did not create a BuyOps account, please ignore this email. No action is required and your email will not be added to our system.')}
+        `,
+        }),
     },
 };
 
@@ -5293,74 +5819,81 @@ exports.EmailTemplates = {
 /***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
 var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
     var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
     if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
     else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
     return c > 3 && r && Object.defineProperty(target, key, r), r;
 };
-var __importStar = (this && this.__importStar) || (function () {
-    var ownKeys = function(o) {
-        ownKeys = Object.getOwnPropertyNames || function (o) {
-            var ar = [];
-            for (var k in o) if (Object.prototype.hasOwnProperty.call(o, k)) ar[ar.length] = k;
-            return ar;
-        };
-        return ownKeys(o);
-    };
-    return function (mod) {
-        if (mod && mod.__esModule) return mod;
-        var result = {};
-        if (mod != null) for (var k = ownKeys(mod), i = 0; i < k.length; i++) if (k[i] !== "default") __createBinding(result, mod, k[i]);
-        __setModuleDefault(result, mod);
-        return result;
-    };
-})();
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var EmailService_1;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.EmailService = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
-const nodemailer = __importStar(__webpack_require__(/*! nodemailer */ "nodemailer"));
-let EmailService = class EmailService {
+const resend_1 = __webpack_require__(/*! resend */ "resend");
+const mailtrap_1 = __webpack_require__(/*! mailtrap */ "mailtrap");
+let EmailService = EmailService_1 = class EmailService {
     constructor() {
-        this.transporter = nodemailer.createTransport({
-            host: process.env.SMTP_HOST,
-            port: parseInt(process.env.SMTP_PORT),
-            auth: {
-                user: process.env.SMTP_USER,
-                pass: process.env.SMTP_PASSWORD,
-            },
-        });
+        this.logger = new common_1.Logger(EmailService_1.name);
+        this.isSandbox = process.env.MAILTRAP_USE_SANDBOX === 'true';
+        this.resend = null;
+        this.mailtrap = null;
+        this.provider = process.env.EMAIL_PROVIDER ?? 'mailtrap';
+        if (this.provider === 'resend') {
+            this.resend = new resend_1.Resend(process.env.RESEND_API_KEY);
+        }
+        else {
+            const sandboxId = this.isSandbox ? Number(process.env.MAILTRAP_INBOX_ID) : undefined;
+            this.mailtrap = new mailtrap_1.MailtrapClient({
+                token: process.env.MAILTRAP_API_KEY,
+                sandbox: this.isSandbox,
+                testInboxId: sandboxId,
+            });
+        }
+        this.logger.log(`EmailService initialised — provider: ${this.provider}` +
+            (this.provider === 'mailtrap' ? ` (${this.isSandbox ? 'sandbox' : 'sending API'})` : ''));
     }
     async sendEmail(options) {
-        await this.transporter.sendMail({
-            from: process.env.EMAIL_FROM,
-            to: options.to,
-            subject: options.subject,
-            html: options.html,
-        });
+        const from = process.env.EMAIL_FROM ?? 'BuyOps <no-reply@buyops.com>';
+        const [fromName, fromEmail] = from.includes('<')
+            ? [from.split('<')[0].trim(), from.split('<')[1].replace('>', '').trim()]
+            : ['BuyOps', from];
+        this.logger.log(`Sending email to ${options.to} — subject: "${options.subject}"`);
+        try {
+            if (this.provider === 'resend') {
+                const { data, error } = await this.resend.emails.send({
+                    from,
+                    to: options.to,
+                    subject: options.subject,
+                    html: options.html,
+                });
+                if (error) {
+                    this.logger.error(`Resend error: ${JSON.stringify(error)}`);
+                    throw new Error(error.message);
+                }
+                this.logger.log(`Email delivered via Resend to ${options.to} (id: ${data?.id})`);
+            }
+            else {
+                const senderEmail = this.isSandbox ? 'sandbox@example.com' : fromEmail;
+                await this.mailtrap.send({
+                    from: { name: fromName, email: senderEmail },
+                    to: [{ email: options.to }],
+                    subject: options.subject,
+                    html: options.html,
+                });
+                this.logger.log(`Email sent via Mailtrap ${this.isSandbox ? '(sandbox)' : '(sending API)'} to ${options.to}`);
+            }
+        }
+        catch (err) {
+            this.logger.error(`Failed to send email to ${options.to}: ${err?.message ?? err}`);
+            throw err;
+        }
     }
 };
 exports.EmailService = EmailService;
-exports.EmailService = EmailService = __decorate([
+exports.EmailService = EmailService = EmailService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [])
 ], EmailService);
@@ -5401,6 +5934,86 @@ function getInAppTemplate(type, data) {
             };
     }
 }
+
+
+/***/ }),
+
+/***/ "./src/notification/notification-triggers.controller.ts":
+/*!**************************************************************!*\
+  !*** ./src/notification/notification-triggers.controller.ts ***!
+  \**************************************************************/
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+
+
+var __decorate = (this && this.__decorate) || function (decorators, target, key, desc) {
+    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
+    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+    else for (var i = decorators.length - 1; i >= 0; i--) if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+    return c > 3 && r && Object.defineProperty(target, key, r), r;
+};
+var __metadata = (this && this.__metadata) || function (k, v) {
+    if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
+};
+var __param = (this && this.__param) || function (paramIndex, decorator) {
+    return function (target, key) { decorator(target, key, paramIndex); }
+};
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.NotificationTriggersController = void 0;
+const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
+const jwt_auth_guard_1 = __webpack_require__(/*! ../auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
+const notification_service_1 = __webpack_require__(/*! ./notification.service */ "./src/notification/notification.service.ts");
+let NotificationTriggersController = class NotificationTriggersController {
+    constructor(notificationService) {
+        this.notificationService = notificationService;
+    }
+    async triggerInstallmentDue(id) {
+        return this.notificationService.notifyInstallmentDue(id);
+    }
+    async triggerInstallmentOverdue(id) {
+        return this.notificationService.notifyInstallmentOverdue(id);
+    }
+    async triggerCommissionsSent(body) {
+        return this.notificationService.notifyCommissionSent(body.transactionIds || []);
+    }
+    async triggerCommissionsPaid(body) {
+        return this.notificationService.notifyCommissionsPaid(body.transactionIds || [], body.fileName);
+    }
+};
+exports.NotificationTriggersController = NotificationTriggersController;
+__decorate([
+    (0, common_1.Post)('installment-due/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], NotificationTriggersController.prototype, "triggerInstallmentDue", null);
+__decorate([
+    (0, common_1.Post)('installment-overdue/:id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], NotificationTriggersController.prototype, "triggerInstallmentOverdue", null);
+__decorate([
+    (0, common_1.Post)('commissions-sent'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationTriggersController.prototype, "triggerCommissionsSent", null);
+__decorate([
+    (0, common_1.Post)('commissions-paid'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], NotificationTriggersController.prototype, "triggerCommissionsPaid", null);
+exports.NotificationTriggersController = NotificationTriggersController = __decorate([
+    (0, common_1.Controller)('notification'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:paramtypes", [typeof (_a = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _a : Object])
+], NotificationTriggersController);
 
 
 /***/ }),
@@ -5573,6 +6186,7 @@ exports.NotificationModule = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const config_1 = __webpack_require__(/*! @nestjs/config */ "@nestjs/config");
 const notification_controller_1 = __webpack_require__(/*! ./notification.controller */ "./src/notification/notification.controller.ts");
+const notification_triggers_controller_1 = __webpack_require__(/*! ./notification-triggers.controller */ "./src/notification/notification-triggers.controller.ts");
 const notification_service_1 = __webpack_require__(/*! ./notification.service */ "./src/notification/notification.service.ts");
 const sms_service_1 = __webpack_require__(/*! ./sms.service */ "./src/notification/sms.service.ts");
 const email_service_1 = __webpack_require__(/*! ./email.service */ "./src/notification/email.service.ts");
@@ -5584,7 +6198,7 @@ exports.NotificationModule = NotificationModule;
 exports.NotificationModule = NotificationModule = __decorate([
     (0, common_1.Module)({
         imports: [prisma_module_1.PrismaModule, config_1.ConfigModule],
-        controllers: [notification_controller_1.NotificationController],
+        controllers: [notification_controller_1.NotificationController, notification_triggers_controller_1.NotificationTriggersController],
         providers: [notification_service_1.NotificationService, sms_service_1.SmsService, email_service_1.EmailService, cron_service_1.CronService],
         exports: [notification_service_1.NotificationService],
     })
@@ -8046,17 +8660,75 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 var __param = (this && this.__param) || function (paramIndex, decorator) {
     return function (target, key) { decorator(target, key, paramIndex); }
 };
-var _a, _b, _c, _d;
+var _a, _b, _c, _d, _e;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TransactionsController = void 0;
 const common_1 = __webpack_require__(/*! @nestjs/common */ "@nestjs/common");
 const platform_express_1 = __webpack_require__(/*! @nestjs/platform-express */ "@nestjs/platform-express");
+const class_validator_1 = __webpack_require__(/*! class-validator */ "class-validator");
+const class_transformer_1 = __webpack_require__(/*! class-transformer */ "class-transformer");
 const transactions_service_1 = __webpack_require__(/*! ./transactions.service */ "./src/transactions/transactions.service.ts");
 const jwt_auth_guard_1 = __webpack_require__(/*! src/auth/jwt-auth.guard */ "./src/auth/jwt-auth.guard.ts");
 const roles_guard_1 = __webpack_require__(/*! ../common/roles.guard */ "./src/common/roles.guard.ts");
 const roles_decorator_1 = __webpack_require__(/*! ../common/roles.decorator */ "./src/common/roles.decorator.ts");
 class CreateTransactionDto {
 }
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTransactionDto.prototype, "assetId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], CreateTransactionDto.prototype, "buyerId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateTransactionDto.prototype, "leadAgentId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateTransactionDto.prototype, "closerAgentId", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateTransactionDto.prototype, "companyId", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateTransactionDto.prototype, "totalAmount", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateTransactionDto.prototype, "paymentType", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateTransactionDto.prototype, "leadCommission", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateTransactionDto.prototype, "closerCommission", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_transformer_1.Type)(() => Number),
+    __metadata("design:type", Number)
+], CreateTransactionDto.prototype, "totalCommission", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    __metadata("design:type", String)
+], CreateTransactionDto.prototype, "status", void 0);
 class SendCommissionsDto {
 }
 let TransactionsController = class TransactionsController {
@@ -8086,6 +8758,9 @@ let TransactionsController = class TransactionsController {
     }
     async uploadPaymentProof(file) {
         return this.transactionsService.uploadPaymentProof(file);
+    }
+    async patch(id, dto) {
+        return this.transactionsService.update(id, dto);
     }
     async update(id, dto) {
         return this.transactionsService.update(id, dto);
@@ -8161,11 +8836,19 @@ __decorate([
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
     (0, roles_decorator_1.Roles)("ADMIN"),
-    (0, common_1.Put)(":id"),
+    (0, common_1.Patch)(":id"),
     __param(0, (0, common_1.Param)("id")),
     __param(1, (0, common_1.Body)()),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, typeof (_d = typeof Partial !== "undefined" && Partial) === "function" ? _d : Object]),
+    __metadata("design:returntype", Promise)
+], TransactionsController.prototype, "patch", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard, roles_guard_1.RolesGuard),
+    __param(0, (0, common_1.Param)("id")),
+    __param(1, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, typeof (_e = typeof Partial !== "undefined" && Partial) === "function" ? _e : Object]),
     __metadata("design:returntype", Promise)
 ], TransactionsController.prototype, "update", null);
 exports.TransactionsController = TransactionsController = __decorate([
@@ -8234,6 +8917,7 @@ var __decorate = (this && this.__decorate) || function (decorators, target, key,
 var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
+var TransactionsService_1;
 var _a, _b;
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.TransactionsService = void 0;
@@ -8242,10 +8926,11 @@ const prisma_service_1 = __webpack_require__(/*! ../prisma/prisma.service */ "./
 const client_1 = __webpack_require__(/*! @prisma/client */ "@prisma/client");
 const notification_service_1 = __webpack_require__(/*! ../notification/notification.service */ "./src/notification/notification.service.ts");
 const serial_id_helper_1 = __webpack_require__(/*! ../common/serial-id.helper */ "./src/common/serial-id.helper.ts");
-let TransactionsService = class TransactionsService {
+let TransactionsService = TransactionsService_1 = class TransactionsService {
     constructor(prisma, notificationService) {
         this.prisma = prisma;
         this.notificationService = notificationService;
+        this.logger = new common_1.Logger(TransactionsService_1.name);
     }
     async getUnpaidCommissions({ month }) {
         return this.findAll({
@@ -8355,8 +9040,8 @@ let TransactionsService = class TransactionsService {
                 closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : 0,
                 totalCommission: data.totalCommission ? parseFloat(data.totalCommission) : 0,
                 commission: data.commission ? parseFloat(data.commission) : 0,
-                status: data.status || client_1.CommissionPaymentStatus.UNPAID,
-                commissionPaymentStatus: data.commissionPaymentStatus || client_1.CommissionPaymentStatus.UNPAID,
+                status: data.status?.toUpperCase() || 'PENDING',
+                commissionPaymentStatus: data.commissionPaymentStatus?.toUpperCase() || client_1.CommissionPaymentStatus.UNPAID,
                 installmentDuration: data.installmentDuration ? parseInt(data.installmentDuration) : null,
             },
             include: {
@@ -8365,22 +9050,35 @@ let TransactionsService = class TransactionsService {
                 company: { select: { id: true, name: true } },
             },
         });
-        await this.notificationService.notifyDealCreated(transaction.id);
-        if ((transaction.paymentType || '').toLowerCase() === 'installment') {
-            await this.notificationService.notifyDealPaymentReady(transaction.id);
+        try {
+            await this.notificationService.notifyDealCreated(transaction.id);
         }
-        await this.notificationService.notifyAdminAndSales({
-            title: 'New Deal Created',
-            message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
-            type: 'INFO',
-        });
+        catch (err) {
+            this.logger.error(`notifyDealCreated failed for tx ${transaction.id}: ${err?.message}`, err?.stack);
+        }
+        if ((transaction.paymentType || '').toLowerCase() === 'installment') {
+            try {
+                await this.notificationService.notifyDealPaymentReady(transaction.id);
+            }
+            catch (err) {
+                this.logger.error(`notifyDealPaymentReady failed for tx ${transaction.id}: ${err?.message}`, err?.stack);
+            }
+        }
+        try {
+            await this.notificationService.notifyAdminAndSales({
+                title: 'New Deal Created',
+                message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
+                type: 'INFO',
+            });
+        }
+        catch (err) {
+            this.logger.error(`notifyAdminAndSales failed for tx ${transaction.id}: ${err?.message}`, err?.stack);
+        }
         return transaction;
     }
     async update(id, data) {
         await this.findById(id);
         const updateData = {};
-        if (data.status !== undefined)
-            updateData.status = data.status;
         if (data.commissionPaymentStatus !== undefined)
             updateData.commissionPaymentStatus = data.commissionPaymentStatus;
         if (data.leadAgentId !== undefined)
@@ -8393,6 +9091,13 @@ let TransactionsService = class TransactionsService {
             updateData.paymentType = data.paymentType;
         if (data.companyId !== undefined)
             updateData.companyId = data.companyId;
+        const validStatuses = ['PENDING', 'COMPLETED', 'CANCELLED'];
+        if (data.status !== undefined) {
+            const statusUpper = data.status.toUpperCase();
+            if (validStatuses.includes(statusUpper)) {
+                updateData.status = statusUpper;
+            }
+        }
         const updated = await this.prisma.transaction.update({
             where: { id },
             data: updateData,
@@ -8402,18 +9107,55 @@ let TransactionsService = class TransactionsService {
             },
         });
         if (data.commissionPaymentStatus === 'SENT') {
-            await this.notificationService.notifyCommissionSent([id]);
+            try {
+                await this.notificationService.notifyCommissionSent([id]);
+            }
+            catch (err) {
+                this.logger.error(`notifyCommissionSent failed: ${err?.message}`);
+            }
         }
         if (data.commissionPaymentStatus === 'PAID') {
-            await this.notificationService.notifyCommissionsPaid([id]);
+            try {
+                await this.notificationService.notifyCommissionsPaid([id]);
+            }
+            catch (err) {
+                this.logger.error(`notifyCommissionsPaid failed: ${err?.message}`);
+            }
         }
-        if (data.status === 'COMPLETED') {
-            await this.notificationService.notifyDealClosed(id);
-            await this.notificationService.notifyAdminAndSales({
-                title: 'Deal Completed',
-                message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
-                type: 'SUCCESS',
-            });
+        const statusLower = data.status?.toLowerCase();
+        if (statusLower === 'ready') {
+            try {
+                await this.notificationService.notifyDealPaymentReady(id);
+            }
+            catch (err) {
+                this.logger.error(`notifyDealPaymentReady failed: ${err?.message}`);
+            }
+        }
+        else if (statusLower === 'paid') {
+            try {
+                await this.notificationService.notifyDealPaymentReady(id);
+            }
+            catch (err) {
+                this.logger.error(`notifyDealPaymentReady(paid) failed: ${err?.message}`);
+            }
+        }
+        else if (statusLower === 'closed' || statusLower === 'completed') {
+            try {
+                await this.notificationService.notifyDealClosed(id);
+            }
+            catch (err) {
+                this.logger.error(`notifyDealClosed failed: ${err?.message}`);
+            }
+            try {
+                await this.notificationService.notifyAdminAndSales({
+                    title: 'Deal Completed',
+                    message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
+                    type: 'SUCCESS',
+                });
+            }
+            catch (err) {
+                this.logger.error(`notifyAdminAndSales(completed) failed: ${err?.message}`);
+            }
         }
         return updated;
     }
@@ -8442,7 +9184,7 @@ let TransactionsService = class TransactionsService {
     }
 };
 exports.TransactionsService = TransactionsService;
-exports.TransactionsService = TransactionsService = __decorate([
+exports.TransactionsService = TransactionsService = TransactionsService_1 = __decorate([
     (0, common_1.Injectable)(),
     __metadata("design:paramtypes", [typeof (_a = typeof prisma_service_1.PrismaService !== "undefined" && prisma_service_1.PrismaService) === "function" ? _a : Object, typeof (_b = typeof notification_service_1.NotificationService !== "undefined" && notification_service_1.NotificationService) === "function" ? _b : Object])
 ], TransactionsService);
@@ -9496,6 +10238,16 @@ module.exports = require("express");
 
 /***/ }),
 
+/***/ "mailtrap":
+/*!***************************!*\
+  !*** external "mailtrap" ***!
+  \***************************/
+/***/ ((module) => {
+
+module.exports = require("mailtrap");
+
+/***/ }),
+
 /***/ "multer":
 /*!*************************!*\
   !*** external "multer" ***!
@@ -9503,16 +10255,6 @@ module.exports = require("express");
 /***/ ((module) => {
 
 module.exports = require("multer");
-
-/***/ }),
-
-/***/ "nodemailer":
-/*!*****************************!*\
-  !*** external "nodemailer" ***!
-  \*****************************/
-/***/ ((module) => {
-
-module.exports = require("nodemailer");
 
 /***/ }),
 
@@ -9543,6 +10285,16 @@ module.exports = require("pg");
 /***/ ((module) => {
 
 module.exports = require("qrcode");
+
+/***/ }),
+
+/***/ "resend":
+/*!*************************!*\
+  !*** external "resend" ***!
+  \*************************/
+/***/ ((module) => {
+
+module.exports = require("resend");
 
 /***/ }),
 
@@ -9622,12 +10374,15 @@ async function bootstrap() {
     app.useStaticAssets((0, path_1.join)(__dirname, '..', 'uploads'), {
         prefix: '/uploads/',
     });
+    app.useStaticAssets((0, path_1.join)(__dirname, '..', 'public'), {
+        prefix: '/public/',
+    });
     const frontendOrigins = process.env.FRONTEND_ORIGINS
         ? process.env.FRONTEND_ORIGINS.split(",").map((o) => o.trim())
         : ["http://localhost:5173"];
     app.enableCors({
         origin: (origin, callback) => {
-            if (!origin)
+            if (!origin || origin === 'null')
                 return callback(null, true);
             if (process.env.NODE_ENV !== 'production') {
                 return callback(null, true);
@@ -9636,7 +10391,7 @@ async function bootstrap() {
                 callback(null, true);
             }
             else {
-                callback(new Error('Not allowed by CORS'), false);
+                callback(null, false);
             }
         },
         credentials: true,

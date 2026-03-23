@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, BadRequestException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
 import { CommissionPaymentStatus } from '@prisma/client';
 import { NotificationService } from '../notification/notification.service';
@@ -13,6 +13,8 @@ export interface TransactionFilter {
 
 @Injectable()
 export class TransactionsService {
+  private readonly logger = new Logger(TransactionsService.name);
+
   constructor(
     private prisma: PrismaService,
     private notificationService: NotificationService,
@@ -154,8 +156,8 @@ export class TransactionsService {
         closerCommission: data.closerCommission ? parseFloat(data.closerCommission) : 0,
         totalCommission: data.totalCommission ? parseFloat(data.totalCommission) : 0,
         commission: data.commission ? parseFloat(data.commission) : 0,
-        status: data.status || CommissionPaymentStatus.UNPAID,
-        commissionPaymentStatus: data.commissionPaymentStatus || CommissionPaymentStatus.UNPAID,
+        status: (data.status?.toUpperCase() as any) || 'PENDING',
+        commissionPaymentStatus: (data.commissionPaymentStatus?.toUpperCase() as any) || CommissionPaymentStatus.UNPAID,
         installmentDuration: data.installmentDuration ? parseInt(data.installmentDuration) : null,
       },
       include: {
@@ -165,17 +167,29 @@ export class TransactionsService {
       },
     });
 
-    await this.notificationService.notifyDealCreated(transaction.id);
-
-    if ((transaction.paymentType || '').toLowerCase() === 'installment') {
-      await this.notificationService.notifyDealPaymentReady(transaction.id);
+    try {
+      await this.notificationService.notifyDealCreated(transaction.id);
+    } catch (err: any) {
+      this.logger.error(`notifyDealCreated failed for tx ${transaction.id}: ${err?.message}`, err?.stack);
     }
 
-    await this.notificationService.notifyAdminAndSales({
-      title: 'New Deal Created',
-      message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
-      type: 'INFO',
-    });
+    if ((transaction.paymentType || '').toLowerCase() === 'installment') {
+      try {
+        await this.notificationService.notifyDealPaymentReady(transaction.id);
+      } catch (err: any) {
+        this.logger.error(`notifyDealPaymentReady failed for tx ${transaction.id}: ${err?.message}`, err?.stack);
+      }
+    }
+
+    try {
+      await this.notificationService.notifyAdminAndSales({
+        title: 'New Deal Created',
+        message: `A new deal for "${transaction.asset?.name || 'an asset'}" worth ₦${transaction.totalAmount.toLocaleString()} has been created.`,
+        type: 'INFO',
+      });
+    } catch (err: any) {
+      this.logger.error(`notifyAdminAndSales failed for tx ${transaction.id}: ${err?.message}`, err?.stack);
+    }
 
     return transaction;
   }
@@ -184,13 +198,21 @@ export class TransactionsService {
     await this.findById(id);
 
     const updateData: any = {};
-    if (data.status !== undefined) updateData.status = data.status;
     if (data.commissionPaymentStatus !== undefined) updateData.commissionPaymentStatus = data.commissionPaymentStatus;
     if (data.leadAgentId !== undefined) updateData.leadAgentId = data.leadAgentId;
     if (data.closerAgentId !== undefined) updateData.closerAgentId = data.closerAgentId;
     if (data.totalAmount !== undefined) updateData.totalAmount = parseFloat(data.totalAmount);
     if (data.paymentType !== undefined) updateData.paymentType = data.paymentType;
     if (data.companyId !== undefined) updateData.companyId = data.companyId;
+
+    // Normalize status: only persist valid TransactionStatus enum values
+    const validStatuses = ['PENDING', 'COMPLETED', 'CANCELLED'];
+    if (data.status !== undefined) {
+      const statusUpper = data.status.toUpperCase();
+      if (validStatuses.includes(statusUpper)) {
+        updateData.status = statusUpper;
+      }
+    }
 
     const updated = await this.prisma.transaction.update({
       where: { id },
@@ -202,20 +224,40 @@ export class TransactionsService {
     });
 
     if (data.commissionPaymentStatus === 'SENT') {
-      await this.notificationService.notifyCommissionSent([id]);
+      try { await this.notificationService.notifyCommissionSent([id]); } catch (err: any) {
+        this.logger.error(`notifyCommissionSent failed: ${err?.message}`);
+      }
     }
 
     if (data.commissionPaymentStatus === 'PAID') {
-      await this.notificationService.notifyCommissionsPaid([id]);
+      try { await this.notificationService.notifyCommissionsPaid([id]); } catch (err: any) {
+        this.logger.error(`notifyCommissionsPaid failed: ${err?.message}`);
+      }
     }
 
-    if (data.status === 'COMPLETED') {
-      await this.notificationService.notifyDealClosed(id);
-      await this.notificationService.notifyAdminAndSales({
-        title: 'Deal Completed',
-        message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
-        type: 'SUCCESS',
-      });
+    // Trigger deal notifications based on status keyword
+    const statusLower = data.status?.toLowerCase();
+    if (statusLower === 'ready') {
+      try { await this.notificationService.notifyDealPaymentReady(id); } catch (err: any) {
+        this.logger.error(`notifyDealPaymentReady failed: ${err?.message}`);
+      }
+    } else if (statusLower === 'paid') {
+      try { await this.notificationService.notifyDealPaymentReady(id); } catch (err: any) {
+        this.logger.error(`notifyDealPaymentReady(paid) failed: ${err?.message}`);
+      }
+    } else if (statusLower === 'closed' || statusLower === 'completed') {
+      try { await this.notificationService.notifyDealClosed(id); } catch (err: any) {
+        this.logger.error(`notifyDealClosed failed: ${err?.message}`);
+      }
+      try {
+        await this.notificationService.notifyAdminAndSales({
+          title: 'Deal Completed',
+          message: `Deal "${updated.asset?.name || 'unknown asset'}" has been marked as completed.`,
+          type: 'SUCCESS',
+        });
+      } catch (err: any) {
+        this.logger.error(`notifyAdminAndSales(completed) failed: ${err?.message}`);
+      }
     }
 
     return updated;

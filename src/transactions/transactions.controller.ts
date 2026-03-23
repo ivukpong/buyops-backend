@@ -3,6 +3,7 @@ import {
     Controller,
     Get,
     Param,
+    Patch,
     Post,
     Put,
     Query,
@@ -11,23 +12,58 @@ import {
     UseInterceptors
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
+import { IsString, IsNumber, IsOptional } from 'class-validator';
+import { Type } from 'class-transformer';
 import { TransactionsService } from "./transactions.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
 
 class CreateTransactionDto {
+    @IsString()
     assetId!: string;
+
+    @IsString()
     buyerId!: string;
-    leadAgentId!: string;
-    closerAgentId!: string;
-    companyId!: string;
-    amount!: number;
-    paymentType!: string;
-    leadCommission!: number;
-    closerCommission!: number;
-    totalCommission!: number;
-    status!: string;
+
+    @IsString()
+    @IsOptional()
+    leadAgentId?: string;
+
+    @IsString()
+    @IsOptional()
+    closerAgentId?: string;
+
+    @IsString()
+    @IsOptional()
+    companyId?: string;
+
+    @IsNumber()
+    @Type(() => Number)
+    totalAmount!: number;
+
+    @IsString()
+    @IsOptional()
+    paymentType?: string;
+
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    leadCommission?: number;
+
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    closerCommission?: number;
+
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    totalCommission?: number;
+
+    @IsString()
+    @IsOptional()
+    status?: string;
 }
 
 class SendCommissionsDto {
@@ -96,8 +132,13 @@ export class TransactionsController {
     }
 
     @UseGuards(JwtAuthGuard, RolesGuard)
-    @Roles("ADMIN")
-    @Put(":id")
+    @Roles("ADMIN")    @Patch(":id")
+    async patch(@Param("id") id: string, @Body() dto: Partial<CreateTransactionDto>) {
+        return this.transactionsService.update(id, dto);
+    }
+
+    @UseGuards(JwtAuthGuard, RolesGuard)
+    // @Roles("ADMIN")    @Put(":id")
     async update(@Param("id") id: string, @Body() dto: Partial<CreateTransactionDto>) {
         return this.transactionsService.update(id, dto);
     }

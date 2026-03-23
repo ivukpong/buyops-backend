@@ -17,7 +17,7 @@ async function authenticateAdmin() {
     try {
         const response = await axios.post(`${API_BASE}/auth/login`, {
             email: 'admin@buyops.com',
-            password: 'TestPass2027!',
+            password: 'TestPass2026!',
         });
         console.log('✅ Authentication successful');
         return response.data.access_token;
@@ -323,7 +323,7 @@ async function test9_DealClosed(token: string, dealId: string) {
     }
 }
 
-async function test10_InstallmentNotifications(token: string, userId: string, assetId: string) {
+async function test10_InstallmentNotifications(token: string, userId: string, assetId: string, transactionId?: string) {
     console.log('\n📅 TEST 10-13: Installment notifications');
     try {
         // Get company ID first
@@ -332,7 +332,18 @@ async function test10_InstallmentNotifications(token: string, userId: string, as
         });
         const companyId = companies.data[0]?.id;
 
-        // Create installment plan
+        // Get an existing agent (leadAgentId must be an Agent record ID, not a User ID)
+        const agents = await axios.get(`${API_BASE}/agents`, {
+            headers: { Authorization: `Bearer ${token}` },
+        });
+        if (!agents.data.length) {
+            console.log('⚠️  No agents found, skipping installment tests');
+            return;
+        }
+        const leadAgentId = agents.data[0].id;
+        const closerAgentId = agents.data[1]?.id || agents.data[0].id;
+
+        // Create installment plan — pass transactionId so the schedule can be generated
         const planResponse = await axios.post(
             `${API_BASE}/installments`,
             {
@@ -345,9 +356,10 @@ async function test10_InstallmentNotifications(token: string, userId: string, as
                 numberOfInstallments: 10,
                 frequency: 'monthly',
                 startDate: new Date().toISOString(),
-                leadAgentId: userId,
-                closerAgentId: userId,
+                leadAgentId: leadAgentId,
+                closerAgentId: closerAgentId,
                 companyId: companyId,
+                ...(transactionId ? { transactionId } : {}),
             },
             { headers: { Authorization: `Bearer ${token}` } }
         );
@@ -392,6 +404,7 @@ async function test10_InstallmentNotifications(token: string, userId: string, as
         }
 
         // TEST 12: PAYMENT_RECORDED (for installment)
+        // Uses POST /installments/:installmentId/payments
         try {
             await axios.post(
                 `${API_BASE}/installments/${firstInstallment.id}/payments`,
@@ -410,7 +423,7 @@ async function test10_InstallmentNotifications(token: string, userId: string, as
 
         // TEST 13: INSTALLMENT_COMPLETED
         try {
-            // Mark plan as completed
+            // Mark plan as completed via PATCH /installments/plans/:planId
             await axios.patch(
                 `${API_BASE}/installments/plans/${planId}`,
                 { status: 'completed' },
@@ -437,7 +450,7 @@ async function test14_CommissionNotifications(token: string) {
         });
 
         const transactionsWithCommissions = transactions.data
-            .filter((t: any) => t.commissionPaymentStatus === 'pending')
+            .filter((t: any) => t.status === 'unpaid')
             .slice(0, 2)
             .map((t: any) => t.id);
 
@@ -554,7 +567,7 @@ async function main() {
             await new Promise(resolve => setTimeout(resolve, 1000));
         }
 
-        await test10_InstallmentNotifications(token, userId, assetId);
+        await test10_InstallmentNotifications(token, userId, assetId, dealId ?? undefined);
         await new Promise(resolve => setTimeout(resolve, 1000));
 
         await test14_CommissionNotifications(token);

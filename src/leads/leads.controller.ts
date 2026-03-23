@@ -12,29 +12,69 @@ import {
     Req
 } from "@nestjs/common";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { IsOptional, IsString } from 'class-validator';
+import { IsOptional, IsString, IsEmail, IsNumber, IsArray, IsIn } from 'class-validator';
+import { Type } from 'class-transformer';
 import { LeadsService } from "./leads.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
 
 class CreateLeadDto {
-    name!: string;
+    @IsString()
+    @IsOptional()
+    name?: string;
+
+    @IsEmail()
     email!: string;
-    phone!: string;
-    assetInterest!: string;
-    budget!: number;
-    source!: string;
-    leadSource!: string;
+
+    @IsString()
+    @IsOptional()
+    phone?: string;
+
+    @IsString()
+    @IsOptional()
+    assetInterest?: string;
+
+    @IsNumber()
+    @IsOptional()
+    @Type(() => Number)
+    budget?: number;
+
+    @IsString()
+    @IsOptional()
+    source?: string;
+
+    @IsString()
+    @IsOptional()
+    leadSource?: string;
+
+    @IsString()
+    @IsOptional()
     assignedCluster?: string;
+
+    @IsString()
+    @IsOptional()
     status?: string;
+
+    @IsString()
+    @IsOptional()
     assignedToId?: string;
+
+    @IsString()
+    @IsOptional()
     createdBy?: string;
 }
 
 class AssignLeadsDto {
+    @IsArray()
+    @IsString({ each: true })
     leadIds!: string[];
+
+    @IsIn(['cluster', 'all'])
     assignmentType!: "cluster" | "all";
+
+    @IsString()
+    @IsOptional()
     clusterId?: string;
 }
 

@@ -14,6 +14,9 @@
     },
     {
       "path": "../../../../Repositories/buyops-investors-web"
+    },
+    {
+      "path": "../../../buyops-main"
     }
   ],
   "settings": {

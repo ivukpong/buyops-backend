@@ -71,6 +71,13 @@ export class LeadsService {
     if (!data.email) throw new BadRequestException('Email is required');
     const resolvedName = (data.name && data.name.trim()) || data.email.split('@')[0];
 
+    // Return existing lead if email already exists (Lead.email is @unique)
+    const existingLead = await this.prisma.lead.findUnique({ where: { email: data.email } });
+    if (existingLead) {
+      await this.notificationService.notifyNewLeadFromInvestor(existingLead.id);
+      return existingLead;
+    }
+
     const serialId = await generateSerialId(this.prisma, 'LED');
     const createdLead = await this.prisma.lead.create({
       data: {

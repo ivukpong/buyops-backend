@@ -63,17 +63,32 @@ export class InstallmentsService {
     }
 
     async create(dto: any) {
+        const installmentAmount = dto.totalAmount / dto.numberOfInstallments;
         const serialId = await generateSerialId(this.prisma, 'IPL');
-        return this.prisma.installmentPlan.create({
+        const plan = await this.prisma.installmentPlan.create({
             data: {
                 ...dto,
                 serialId,
-                companyId: dto.companyId, // Added required field
+                companyId: dto.companyId,
                 remainingBalance: dto.totalAmount - (dto.downPayment || 0),
                 paidAmount: 0,
-                installmentAmount: dto.totalAmount / dto.numberOfInstallments,
+                installmentAmount,
+                startDate: new Date(dto.startDate),
             },
         });
+
+        // Generate installment schedule if a transactionId is provided
+        // (Installment records require a transactionId due to schema constraint)
+        if (dto.transactionId) {
+            await this.generateInstallmentSchedule(plan.id, dto.transactionId, {
+                numberOfInstallments: dto.numberOfInstallments,
+                installmentAmount,
+                frequency: dto.frequency,
+                startDate: new Date(dto.startDate),
+            });
+        }
+
+        return plan;
     }
 
     async findById(id: string) {
@@ -191,6 +206,38 @@ export class InstallmentsService {
         return updatedInstallment;
     }
 
+    async recordPaymentByInstallmentId(
+        installmentId: string,
+        data: { amount: number; paymentMethod: string }
+    ) {
+        const installment = await this.prisma.installment.findUnique({
+            where: { id: installmentId },
+        });
+        if (!installment) {
+            throw new NotFoundException(`Installment with ID ${installmentId} not found`);
+        }
+        if (!installment.installmentPlanId) {
+            throw new NotFoundException(`Installment ${installmentId} has no associated plan`);
+        }
+        return this.recordPayment(installment.installmentPlanId, installmentId, data);
+    }
+
+    async updatePlanStatus(planId: string, status: string) {
+        const plan = await this.prisma.installmentPlan.findUnique({ where: { id: planId } });
+        if (!plan) throw new NotFoundException(`Installment plan ${planId} not found`);
+
+        const updated = await this.prisma.installmentPlan.update({
+            where: { id: planId },
+            data: { status: status.toUpperCase() },
+        });
+
+        if (status.toUpperCase() === 'COMPLETED') {
+            await this.notificationService.notifyInstallmentPlanCompleted(planId);
+        }
+
+        return updated;
+    }
+
     async sendPaymentReminder(data: {
         installmentId: string;
         reminderDate: string;
@@ -296,6 +343,7 @@ export class InstallmentsService {
 
     private async generateInstallmentSchedule(
         planId: string,
+        transactionId: string,
         data: {
             numberOfInstallments: number;
             installmentAmount: number;
@@ -311,6 +359,7 @@ export class InstallmentsService {
 
             installments.push({
                 installmentPlanId: planId,
+                transactionId,
                 dueDate,
                 amount: installmentAmount,
                 paidAmount: 0,

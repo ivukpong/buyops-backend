@@ -3,35 +3,82 @@ import {
     Controller,
     Get,
     Param,
+    Patch,
     Post,
     Put,
     Query,
     UseGuards
 } from "@nestjs/common";
+import { IsString, IsNumber, IsOptional, IsEmail } from 'class-validator';
+import { Type } from 'class-transformer';
 import { InstallmentsService } from "./installments.service";
 import { JwtAuthGuard } from "src/auth/jwt-auth.guard";
 import { RolesGuard } from "../common/roles.guard";
 import { Roles } from "../common/roles.decorator";
 
 class CreateInstallmentPlanDto {
-    buyerName!: string;
-    buyerEmail!: string;
-    buyerPhone!: string;
+    @IsString()
+    @IsOptional()
+    buyerName?: string;
+
+    @IsEmail()
+    @IsOptional()
+    buyerEmail?: string;
+
+    @IsString()
+    @IsOptional()
+    buyerPhone?: string;
+
+    @IsString()
     assetId!: string;
+
+    @IsNumber()
+    @Type(() => Number)
     totalAmount!: number;
+
+    @IsNumber()
+    @Type(() => Number)
     downPayment!: number;
+
+    @IsNumber()
+    @Type(() => Number)
     numberOfInstallments!: number;
+
+    @IsString()
     frequency!: string;
+
+    @IsString()
     startDate!: string;
+
+    @IsString()
     leadAgentId!: string;
-    closerAgentId!: string;
+
+    @IsString()
+    @IsOptional()
+    closerAgentId?: string;
+
+    @IsString()
     companyId!: string;
+
+    @IsString()
+    @IsOptional()
+    transactionId?: string;
 }
 
 class SendReminderDto {
+    @IsString()
     installmentId!: string;
+
+    @IsString()
     reminderDate!: string;
+
+    @IsString()
     method!: string;
+}
+
+class UpdatePlanStatusDto {
+    @IsString()
+    status!: string;
 }
 
 @Controller("installments")
@@ -89,6 +136,25 @@ export class InstallmentsController {
         @Body() body: { amount: number; paymentMethod: string }
     ) {
         return this.installmentsService.recordPayment(id, installmentId, body);
+    }
+
+    // Shorthand: POST /installments/:installmentId/payments
+    // maps to the same recordPayment logic using the installment's planId
+    @Post(":installmentId/payments")
+    async recordPaymentShorthand(
+        @Param("installmentId") installmentId: string,
+        @Body() body: { amount: number; paymentMethod: string }
+    ) {
+        return this.installmentsService.recordPaymentByInstallmentId(installmentId, body);
+    }
+
+    // PATCH /installments/plans/:id — update plan status
+    @Patch("plans/:id")
+    async updatePlanStatus(
+        @Param("id") id: string,
+        @Body() dto: UpdatePlanStatusDto
+    ) {
+        return this.installmentsService.updatePlanStatus(id, dto.status);
     }
 
     // @UseGuards(JwtAuthGuard, RolesGuard)

@@ -97,6 +97,37 @@ export class AssetsService {
     });
   }
 
+  async getPublicStats() {
+    const [publishedAssets, totalLeads] = await Promise.all([
+      this.prisma.asset.findMany({
+        where: { status: 'published' },
+        select: { price: true, fractionCost: true, rentalYield: true, rentalYieldMax: true, capitalAppreciation: true },
+      }),
+      this.prisma.lead.count(),
+    ]);
+
+    let totalValue = 0;
+    let yieldSum = 0;
+    let yieldCount = 0;
+
+    for (const a of publishedAssets) {
+      const raw = a.price || a.fractionCost || '0';
+      const n = parseFloat(raw);
+      if (!isNaN(n)) totalValue += n;
+
+      const ry = parseFloat((a.rentalYield as any) || '0') || a.rentalYieldMax || 0;
+      const ca = a.capitalAppreciation || 0;
+      if (ry + ca > 0) { yieldSum += ry + ca; yieldCount++; }
+    }
+
+    return {
+      assetsListed: publishedAssets.length,
+      totalInvestors: totalLeads,
+      totalTransactionValue: totalValue,
+      averageROI: yieldCount > 0 ? Math.round(yieldSum / yieldCount) : 18,
+    };
+  }
+
   async getOverviewStats() {
     const assets = await this.prisma.asset.findMany({
       select: { status: true, price: true, fractionCost: true },
