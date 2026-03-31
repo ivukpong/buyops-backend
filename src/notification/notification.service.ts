@@ -52,17 +52,27 @@ export class NotificationService {
       select: { id: true },
     });
 
+
+    this.logger.debug(`notifyUsersByRoles: found users: ${JSON.stringify(users)}`);
+    console.log('notifyUsersByRoles: found users:', users);
+
     if (!users.length) {
+      this.logger.warn('notifyUsersByRoles: No users found for roles', options.roles);
       return;
     }
 
     await this.prisma.notification.createMany({
-      data: users.map((user) => ({
-        userId: user.id,
-        title: options.title,
-        message: options.message,
-        type: (options.type as any) || 'INFO',
-      })),
+      data: users.map((user) => {
+        if (!user || !user.id) {
+          this.logger.error('notifyUsersByRoles: Invalid user object', user);
+        }
+        return {
+          userId: user.id,
+          title: options.title,
+          message: options.message,
+          type: (options.type as any) || 'INFO',
+        };
+      }),
     });
   }
 
@@ -170,10 +180,15 @@ export class NotificationService {
     const dueDate = installment.dueDate.toLocaleDateString('en-US', { dateStyle: 'medium' });
     const message = `Installment of ₦${installment.amount.toLocaleString()} for "${installment.installmentPlan?.asset?.name || 'an asset'}" is due on ${dueDate}.`;
 
-    const recipients = [
-      installment.installmentPlan?.leadAgent?.user?.id,
-      installment.installmentPlan?.closerAgent?.user?.id,
-    ].filter(Boolean) as string[];
+    const recipients = [] as string[];
+    const leadAgent = installment.installmentPlan?.leadAgent;
+    if (leadAgent && leadAgent.user && leadAgent.user.id) {
+      recipients.push(leadAgent.user.id);
+    }
+    const closerAgent = installment.installmentPlan?.closerAgent;
+    if (closerAgent && closerAgent.user && closerAgent.user.id) {
+      recipients.push(closerAgent.user.id);
+    }
 
     if (recipients.length) {
       await this.prisma.notification.createMany({
@@ -248,10 +263,15 @@ export class NotificationService {
     const dueDate = installment.dueDate.toLocaleDateString('en-US', { dateStyle: 'medium' });
     const message = `Installment of ₦${installment.amount.toLocaleString()} for "${installment.installmentPlan?.asset?.name || 'an asset'}" is overdue since ${dueDate}.`;
 
-    const recipients = [
-      installment.installmentPlan?.leadAgent?.user?.id,
-      installment.installmentPlan?.closerAgent?.user?.id,
-    ].filter(Boolean) as string[];
+    const recipients = [] as string[];
+    const leadAgent = installment.installmentPlan?.leadAgent;
+    if (leadAgent && leadAgent.user && leadAgent.user.id) {
+      recipients.push(leadAgent.user.id);
+    }
+    const closerAgent = installment.installmentPlan?.closerAgent;
+    if (closerAgent && closerAgent.user && closerAgent.user.id) {
+      recipients.push(closerAgent.user.id);
+    }
 
     if (recipients.length) {
       await this.prisma.notification.createMany({

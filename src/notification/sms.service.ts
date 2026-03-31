@@ -1,4 +1,5 @@
-import { Injectable, Logger } from '@nestjs/common';
+
+import { Injectable, Logger, Optional } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Twilio from 'twilio';
 
@@ -9,7 +10,14 @@ export class SmsService {
   private readonly fromPhone: string | null;
   private readonly isConfigured: boolean;
 
-  constructor(private readonly configService: ConfigService) {
+  constructor(@Optional() private readonly configService?: ConfigService) {
+    if (!this.configService) {
+      this.twilioClient = null;
+      this.fromPhone = null;
+      this.isConfigured = false;
+      this.logger.warn('Twilio SMS is disabled: ConfigService not available (test mode).');
+      return;
+    }
     const accountSid = this.configService.get<string>('TWILIO_ACCOUNT_SID');
     const authToken = this.configService.get<string>('TWILIO_AUTH_TOKEN');
     this.fromPhone = this.configService.get<string>('TWILIO_PHONE_NUMBER');

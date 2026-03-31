@@ -12,6 +12,6 @@ import { PrismaModule } from '../prisma/prisma.module';
   imports: [PrismaModule, ConfigModule],
   controllers: [NotificationController, NotificationTriggersController],
   providers: [NotificationService, SmsService, EmailService, CronService],
-  exports: [NotificationService],
+  exports: [NotificationService, SmsService, EmailService, CronService],
 })
-export class NotificationModule {}
+export class NotificationModule { }

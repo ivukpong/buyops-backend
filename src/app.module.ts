@@ -18,7 +18,6 @@ import { ReportsModule } from './reports/reports.module';
 import { FreelancersModule } from './freelancers/freelancers.module';
 import { PrismaModule } from './prisma/prisma.module';
 import { PaymentsModule } from './payments/payments.module';
-
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true, envFilePath: '.env' }),
@@ -30,7 +29,6 @@ import { PaymentsModule } from './payments/payments.module';
       }),
       inject: [ConfigService],
     }),
-    PrismaModule,
     AuthModule,
     UsersModule,
     AssetsModule,
@@ -40,12 +38,13 @@ import { PaymentsModule } from './payments/payments.module';
     LeadsModule,
     TransactionsModule,
     InstallmentsModule,
-    NotificationModule,
+    NotificationModule, // Ensure NotificationModule is imported
     SalesModule,
     InvestmentsModule,
     DashboardModule,
     ReportsModule,
     FreelancersModule,
+    PrismaModule,
     PaymentsModule,
   ],
 })

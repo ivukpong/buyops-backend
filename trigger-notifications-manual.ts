@@ -3,11 +3,13 @@
 
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './src/app.module';
+import { NotificationService } from './src/notification/notification.service';
+import { PrismaService } from './src/prisma/prisma.service';
 
 async function triggerNotifications() {
     const app = await NestFactory.createApplicationContext(AppModule);
-    const notificationService = app.get('NotificationService');
-    const prismaService = app.get('PrismaService');
+    const notificationService = app.get(NotificationService);
+    const prismaService = app.get(PrismaService);
 
     console.log('🔔 Triggering manual notifications to ivukpong@gmail.com / +2348107758678\n');
 
@@ -27,7 +29,7 @@ async function triggerNotifications() {
 
     // Test commission notifications
     const transactions = await prismaService.transaction.findMany({
-        where: { status: 'closed' },
+        where: { status: 'COMPLETED' },
         take: 2
     });
 
