@@ -17,6 +17,9 @@
     },
     {
       "path": "../../../buyops-main"
+    },
+    {
+      "path": "../../../thuebridge"
     }
   ],
   "settings": {
