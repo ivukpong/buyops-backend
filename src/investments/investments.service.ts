@@ -90,6 +90,22 @@ export class InvestmentsService {
       },
     });
 
+    // Decrement available units and mark as sold if none remain
+    const asset = await this.prisma.asset.findUnique({
+      where: { id: data.assetId },
+      select: { availableUnits: true },
+    });
+    if (asset?.availableUnits != null && asset.availableUnits > 0) {
+      const newUnits = asset.availableUnits - 1;
+      await this.prisma.asset.update({
+        where: { id: data.assetId },
+        data: {
+          availableUnits: newUnits,
+          ...(newUnits === 0 && { status: 'sold' }),
+        },
+      });
+    }
+
     return transaction;
   }
 }
