@@ -20,6 +20,15 @@
     },
     {
       "path": "../../../thuebridge"
+    },
+    {
+      "path": "../../../../Repositories/Urbco-Admin"
+    },
+    {
+      "path": "../../../../Repositories/Urbco-Frontend"
+    },
+    {
+      "path": "../../../../Repositories/Urbco-API"
     }
   ],
   "settings": {

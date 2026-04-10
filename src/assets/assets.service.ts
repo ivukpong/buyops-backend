@@ -423,6 +423,77 @@ export class AssetsService {
     return { message: 'Asset deleted successfully', id };
   }
 
+  /**
+   * Creates a draft asset imported from the Urbco platform.
+   * The asset is created with status='draft' so a Buyops admin must
+   * explicitly publish it before it becomes visible to investors.
+   */
+  async importFromUrbco(dto: {
+    urbcoPropertyId: string;
+    urbcoRef: string;
+    name: string;
+    description?: string;
+    address?: string;
+    location?: string;
+    constructionStage?: string;
+    totalUnits?: number;
+    availableUnits?: number;
+    fractionTotal?: number;
+    price?: string;
+    fractionCost?: string;
+    rentalYieldMax?: number;
+    capitalAppreciation?: number;
+    firstPayoutDate?: string;
+    constructionStart?: string;
+    constructionEnd?: string;
+    bedrooms?: number;
+    bathrooms?: number;
+    area?: number;
+    companyId?: string;
+  }) {
+    // Reject duplicate imports for the same Urbco property
+    const existing = await this.prisma.asset.findFirst({
+      where: { urbcoPropertyId: dto.urbcoPropertyId },
+    });
+    if (existing) {
+      return existing;
+    }
+
+    const serialId = await generateSerialId(this.prisma, 'AST');
+    const asset = await this.prisma.asset.create({
+      data: {
+        serialId,
+        name: dto.name,
+        title: dto.name,
+        referenceCode: dto.urbcoRef || null,
+        urbcoPropertyId: dto.urbcoPropertyId,
+        urbcoRef: dto.urbcoRef || null,
+        status: 'draft',
+        description: dto.description || null,
+        address: dto.address || null,
+        location: dto.location || null,
+        constructionStage: dto.constructionStage || null,
+        totalUnits: dto.totalUnits ?? null,
+        units: dto.totalUnits ?? null,
+        availableUnits: dto.availableUnits ?? null,
+        fractionTotal: dto.fractionTotal ?? null,
+        price: dto.price || null,
+        fractionCost: dto.fractionCost || null,
+        rentalYieldMax: dto.rentalYieldMax ?? null,
+        capitalAppreciation: dto.capitalAppreciation ?? null,
+        firstPayoutDate: dto.firstPayoutDate ? new Date(dto.firstPayoutDate) : null,
+        constructionStart: dto.constructionStart ? new Date(dto.constructionStart) : null,
+        constructionEnd: dto.constructionEnd ? new Date(dto.constructionEnd) : null,
+        bedrooms: dto.bedrooms ?? null,
+        bathrooms: dto.bathrooms ?? null,
+        area: dto.area ?? null,
+        ...(dto.companyId ? { company: { connect: { id: dto.companyId } } } : {}),
+      },
+    });
+
+    return asset;
+  }
+
   // FIX 13: AssetImage and AssetDocument now exist in schema
   async addImage(assetId: string, imageData: { url: string; caption?: string; order?: number }) {
     await this.findById(assetId);

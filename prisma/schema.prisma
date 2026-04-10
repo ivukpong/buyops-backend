@@ -164,6 +164,9 @@ model Asset {
   bedrooms         Int?
   bathrooms        Int?
   area             Float?
+  // Urbco integration
+  urbcoPropertyId  String?
+  urbcoRef         String?
   companyId        String?
   company          Company? @relation(fields: [companyId], references: [id])
   installmentPlans InstallmentPlan[]

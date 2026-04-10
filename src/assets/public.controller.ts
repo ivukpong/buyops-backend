@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Query, BadRequestException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Query, Headers, ForbiddenException, BadRequestException } from '@nestjs/common';
 import { AssetsService } from './assets.service';
 import { PrismaService } from '../prisma/prisma.service';
 
@@ -13,7 +13,7 @@ export class PublicController {
   constructor(
     private readonly assetsService: AssetsService,
     private readonly prisma: PrismaService,
-  ) {}
+  ) { }
 
   /**
    * GET /public/assets
@@ -99,5 +99,32 @@ export class PublicController {
     });
 
     return { success: true, message: "You're on the list!" };
+  }
+
+  /**
+   * POST /public/import-from-urbco
+   * Server-to-server endpoint called by the Urbco API to push a property into
+   * Buyops as a draft asset. Secured with the shared URBCO_API_KEY secret; no
+   * user JWT is required or accepted here.
+   */
+  @Post('import-from-urbco')
+  async importFromUrbco(
+    @Headers('x-urbco-api-key') apiKey: string,
+    @Body() body: any,
+  ) {
+    const expectedKey = process.env.URBCO_API_KEY;
+    if (!expectedKey || apiKey !== expectedKey) {
+      throw new ForbiddenException('Invalid or missing API key');
+    }
+
+    if (!body.urbcoPropertyId) {
+      throw new BadRequestException('urbcoPropertyId is required');
+    }
+    if (!body.name) {
+      throw new BadRequestException('name is required');
+    }
+
+    const asset = await this.assetsService.importFromUrbco(body);
+    return { success: true, assetId: asset.id };
   }
 }
