@@ -29,6 +29,9 @@
     },
     {
       "path": "../../../../Repositories/Urbco-API"
+    },
+    {
+      "path": "../../../../Repositories/free-invoice"
     }
   ],
   "settings": {
