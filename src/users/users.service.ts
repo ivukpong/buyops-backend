@@ -1,6 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service';
-import { UserRole } from '@prisma/client';
+import { UserRole, UserStatus } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
+import { generateSerialId } from '../common/serial-id.helper';
 
 @Injectable()
 export class UsersService {
@@ -243,12 +245,29 @@ export class UsersService {
   }
 
   async createUser(dto: any) {
-    // Create new user
-    // Ensure status is present and valid
+    // Validate status
     if (!dto.status || !['ACTIVE', 'INACTIVE', 'PENDING'].includes(dto.status.toUpperCase())) {
       throw new Error('User status is required and must be one of: ACTIVE, INACTIVE, PENDING');
     }
-    return this.prisma.user.create({ data: { ...dto, status: dto.status.toUpperCase() } });
+    // Check for duplicate email
+    const existing = await this.prisma.user.findUnique({ where: { email: dto.email.trim().toLowerCase() } });
+    if (existing) {
+      throw new NotFoundException('A user with this email already exists');
+    }
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
+    const serialId = await generateSerialId(this.prisma, 'USR');
+    const email = dto.email.trim().toLowerCase();
+    return this.prisma.user.create({
+      data: {
+        serialId,
+        email,
+        password: hashedPassword,
+        name: dto.name,
+        phone: dto.phone || null,
+        role: dto.role.toUpperCase() as UserRole,
+        status: dto.status.toUpperCase() as UserStatus,
+      },
+    });
   }
 
   async updateUserRole(id: string, role: string) {
@@ -265,13 +284,11 @@ export class UsersService {
   }
 
   async deactivateUser(id: string) {
-    // No status field on User, consider soft delete or throw error
-    throw new Error('User model does not have a status field');
+    return this.prisma.user.update({ where: { id }, data: { status: UserStatus.INACTIVE } });
   }
 
   async reactivateUser(id: string) {
-    // No status field on User, consider soft delete or throw error
-    throw new Error('User model does not have a status field');
+    return this.prisma.user.update({ where: { id }, data: { status: UserStatus.ACTIVE } });
   }
 
   async deleteUser(id: string) {
