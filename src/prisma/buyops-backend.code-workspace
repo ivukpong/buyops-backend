@@ -32,6 +32,9 @@
     },
     {
       "path": "../../../../Repositories/free-invoice"
+    },
+    {
+      "path": "../../../../Repositories/BuildOS"
     }
   ],
   "settings": {
